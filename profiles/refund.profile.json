@@ -1,0 +1,26 @@
+{
+  "profile_id": "refund",
+  "title": "Refund",
+  "version": "1.0.0",
+  "description": "Initiate a full or partial refund of a captured transaction.",
+  "required_endpoints": [
+    "POST /v1/refunds"
+  ],
+  "prerequisite_endpoints": [
+    "POST /v1/transactions/{id}/capture"
+  ],
+  "required_schemas": ["Refund", "Transaction"],
+  "expected_events": [
+    "refund.created",
+    "refund.succeeded"
+  ],
+  "docs": ["./docs/refunds.md"],
+  "state_machines": ["./schemas/state-machines/refund.state-machine.json"],
+  "idempotency_required": true,
+  "supported_reasons": ["duplicate", "fraudulent", "customer_request", "partial_adjustment"],
+  "notes": [
+    "Refunds reference a transaction_id — only captured transactions can be refunded.",
+    "Partial refunds are supported: specify amount less than the original transaction amount.",
+    "refund.succeeded is emitted asynchronously."
+  ]
+}

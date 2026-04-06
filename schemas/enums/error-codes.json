@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "enum_name": "ErrorCode",
+  "description": "Stable CDP error code identifiers. Full error details (message, retryability, guidance) are in schemas/errors/error-catalog.json.",
+  "stability": "stable",
+  "values": [
+    "auth.invalid_api_key",
+    "auth.environment_mismatch",
+    "validation.invalid_request",
+    "idempotency.key_reused_with_different_payload",
+    "state.invalid_transition",
+    "provenance.immutable_after_capture",
+    "webhooks.invalid_signature",
+    "resource.not_found",
+    "resource.already_exists",
+    "rate_limit.exceeded"
+  ]
+}

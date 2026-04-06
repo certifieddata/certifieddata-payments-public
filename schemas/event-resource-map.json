@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "description": "Maps resources to the events they emit, their trigger endpoints, and terminal states.",
+  "resources": {
+    "payee": {
+      "events": ["payee.created", "payee.updated", "payee.alias.created"],
+      "terminal_states": [],
+      "triggers": {
+        "POST /v1/payees": ["payee.created"],
+        "PATCH /v1/payees/{id}": ["payee.updated"],
+        "POST /v1/payees/{id}/aliases": ["payee.alias.created"]
+      }
+    },
+    "payout_destination": {
+      "events": ["payout_destination.created", "payout_destination.updated"],
+      "terminal_states": ["rejected"],
+      "triggers": {
+        "POST /v1/payees/{id}/payout-destinations": ["payout_destination.created"]
+      }
+    },
+    "payment_intent": {
+      "events": ["payment_intent.created", "payment_intent.confirmed", "payment_intent.canceled"],
+      "terminal_states": ["succeeded", "failed", "canceled"],
+      "triggers": {
+        "POST /v1/payment-intents": ["payment_intent.created"],
+        "POST /v1/payment-intents/{id}/confirm": ["payment_intent.confirmed"],
+        "POST /v1/payment-intents/{id}/cancel": ["payment_intent.canceled"]
+      }
+    },
+    "transaction": {
+      "events": ["transaction.created", "transaction.captured", "transaction.links_attached", "transaction.canceled"],
+      "terminal_states": ["succeeded", "failed", "canceled"],
+      "triggers": {
+        "POST /v1/transactions": ["transaction.created"],
+        "POST /v1/transactions/{id}/attach-links": ["transaction.links_attached"],
+        "POST /v1/transactions/{id}/capture": ["transaction.captured"],
+        "POST /v1/transactions/{id}/cancel": ["transaction.canceled"]
+      }
+    },
+    "settlement": {
+      "events": ["settlement.created", "settlement.submitted", "settlement.succeeded", "settlement.failed"],
+      "terminal_states": ["succeeded", "failed", "canceled"],
+      "triggers": {
+        "POST /v1/settlements": ["settlement.created"],
+        "POST /v1/settlements/{id}/submit": ["settlement.submitted"],
+        "async_processing": ["settlement.succeeded", "settlement.failed"]
+      }
+    },
+    "refund": {
+      "events": ["refund.created", "refund.succeeded", "refund.failed"],
+      "terminal_states": ["succeeded", "failed"],
+      "triggers": {
+        "POST /v1/refunds": ["refund.created"],
+        "async_processing": ["refund.succeeded", "refund.failed"]
+      }
+    }
+  }
+}

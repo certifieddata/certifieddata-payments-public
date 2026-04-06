@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/webhook-endpoint/v1",
+  "title": "WebhookEndpoint",
+  "description": "A registered webhook endpoint. CDP delivers signed events to this URL. The signing secret is returned only at creation time — it cannot be retrieved after that.",
+  "type": "object",
+  "required": ["id", "object", "url", "enabled_events", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^wh_",
+      "examples": ["wh_01HZXCR5J8K9L0M1N2O3P4Q5R6"]
+    },
+    "object": { "type": "string", "const": "webhook_endpoint" },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The HTTPS URL where CDP will deliver events."
+    },
+    "enabled_events": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of event types to deliver. Use ['*'] for all events.",
+      "examples": [["transaction.captured", "settlement.succeeded"], ["*"]]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["enabled", "disabled"],
+      "description": "Whether this endpoint is actively receiving events."
+    },
+    "description": { "type": ["string", "null"], "maxLength": 255 },
+    "secret": {
+      "type": ["string", "null"],
+      "description": "The HMAC-SHA256 signing secret. Returned ONLY at creation time. Null in all subsequent reads. If lost, rotate via POST /v1/webhook-endpoints/{id}/rotate-secret."
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,22 @@
+{
+  "resource": "settlement",
+  "version": "1.0.0",
+  "description": "Settlement lifecycle. Settlements can be canceled before submission.",
+  "states": ["draft", "submitted", "processing", "succeeded", "failed", "canceled"],
+  "initial_state": "draft",
+  "terminal_states": ["succeeded", "failed", "canceled"],
+  "transitions": [
+    { "from": "draft", "to": "submitted", "trigger": "POST /v1/settlements/{id}/submit" },
+    { "from": "submitted", "to": "processing", "trigger": "platform" },
+    { "from": "processing", "to": "succeeded", "trigger": "platform" },
+    { "from": "processing", "to": "failed", "trigger": "platform" },
+    { "from": "draft", "to": "canceled", "trigger": "POST /v1/settlements/{id}/cancel" },
+    { "from": "submitted", "to": "canceled", "trigger": "POST /v1/settlements/{id}/cancel" }
+  ],
+  "forbidden_transitions": [
+    { "from": "succeeded", "to": "*", "reason": "Terminal state." },
+    { "from": "failed", "to": "*", "reason": "Terminal state." },
+    { "from": "canceled", "to": "*", "reason": "Terminal state." },
+    { "from": "processing", "to": "canceled", "reason": "Cannot cancel after processing has begun." }
+  ]
+}

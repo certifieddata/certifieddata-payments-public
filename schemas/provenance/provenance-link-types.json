@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "description": "Canonical registry of all supported provenance link types.",
+  "link_types": [
+    {
+      "name": "artifact_id",
+      "description": "Identifier of the certified AI artifact being purchased or licensed.",
+      "format": "string",
+      "example": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA"
+    },
+    {
+      "name": "certificate_id",
+      "description": "Identifier of the CertifiedData certification record for this artifact.",
+      "format": "string",
+      "example": "cert_01HXZ803C0R6V4K4P9HWB6J5N6"
+    },
+    {
+      "name": "decision_id",
+      "description": "Identifier of the AI decision or inference run that triggered this payment.",
+      "format": "string",
+      "example": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9"
+    },
+    {
+      "name": "dataset_id",
+      "description": "Identifier of the dataset used in the inference or artifact creation.",
+      "format": "string",
+      "example": "ds_01HXZ811N6C84YFJ4S2P7A5R1K"
+    },
+    {
+      "name": "model_id",
+      "description": "Identifier of the AI model involved in the transaction.",
+      "format": "string",
+      "example": "mdl_01HXZ8179P8VHTJ1Z6W6S0Q2QX"
+    },
+    {
+      "name": "output_id",
+      "description": "Identifier of the specific model output or inference result.",
+      "format": "string",
+      "example": "out_01HXZ81FCE0E0V2QJ3M89A2FGN"
+    },
+    {
+      "name": "receipt_hash",
+      "description": "SHA-256 digest of the canonical payment receipt payload. Links this transaction to a prior receipt proof.",
+      "format": "sha256-hex",
+      "example": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+      "note": "Must include 'sha256:' prefix. This is NOT the same as artifact_hash."
+    },
+    {
+      "name": "external_reference",
+      "description": "Free-form external reference string for linking to systems outside CDP.",
+      "format": "string",
+      "max_length": 128,
+      "example": "partner:invoice-44821"
+    },
+    {
+      "name": "provenance_metadata",
+      "description": "Namespaced key-value pairs for additional provenance context. Keys must use cdp:, partner:, or ext: prefixes.",
+      "format": "object",
+      "constraints": {
+        "max_keys": 20,
+        "max_value_length": 256,
+        "allowed_namespaces": ["cdp:", "partner:", "ext:"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{ "customer_id": "cus_01HZX8FQ8P9W9A3D9ZJ5A6V8Q2", "amount": 25000, "currency": "USD", "rail": "stripe", "description": "Purchase of certified synthetic dataset", "metadata": { "cdp:source_system": "partner_portal" } }

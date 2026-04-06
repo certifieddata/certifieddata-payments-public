@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/common/pagination-envelope/v1",
+  "title": "PaginationEnvelope",
+  "description": "Cursor-based pagination envelope for list endpoints. Use starting_after with the last item's id to fetch the next page.",
+  "type": "object",
+  "required": ["data", "has_more"],
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "The list of items on this page.",
+      "items": {}
+    },
+    "has_more": {
+      "type": "boolean",
+      "description": "True if there are more items beyond this page."
+    },
+    "next_cursor": {
+      "type": ["string", "null"],
+      "description": "Cursor value for the next page. Pass as starting_after on the next request. Null if has_more is false."
+    },
+    "total_count": {
+      "type": ["integer", "null"],
+      "description": "Total number of items matching the query, if available. May be null for large result sets."
+    }
+  },
+  "additionalProperties": false
+}

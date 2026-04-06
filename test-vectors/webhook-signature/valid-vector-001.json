@@ -1,0 +1,19 @@
+{
+  "name": "valid_transaction_captured_signature",
+  "description": "A valid HMAC-SHA256 webhook signature for a transaction.captured event. Use this to verify your signature verification implementation produces the expected result.",
+  "algorithm": "hmac-sha256",
+  "secret_label": "whsec_test_example_1",
+  "timestamp": "1712428931",
+  "payload": "{\"id\":\"evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C\",\"event_type\":\"transaction.captured\",\"event_version\":\"1.0.0\",\"api_version\":\"2025-01-01\",\"occurred_at\":\"2026-04-06T18:42:11Z\",\"environment\":\"sandbox\",\"livemode\":false,\"resource_type\":\"transaction\",\"resource_id\":\"tx_01HZX8KHJNR4D42R6G4W4Q0Y0V\",\"data\":{\"id\":\"tx_01HZX8KHJNR4D42R6G4W4Q0Y0V\",\"status\":\"captured\",\"amount\":25000,\"currency\":\"USD\",\"rail\":\"stripe\"}}",
+  "signed_payload_template": "{timestamp}.{payload}",
+  "expected_signature_header": "t=1712428931,v1=9f6cb9c8c2c6f0f8e4dbf76a6d9b56eb3d65d4f16f58af9075a8d0d43f3b80ec",
+  "expected_headers": {
+    "CDP-Timestamp": "1712428931",
+    "CDP-Event-Id": "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C",
+    "CDP-Api-Version": "2025-01-01"
+  },
+  "verification_expectations": {
+    "valid": true,
+    "timestamp_tolerance_seconds": 300
+  }
+}

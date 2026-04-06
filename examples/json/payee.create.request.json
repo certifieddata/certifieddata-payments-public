@@ -1,0 +1,10 @@
+{
+  "entity_type": "company",
+  "legal_name": "Atlas Synthetic Labs, Inc.",
+  "email": "payments@atlas-synthetic.example",
+  "default_payout_method": "stripe",
+  "metadata": {
+    "cdp:source_system": "partner_portal",
+    "partner:account_ref": "atlas-001"
+  }
+}

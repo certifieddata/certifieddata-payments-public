@@ -1,0 +1,17 @@
+{
+  "resource": "payout_destination",
+  "version": "1.0.0",
+  "description": "PayoutDestination verification lifecycle. Status is server-managed.",
+  "states": ["pending_verification", "active", "rejected", "inactive"],
+  "initial_state": "pending_verification",
+  "terminal_states": ["rejected"],
+  "transitions": [
+    { "from": "pending_verification", "to": "active", "trigger": "platform — verification approved" },
+    { "from": "pending_verification", "to": "rejected", "trigger": "platform — verification rejected" },
+    { "from": "active", "to": "inactive", "trigger": "PATCH /v1/payout-destinations/{id} (set inactive)" },
+    { "from": "inactive", "to": "active", "trigger": "PATCH /v1/payout-destinations/{id} (set active)" }
+  ],
+  "forbidden_transitions": [
+    { "from": "rejected", "to": "*", "reason": "Terminal state — cannot reactivate a rejected destination. Create a new one." }
+  ]
+}

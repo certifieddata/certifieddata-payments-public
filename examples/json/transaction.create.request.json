@@ -1,0 +1,8 @@
+{
+  "payment_intent_id": "pi_01HZX8H75Z6X8C5X7JQY6B4M2N",
+  "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+  "amount": 25000,
+  "currency": "USD",
+  "rail": "stripe",
+  "description": "Certified artifact purchase"
+}

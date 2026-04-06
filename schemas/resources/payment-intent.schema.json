@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/payment-intent/v1",
+  "title": "PaymentIntent",
+  "description": "A payer-facing authorization and collection object. Represents the intent to collect funds from a customer for a specific amount on a specific rail. A PaymentIntent may be confirmed or canceled before capture. When captured, an immutable Transaction is created. Distinct from Transaction: PaymentIntent is the payer-facing collection intent; Transaction is the immutable ledger record.",
+  "type": "object",
+  "required": ["id", "object", "amount", "currency", "rail", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^pi_",
+      "examples": ["pi_01HZX8H75Z6X8C5X7JQY6B4M2N"]
+    },
+    "object": { "type": "string", "const": "payment_intent" },
+    "customer_id": { "type": ["string", "null"], "pattern": "^cus_" },
+    "payee_id": { "type": ["string", "null"], "pattern": "^py_" },
+    "invoice_id": { "type": ["string", "null"], "pattern": "^inv_" },
+    "amount": { "type": "integer", "minimum": 0, "description": "Amount in minor units." },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "rail": {
+      "type": "string",
+      "enum": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["created", "confirmed", "processing", "succeeded", "failed", "canceled"],
+      "description": "PaymentIntent lifecycle status."
+    },
+    "description": { "type": ["string", "null"], "maxLength": 500 },
+    "transaction_id": {
+      "type": ["string", "null"],
+      "pattern": "^tx_",
+      "description": "The Transaction created when this PaymentIntent was captured. Null until captured."
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "pi_01HZX8H75Z6X8C5X7JQY6B4M2N",
+      "object": "payment_intent",
+      "customer_id": "cus_01HZX8FQ8P9W9A3D9ZJ5A6V8Q2",
+      "amount": 25000,
+      "currency": "USD",
+      "rail": "stripe",
+      "status": "created",
+      "description": "Purchase of certified synthetic dataset",
+      "transaction_id": null,
+      "metadata": { "cdp:source_system": "partner_portal" },
+      "created_at": "2026-04-06T18:39:00Z",
+      "updated_at": "2026-04-06T18:39:00Z",
+      "livemode": false
+    }
+  ]
+}

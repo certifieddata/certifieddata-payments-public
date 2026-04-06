@@ -1,0 +1,289 @@
+asyncapi: "3.0.0"
+info:
+  title: CertifiedData Payments Events
+  version: "1.0.0"
+  description: |
+    Event and webhook contract for CertifiedData Payments.
+
+    All events are delivered via webhooks when a webhook endpoint is configured.
+    Events are also queryable via `GET /v1/events`.
+
+    **Canonical event envelope schema:** `../schemas/resources/event.schema.json`
+    **All event types:** `../schemas/enums/event-types.json`
+    **Event-resource map:** `../schemas/event-resource-map.json`
+
+defaultContentType: application/json
+
+channels:
+  webhookDelivery:
+    address: https://your-server.example.com/webhooks/cdp
+    description: |
+      CDP delivers events to your registered webhook URL via HTTP POST.
+
+      Headers on every webhook delivery:
+      - `CDP-Signature: t={timestamp},v1={hmac_sha256}`
+      - `CDP-Timestamp: {unix_timestamp}`
+      - `CDP-Event-Id: {evt_...}`
+      - `CDP-Api-Version: 2025-01-01`
+      - `Content-Type: application/json`
+
+      Signature algorithm: HMAC-SHA256 over `{timestamp}.{raw_body}`
+      Timestamp tolerance: 300 seconds
+
+      Test vectors: `../test-vectors/webhook-signature/`
+    messages:
+      payeeCreated:
+        $ref: "#/components/messages/payeeCreated"
+      payeeUpdated:
+        $ref: "#/components/messages/payeeUpdated"
+      payoutDestinationCreated:
+        $ref: "#/components/messages/payoutDestinationCreated"
+      paymentIntentCreated:
+        $ref: "#/components/messages/paymentIntentCreated"
+      paymentIntentConfirmed:
+        $ref: "#/components/messages/paymentIntentConfirmed"
+      paymentIntentCanceled:
+        $ref: "#/components/messages/paymentIntentCanceled"
+      transactionCreated:
+        $ref: "#/components/messages/transactionCreated"
+      transactionCaptured:
+        $ref: "#/components/messages/transactionCaptured"
+      transactionLinksAttached:
+        $ref: "#/components/messages/transactionLinksAttached"
+      transactionCanceled:
+        $ref: "#/components/messages/transactionCanceled"
+      settlementCreated:
+        $ref: "#/components/messages/settlementCreated"
+      settlementSubmitted:
+        $ref: "#/components/messages/settlementSubmitted"
+      settlementSucceeded:
+        $ref: "#/components/messages/settlementSucceeded"
+      settlementFailed:
+        $ref: "#/components/messages/settlementFailed"
+      refundCreated:
+        $ref: "#/components/messages/refundCreated"
+      refundSucceeded:
+        $ref: "#/components/messages/refundSucceeded"
+      refundFailed:
+        $ref: "#/components/messages/refundFailed"
+
+operations:
+  receiveWebhook:
+    action: receive
+    channel:
+      $ref: "#/channels/webhookDelivery"
+    summary: Receive a CDP webhook event
+    description: |
+      Your server receives a POST request from CDP with a signed event payload.
+      Verify the signature using the CDP-Signature and CDP-Timestamp headers before processing.
+
+components:
+  messages:
+    payeeCreated:
+      name: payee.created
+      title: Payee Created
+      summary: A new payee was created
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+      examples:
+        - name: payeeCreated
+          summary: Payee created event
+          payload:
+            id: "evt_test_0001"
+            event_type: "payee.created"
+            event_version: "1.0.0"
+            api_version: "2025-01-01"
+            occurred_at: "2026-04-06T18:30:11Z"
+            environment: "sandbox"
+            livemode: false
+            resource_type: "payee"
+            resource_id: "py_test_0001"
+            data:
+              id: "py_test_0001"
+              object: "payee"
+              entity_type: "company"
+              legal_name: "Atlas Synthetic Labs, Inc."
+              status: "active"
+              kyc_status: "pending"
+            provenance: null
+            request_context:
+              request_id: "req_test_0001"
+              idempotency_key: "create-payee-atlas-001"
+              api_key_prefix: "cdp_test_"
+              origin: "sdk:typescript:0.1.0"
+              actor_type: "api_key"
+
+    payeeUpdated:
+      name: payee.updated
+      title: Payee Updated
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    payoutDestinationCreated:
+      name: payout_destination.created
+      title: Payout Destination Created
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    paymentIntentCreated:
+      name: payment_intent.created
+      title: Payment Intent Created
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    paymentIntentConfirmed:
+      name: payment_intent.confirmed
+      title: Payment Intent Confirmed
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    paymentIntentCanceled:
+      name: payment_intent.canceled
+      title: Payment Intent Canceled
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    transactionCreated:
+      name: transaction.created
+      title: Transaction Created
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    transactionCaptured:
+      name: transaction.captured
+      title: Transaction Captured
+      summary: A transaction was captured. Receipt is embedded in `data.receipt`.
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+      examples:
+        - name: transactionCaptured
+          summary: Full transaction.captured event with provenance and receipt
+          payload:
+            $ref: "../examples/json/event.transaction.captured.json"
+
+    transactionLinksAttached:
+      name: transaction.links_attached
+      title: Transaction Links Attached
+      summary: Provenance links were attached to a transaction
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    transactionCanceled:
+      name: transaction.canceled
+      title: Transaction Canceled
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    settlementCreated:
+      name: settlement.created
+      title: Settlement Created
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    settlementSubmitted:
+      name: settlement.submitted
+      title: Settlement Submitted
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    settlementSucceeded:
+      name: settlement.succeeded
+      title: Settlement Succeeded
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+      examples:
+        - name: settlementSucceeded
+          payload:
+            $ref: "../examples/json/event.settlement.succeeded.json"
+
+    settlementFailed:
+      name: settlement.failed
+      title: Settlement Failed
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    refundCreated:
+      name: refund.created
+      title: Refund Created
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    refundSucceeded:
+      name: refund.succeeded
+      title: Refund Succeeded
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+    refundFailed:
+      name: refund.failed
+      title: Refund Failed
+      payload:
+        $ref: "#/components/schemas/EventEnvelope"
+      headers:
+        $ref: "#/components/schemas/WebhookHeaders"
+
+  schemas:
+    EventEnvelope:
+      $ref: "../schemas/resources/event.schema.json"
+
+    WebhookHeaders:
+      type: object
+      required:
+        - CDP-Signature
+        - CDP-Timestamp
+        - CDP-Event-Id
+        - CDP-Api-Version
+      properties:
+        CDP-Signature:
+          type: string
+          description: |
+            HMAC-SHA256 signature. Format: `t={timestamp},v1={hmac_hex}`
+            Signed payload: `{timestamp}.{raw_body}`
+          example: "t=1712428931,v1=9f6cb9c8c2c6f0f8e4dbf76a6d9b56eb3d65d4f16f58af9075a8d0d43f3b80ec"
+        CDP-Timestamp:
+          type: string
+          description: Unix timestamp of the event delivery
+          example: "1712428931"
+        CDP-Event-Id:
+          type: string
+          description: The `evt_` ID of the event being delivered
+          example: "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C"
+        CDP-Api-Version:
+          type: string
+          description: API version in use
+          example: "2025-01-01"
+        Content-Type:
+          type: string
+          example: "application/json"

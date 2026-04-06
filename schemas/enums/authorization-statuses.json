@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "enum_name": "AuthorizationStatus",
+  "description": "Payment authorization evaluation outcomes.",
+  "stability": "stable",
+  "values": ["pending", "authorized", "blocked", "needs_review", "expired", "executed"]
+}

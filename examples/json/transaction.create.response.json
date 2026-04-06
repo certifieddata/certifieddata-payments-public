@@ -1,0 +1,16 @@
+{
+  "id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+  "object": "transaction",
+  "payment_intent_id": "pi_01HZX8H75Z6X8C5X7JQY6B4M2N",
+  "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+  "amount": 25000,
+  "currency": "USD",
+  "rail": "stripe",
+  "status": "created",
+  "description": "Certified artifact purchase",
+  "provenance": null,
+  "receipt": null,
+  "created_at": "2026-04-06T18:41:52Z",
+  "updated_at": "2026-04-06T18:41:52Z",
+  "livemode": false
+}

@@ -1,0 +1,26 @@
+{
+  "resource": "transaction",
+  "version": "1.0.0",
+  "description": "Transaction lifecycle. Transactions are immutable ledger objects created when a PaymentIntent is captured. Provenance links are mutable until status = captured; immutable thereafter.",
+  "states": ["created", "submitted", "captured", "succeeded", "failed", "canceled"],
+  "initial_state": "created",
+  "terminal_states": ["succeeded", "failed", "canceled"],
+  "transitions": [
+    { "from": "created", "to": "submitted", "trigger": "platform" },
+    { "from": "submitted", "to": "captured", "trigger": "POST /v1/transactions/{id}/capture" },
+    { "from": "captured", "to": "succeeded", "trigger": "platform" },
+    { "from": "captured", "to": "failed", "trigger": "platform" },
+    { "from": "created", "to": "canceled", "trigger": "POST /v1/transactions/{id}/cancel" },
+    { "from": "submitted", "to": "canceled", "trigger": "POST /v1/transactions/{id}/cancel" }
+  ],
+  "forbidden_transitions": [
+    { "from": "succeeded", "to": "*", "reason": "Terminal state — cannot transition out of succeeded." },
+    { "from": "failed", "to": "*", "reason": "Terminal state — cannot transition out of failed." },
+    { "from": "canceled", "to": "*", "reason": "Terminal state — cannot transition out of canceled." },
+    { "from": "captured", "to": "created", "reason": "Cannot reverse capture." }
+  ],
+  "annotations": {
+    "provenance_mutable_until": "captured",
+    "receipt_issued_at": "succeeded"
+  }
+}

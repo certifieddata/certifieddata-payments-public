@@ -1,0 +1,17 @@
+{
+  "id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+  "object": "payee",
+  "entity_type": "company",
+  "legal_name": "Atlas Synthetic Labs, Inc.",
+  "email": "payments@atlas-synthetic.example",
+  "status": "active",
+  "kyc_status": "pending",
+  "default_payout_method": "stripe",
+  "metadata": {
+    "cdp:source_system": "partner_portal",
+    "partner:account_ref": "atlas-001"
+  },
+  "created_at": "2026-04-06T18:30:11Z",
+  "updated_at": "2026-04-06T18:30:11Z",
+  "livemode": false
+}

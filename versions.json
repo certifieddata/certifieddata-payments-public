@@ -1,0 +1,18 @@
+{
+  "$schema": "https://certifieddata.io/schemas/version-manifest/v1",
+  "api_version": "2025-01-01",
+  "schema_version": "1.0.0",
+  "event_schema_version": "1.0.0",
+  "openapi_version": "1.0.0",
+  "asyncapi_version": "1.0.0",
+  "sdk_versions": {
+    "typescript": "0.1.0",
+    "python": "0.1.0"
+  },
+  "mock_server_version": "0.1.0",
+  "compatibility_window": {
+    "deprecated_after": null,
+    "sunset_after": null
+  },
+  "generated_at": "2026-04-06T00:00:00Z"
+}

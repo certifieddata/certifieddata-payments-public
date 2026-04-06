@@ -1,0 +1,22 @@
+{
+  "name": "same_key_different_payload",
+  "description": "Reusing an idempotency key with a different request payload must return HTTP 409 with error code idempotency.key_reused_with_different_payload.",
+  "endpoint": "POST /v1/payees",
+  "idempotency_key": "d74d58c4-c1e2-44b6-9150-521ca7b2f14a",
+  "first_request_body": {
+    "entity_type": "company",
+    "legal_name": "Atlas Synthetic Labs, Inc.",
+    "email": "payments@atlas-synthetic.example",
+    "default_payout_method": "stripe"
+  },
+  "second_request_body": {
+    "entity_type": "company",
+    "legal_name": "Atlas Synthetic Labs Holdings, Inc.",
+    "email": "payments@atlas-synthetic.example",
+    "default_payout_method": "stripe"
+  },
+  "expected_error": {
+    "http_status": 409,
+    "code": "idempotency.key_reused_with_different_payload"
+  }
+}

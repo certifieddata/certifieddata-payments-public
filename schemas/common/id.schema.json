@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/common/id/v1",
+  "title": "ResourceId",
+  "description": "A stable CDP resource identifier. Always prefixed with the resource type prefix (e.g. py_, tx_, evt_). Max 64 characters.",
+  "type": "string",
+  "minLength": 1,
+  "maxLength": 64,
+  "examples": [
+    "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+    "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+    "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C"
+  ]
+}

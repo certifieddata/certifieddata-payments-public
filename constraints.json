@@ -1,0 +1,93 @@
+{
+  "version": "1.0.0",
+  "api_version": "2025-01-01",
+  "timestamps": {
+    "format": "rfc3339-utc",
+    "examples": ["2026-04-06T18:42:11Z"]
+  },
+  "money": {
+    "unit": "minor",
+    "integer_only": true,
+    "supported_currency_format": "ISO-4217-uppercase"
+  },
+  "ids": {
+    "max_length": 64,
+    "prefixes": {
+      "payee": "py_",
+      "payee_alias": "pya_",
+      "payout_destination": "pydst_",
+      "customer": "cus_",
+      "invoice": "inv_",
+      "payment_intent": "pi_",
+      "transaction": "tx_",
+      "receipt": "rcpt_",
+      "settlement": "stl_",
+      "refund": "rf_",
+      "event": "evt_",
+      "webhook_endpoint": "wh_",
+      "idempotency_record": "idem_"
+    }
+  },
+  "idempotency": {
+    "header_name": "Idempotency-Key",
+    "required_for_mutations": true,
+    "max_key_length": 128,
+    "min_key_length": 8,
+    "retention_hours": 24,
+    "payload_mismatch_behavior": "409_conflict"
+  },
+  "pagination": {
+    "style": "cursor",
+    "default_limit": 20,
+    "max_limit": 100,
+    "min_limit": 1,
+    "query_parameters": {
+      "limit": "integer",
+      "starting_after": "string|null"
+    }
+  },
+  "webhooks": {
+    "signature_algorithm": "hmac-sha256",
+    "signature_header": "CDP-Signature",
+    "timestamp_header": "CDP-Timestamp",
+    "event_id_header": "CDP-Event-Id",
+    "api_version_header": "CDP-Api-Version",
+    "timestamp_tolerance_seconds": 300,
+    "max_payload_bytes": 262144
+  },
+  "metadata": {
+    "max_keys": 20,
+    "max_key_length": 64,
+    "max_value_length": 256,
+    "namespaced_key_recommended": true,
+    "allowed_value_types": ["string"]
+  },
+  "provenance": {
+    "max_link_fields_present": 9,
+    "max_metadata_keys": 20,
+    "max_external_reference_length": 128,
+    "mutable_until_transaction_status": ["created", "submitted"],
+    "immutable_at_or_after_transaction_status": ["captured", "succeeded", "failed", "canceled"]
+  },
+  "aliases": {
+    "max_external_system_length": 64,
+    "max_external_ref_length": 128,
+    "uniqueness_scope": "external_system+external_ref"
+  },
+  "descriptions": {
+    "max_length": 500
+  },
+  "list_filters": {
+    "max_filter_values": 20
+  },
+  "events": {
+    "max_event_version_length": 16,
+    "ordering_guarantee": "best_effort_per_resource",
+    "deduplication_key": "id"
+  },
+  "mock_server": {
+    "sandbox_only": true,
+    "livemode": false,
+    "deterministic_id_mode": "counter"
+  }
+}

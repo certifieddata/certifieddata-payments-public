@@ -1,0 +1,24 @@
+{
+  "id": "evt_01HZXC1A2B3C4D5E6F7G8H9I0J",
+  "object": "event",
+  "event_type": "settlement.succeeded",
+  "event_version": "1.0.0",
+  "api_version": "2025-01-01",
+  "occurred_at": "2026-04-06T19:15:00Z",
+  "environment": "sandbox",
+  "livemode": false,
+  "resource_type": "settlement",
+  "resource_id": "stl_01HZXB4H0Y2XCN1YZX5Y8F2Q6V",
+  "data": {
+    "id": "stl_01HZXB4H0Y2XCN1YZX5Y8F2Q6V",
+    "object": "settlement",
+    "status": "succeeded",
+    "amount": 25000,
+    "currency": "USD",
+    "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+    "transaction_ids": ["tx_01HZX8KHJNR4D42R6G4W4Q0Y0V"],
+    "succeeded_at": "2026-04-06T19:15:00Z"
+  },
+  "provenance": null,
+  "request_context": null
+}

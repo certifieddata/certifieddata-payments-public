@@ -1,0 +1,4 @@
+{
+  "_comment": "CDP capabilities discovery. Mirrors schemas/capabilities/capabilities.json.",
+  "ref": "../schemas/capabilities/capabilities.json"
+}

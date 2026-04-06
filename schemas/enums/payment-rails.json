@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "enum_name": "PaymentRail",
+  "description": "Supported payment execution rails.",
+  "stability": "stable",
+  "values": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum"]
+}

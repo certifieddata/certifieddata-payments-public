@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/common/money/v1",
+  "title": "Money",
+  "description": "A monetary amount in minor units (e.g. cents for USD). All amounts are integers. Currency is ISO 4217 uppercase.",
+  "type": "object",
+  "required": ["amount", "currency"],
+  "properties": {
+    "amount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Amount in minor units (e.g. cents for USD). Must be a non-negative integer."
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 currency code, uppercase (e.g. USD, EUR, GBP).",
+      "examples": ["USD", "EUR", "GBP"]
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    { "amount": 25000, "currency": "USD" },
+    { "amount": 4900, "currency": "EUR" }
+  ]
+}

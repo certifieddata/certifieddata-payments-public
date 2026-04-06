@@ -1,0 +1,15 @@
+{
+  "name": "attach_links_after_capture",
+  "description": "Attempting to attach provenance links to a transaction in captured status must return HTTP 409 with error code provenance.immutable_after_capture.",
+  "endpoint": "POST /v1/transactions/{id}/attach-links",
+  "transaction_id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+  "transaction_status": "captured",
+  "request_body": {
+    "artifact_id": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+    "certificate_id": "cert_01HXZ803C0R6V4K4P9HWB6J5N6"
+  },
+  "expected_error": {
+    "http_status": 409,
+    "code": "provenance.immutable_after_capture"
+  }
+}

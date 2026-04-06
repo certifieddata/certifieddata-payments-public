@@ -1,0 +1,73 @@
+{
+  "manifest_version": "1.0.0",
+  "product": {
+    "name": "CertifiedData Payments",
+    "short_name": "cdp",
+    "description": "Provenance-aware payments and settlement contract for certified AI artifacts, certifications, and decision-linked commerce."
+  },
+  "api": {
+    "api_version": "2025-01-01",
+    "environments": ["sandbox", "live"],
+    "default_environment": "sandbox"
+  },
+  "source_of_truth": {
+    "rest": "./openapi/certifieddata-payments-v1.openapi.yaml",
+    "events": "./asyncapi/certifieddata-payments-events-v1.asyncapi.yaml",
+    "schemas_common": "./schemas/common/",
+    "schemas_resources": "./schemas/resources/",
+    "state_machines": "./schemas/state-machines/",
+    "error_catalog": "./schemas/errors/error-catalog.json",
+    "capabilities": "./schemas/capabilities/capabilities.json",
+    "constraints": "./constraints.json",
+    "support_matrix": "./support-matrix.json"
+  },
+  "discovery": {
+    "llm_guide": "./llms-full.txt",
+    "docs_overview": "./docs/overview.md",
+    "docs_quickstart": "./docs/quickstart.md",
+    "examples_json": "./examples/json/",
+    "test_vectors": "./test-vectors/",
+    "docs_manifest": "./docs/docs-index.json"
+  },
+  "sdk_packages": {
+    "typescript": {
+      "name": "@certifieddata/payments",
+      "path": "./packages/typescript-sdk",
+      "language": "typescript"
+    },
+    "python": {
+      "name": "certifieddata-payments",
+      "path": "./packages/python-sdk",
+      "language": "python"
+    }
+  },
+  "artifacts": {
+    "enum_registries": {
+      "event_types": "./schemas/enums/event-types.json",
+      "payment_rails": "./schemas/enums/payment-rails.json",
+      "transaction_statuses": "./schemas/enums/transaction-statuses.json"
+    }
+  },
+  "resources": [
+    { "name": "payee", "id_prefix": "py_", "schema": "./schemas/resources/payee.schema.json", "state_machine": null },
+    { "name": "payee_alias", "id_prefix": "pya_", "schema": "./schemas/resources/payee-alias.schema.json", "state_machine": null },
+    { "name": "payout_destination", "id_prefix": "pydst_", "schema": "./schemas/resources/payout-destination.schema.json", "state_machine": "./schemas/state-machines/payout-destination.state-machine.json" },
+    { "name": "customer", "id_prefix": "cus_", "schema": "./schemas/resources/customer.schema.json", "state_machine": null },
+    { "name": "invoice", "id_prefix": "inv_", "schema": "./schemas/resources/invoice.schema.json", "state_machine": "./schemas/state-machines/invoice.state-machine.json" },
+    { "name": "payment_intent", "id_prefix": "pi_", "schema": "./schemas/resources/payment-intent.schema.json", "state_machine": "./schemas/state-machines/payment-intent.state-machine.json" },
+    { "name": "transaction", "id_prefix": "tx_", "schema": "./schemas/resources/transaction.schema.json", "state_machine": "./schemas/state-machines/transaction.state-machine.json" },
+    { "name": "receipt", "id_prefix": "rcpt_", "schema": "./schemas/resources/receipt.schema.json", "state_machine": null },
+    { "name": "settlement", "id_prefix": "stl_", "schema": "./schemas/resources/settlement.schema.json", "state_machine": "./schemas/state-machines/settlement.state-machine.json" },
+    { "name": "refund", "id_prefix": "rf_", "schema": "./schemas/resources/refund.schema.json", "state_machine": "./schemas/state-machines/refund.state-machine.json" },
+    { "name": "event", "id_prefix": "evt_", "schema": "./schemas/resources/event.schema.json", "state_machine": null },
+    { "name": "webhook_endpoint", "id_prefix": "wh_", "schema": "./schemas/resources/webhook-endpoint.schema.json", "state_machine": null },
+    { "name": "idempotency_record", "id_prefix": "idem_", "schema": "./schemas/resources/idempotency-record.schema.json", "state_machine": null },
+    { "name": "provenance_link_set", "id_prefix": null, "schema": "./schemas/resources/provenance-link-set.schema.json", "state_machine": null }
+  ],
+  "notes": [
+    "Machine-readable artifacts are canonical over prose.",
+    "REST surface is canonical in OpenAPI.",
+    "Event surface is canonical in AsyncAPI.",
+    "Shared data model components are canonical in JSON Schemas."
+  ]
+}

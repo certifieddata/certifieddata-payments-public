@@ -1,0 +1,30 @@
+{
+  "name": "transaction_captured_event_fixture",
+  "description": "Canonical fixture for a transaction.captured event. Use for schema validation testing.",
+  "event": {
+    "id": "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C",
+    "object": "event",
+    "event_type": "transaction.captured",
+    "event_version": "1.0.0",
+    "api_version": "2025-01-01",
+    "occurred_at": "2026-04-06T18:42:11Z",
+    "environment": "sandbox",
+    "livemode": false,
+    "resource_type": "transaction",
+    "resource_id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+    "data": {
+      "id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+      "status": "captured",
+      "amount": 25000,
+      "currency": "USD",
+      "rail": "stripe"
+    },
+    "provenance": {
+      "artifact_id": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+      "certificate_id": "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
+      "decision_id": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+      "receipt_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0"
+    },
+    "request_context": null
+  }
+}

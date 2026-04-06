@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/idempotency-record/v1",
+  "title": "IdempotencyRecord",
+  "description": "An internal record of an idempotent request. Retained for 24 hours. If the same key is reused with a different payload, a 409 error is returned. This schema defines the public contract shape only.",
+  "type": "object",
+  "required": ["id", "object", "key", "status", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^idem_",
+      "examples": ["idem_01HZXD8K9L0M1N2O3P4Q5R6S7T"]
+    },
+    "object": { "type": "string", "const": "idempotency_record" },
+    "key": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128,
+      "description": "The idempotency key from the Idempotency-Key header."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["processing", "succeeded", "failed"],
+      "description": "Whether the original request is still processing, succeeded, or failed."
+    },
+    "request_path": {
+      "type": ["string", "null"],
+      "description": "The endpoint path of the original request."
+    },
+    "response_status_code": {
+      "type": ["integer", "null"],
+      "description": "HTTP status code of the cached response."
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time", "description": "When this record expires (24 hours after creation)." }
+  },
+  "additionalProperties": false
+}

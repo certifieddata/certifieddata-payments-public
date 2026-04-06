@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/transaction/v1",
+  "title": "Transaction",
+  "description": "An immutable commercial ledger record created when a PaymentIntent is captured. Distinct from PaymentIntent: a Transaction cannot be modified after creation — only annotated via attach-links. Provenance links are immutable after the transaction reaches `captured` status. A receipt sub-object is embedded when status = succeeded.",
+  "type": "object",
+  "required": ["id", "object", "amount", "currency", "rail", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^tx_",
+      "examples": ["tx_01HZX8KHJNR4D42R6G4W4Q0Y0V"]
+    },
+    "object": { "type": "string", "const": "transaction" },
+    "payment_intent_id": { "type": ["string", "null"], "pattern": "^pi_" },
+    "payee_id": { "type": ["string", "null"], "pattern": "^py_" },
+    "customer_id": { "type": ["string", "null"], "pattern": "^cus_" },
+    "amount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Amount in minor units. Immutable after creation."
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "Immutable after creation."
+    },
+    "rail": {
+      "type": "string",
+      "enum": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum"],
+      "description": "Immutable after creation."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["created", "submitted", "captured", "succeeded", "failed", "canceled"],
+      "description": "Server-managed lifecycle status."
+    },
+    "description": { "type": ["string", "null"], "maxLength": 500 },
+    "provenance": {
+      "$ref": "https://certifieddata.io/schemas/resources/provenance-link-set/v1",
+      "description": "Provenance links. Mutable until status = captured; immutable thereafter."
+    },
+    "receipt": {
+      "type": ["object", "null"],
+      "description": "Embedded receipt sub-object. Present when status = succeeded.",
+      "properties": {
+        "id": { "type": "string", "pattern": "^rcpt_" },
+        "schema_version": { "type": "string", "const": "payment_receipt.v1" },
+        "hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "schema_version", "hash", "created_at"],
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+      "object": "transaction",
+      "payment_intent_id": "pi_01HZX8H75Z6X8C5X7JQY6B4M2N",
+      "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+      "customer_id": "cus_01HZX8FQ8P9W9A3D9ZJ5A6V8Q2",
+      "amount": 25000,
+      "currency": "USD",
+      "rail": "stripe",
+      "status": "captured",
+      "description": "Certified artifact purchase",
+      "provenance": {
+        "artifact_id": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+        "certificate_id": "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
+        "receipt_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0"
+      },
+      "receipt": {
+        "id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
+        "schema_version": "payment_receipt.v1",
+        "hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+        "created_at": "2026-04-06T18:42:11Z"
+      },
+      "created_at": "2026-04-06T18:41:52Z",
+      "updated_at": "2026-04-06T18:42:11Z",
+      "livemode": false
+    }
+  ]
+}

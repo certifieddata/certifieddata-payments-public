@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "enum_name": "SettlementStatus",
+  "description": "Lifecycle statuses for a Settlement resource.",
+  "stability": "stable",
+  "values": ["draft", "submitted", "processing", "succeeded", "failed", "canceled"]
+}

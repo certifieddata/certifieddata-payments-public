@@ -1,0 +1,20 @@
+{
+  "resource": "invoice",
+  "version": "1.0.0",
+  "description": "Invoice lifecycle.",
+  "states": ["draft", "open", "paid", "void", "uncollectible"],
+  "initial_state": "draft",
+  "terminal_states": ["paid", "void", "uncollectible"],
+  "transitions": [
+    { "from": "draft", "to": "open", "trigger": "POST /v1/invoices/{id}/finalize" },
+    { "from": "open", "to": "paid", "trigger": "platform — PaymentIntent succeeds" },
+    { "from": "draft", "to": "void", "trigger": "POST /v1/invoices/{id}/void" },
+    { "from": "open", "to": "void", "trigger": "POST /v1/invoices/{id}/void" },
+    { "from": "open", "to": "uncollectible", "trigger": "platform" }
+  ],
+  "forbidden_transitions": [
+    { "from": "paid", "to": "*", "reason": "Terminal state." },
+    { "from": "void", "to": "*", "reason": "Terminal state." },
+    { "from": "uncollectible", "to": "*", "reason": "Terminal state." }
+  ]
+}

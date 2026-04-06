@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "errors": [
+    {
+      "code": "auth.invalid_api_key",
+      "http_status": 401,
+      "category": "auth",
+      "retryable": false,
+      "human_message": "The API key provided is invalid.",
+      "machine_guidance": "Use a valid sandbox or live API key for the requested environment.",
+      "docs_url": "/docs/errors.md#authinvalid_api_key"
+    },
+    {
+      "code": "auth.environment_mismatch",
+      "http_status": 403,
+      "category": "auth",
+      "retryable": false,
+      "human_message": "The API key environment does not match the requested resource or endpoint.",
+      "machine_guidance": "Use sandbox credentials for sandbox resources and live credentials for live resources.",
+      "docs_url": "/docs/errors.md#authenvironment_mismatch"
+    },
+    {
+      "code": "validation.invalid_request",
+      "http_status": 400,
+      "category": "validation",
+      "retryable": false,
+      "human_message": "The request body is invalid.",
+      "machine_guidance": "Inspect validation errors and correct field names, types, or required values.",
+      "docs_url": "/docs/errors.md#validationinvalid_request"
+    },
+    {
+      "code": "idempotency.key_reused_with_different_payload",
+      "http_status": 409,
+      "category": "idempotency",
+      "retryable": false,
+      "human_message": "The idempotency key was already used with a different request payload.",
+      "machine_guidance": "Reuse the same idempotency key only with the exact same request payload.",
+      "docs_url": "/docs/errors.md#idempotencykey_reused_with_different_payload"
+    },
+    {
+      "code": "state.invalid_transition",
+      "http_status": 409,
+      "category": "state",
+      "retryable": false,
+      "human_message": "The requested state transition is not allowed.",
+      "machine_guidance": "Check the resource state machine before retrying.",
+      "docs_url": "/docs/errors.md#stateinvalid_transition"
+    },
+    {
+      "code": "provenance.immutable_after_capture",
+      "http_status": 409,
+      "category": "provenance",
+      "retryable": false,
+      "human_message": "Provenance links can no longer be modified after capture.",
+      "machine_guidance": "Attach provenance links before the transaction reaches the captured state.",
+      "docs_url": "/docs/errors.md#provenanceimmutable_after_capture"
+    },
+    {
+      "code": "webhooks.invalid_signature",
+      "http_status": 400,
+      "category": "webhooks",
+      "retryable": false,
+      "human_message": "The webhook signature is invalid.",
+      "machine_guidance": "Recompute the HMAC using the expected signing template and shared secret.",
+      "docs_url": "/docs/errors.md#webhooksinvalid_signature"
+    },
+    {
+      "code": "resource.not_found",
+      "http_status": 404,
+      "category": "resource",
+      "retryable": false,
+      "human_message": "The requested resource was not found.",
+      "machine_guidance": "Verify the resource ID and environment. IDs are environment-scoped.",
+      "docs_url": "/docs/errors.md#resourcenot_found"
+    },
+    {
+      "code": "resource.already_exists",
+      "http_status": 409,
+      "category": "resource",
+      "retryable": false,
+      "human_message": "A resource with these attributes already exists.",
+      "machine_guidance": "Check uniqueness constraints (e.g. payee alias external_system+external_ref uniqueness).",
+      "docs_url": "/docs/errors.md#resourcealready_exists"
+    },
+    {
+      "code": "rate_limit.exceeded",
+      "http_status": 429,
+      "category": "rate_limit",
+      "retryable": true,
+      "human_message": "Rate limit exceeded. Please slow down your request rate.",
+      "machine_guidance": "Back off and retry with exponential backoff. Respect the Retry-After header if present.",
+      "docs_url": "/docs/errors.md#rate_limitexceeded"
+    }
+  ]
+}

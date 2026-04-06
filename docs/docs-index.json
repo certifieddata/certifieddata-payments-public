@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "product": "CertifiedData Payments",
+  "entries": [
+    { "slug": "overview", "title": "Overview", "path": "./docs/overview.md", "category": "getting-started" },
+    { "slug": "quickstart", "title": "Quickstart", "path": "./docs/quickstart.md", "category": "getting-started" },
+    { "slug": "authentication", "title": "Authentication", "path": "./docs/authentication.md", "category": "core" },
+    { "slug": "idempotency", "title": "Idempotency", "path": "./docs/idempotency.md", "category": "core" },
+    { "slug": "payees", "title": "Payees", "path": "./docs/payees.md", "category": "resources" },
+    { "slug": "payout-destinations", "title": "Payout Destinations", "path": "./docs/payout-destinations.md", "category": "resources" },
+    { "slug": "payment-intents", "title": "Payment Intents", "path": "./docs/payment-intents.md", "category": "resources" },
+    { "slug": "transactions", "title": "Transactions", "path": "./docs/transactions.md", "category": "resources" },
+    { "slug": "settlements", "title": "Settlements", "path": "./docs/settlements.md", "category": "resources" },
+    { "slug": "refunds", "title": "Refunds", "path": "./docs/refunds.md", "category": "resources" },
+    { "slug": "webhooks", "title": "Webhooks", "path": "./docs/webhooks.md", "category": "events" },
+    { "slug": "events", "title": "Events", "path": "./docs/events.md", "category": "events" },
+    { "slug": "provenance-linking", "title": "Provenance Linking", "path": "./docs/provenance-linking.md", "category": "core" },
+    { "slug": "errors", "title": "Errors", "path": "./docs/errors.md", "category": "reference" },
+    { "slug": "capabilities", "title": "Capabilities", "path": "./docs/capabilities.md", "category": "reference" },
+    { "slug": "sdk-typescript", "title": "TypeScript SDK", "path": "./docs/sdk-typescript.md", "category": "sdk" },
+    { "slug": "sdk-python", "title": "Python SDK", "path": "./docs/sdk-python.md", "category": "sdk" },
+    { "slug": "versioning", "title": "Versioning", "path": "./docs/versioning.md", "category": "reference" },
+    { "slug": "changelog", "title": "Changelog", "path": "./docs/changelog.md", "category": "reference" }
+  ],
+  "related_machine_readable_artifacts": {
+    "manifest": "./api-manifest.json",
+    "openapi": "./openapi/certifieddata-payments-v1.openapi.yaml",
+    "asyncapi": "./asyncapi/certifieddata-payments-events-v1.asyncapi.yaml",
+    "capabilities": "./schemas/capabilities/capabilities.json",
+    "errors": "./schemas/errors/error-catalog.json",
+    "constraints": "./constraints.json"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "enum_name": "PayoutDestinationStatus",
+  "description": "Lifecycle statuses for a PayoutDestination resource.",
+  "stability": "stable",
+  "values": ["pending_verification", "active", "rejected", "inactive"]
+}

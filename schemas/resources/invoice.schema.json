@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/invoice/v1",
+  "title": "Invoice",
+  "description": "An invoice representing a request for payment from a customer to a payee. An invoice can be drafted, finalized, and then paid via a PaymentIntent.",
+  "type": "object",
+  "required": ["id", "object", "payee_id", "amount", "currency", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^inv_",
+      "examples": ["inv_01HZX8G4T5A9B3C2D1E0F6G7H8"]
+    },
+    "object": { "type": "string", "const": "invoice" },
+    "payee_id": { "type": "string", "pattern": "^py_" },
+    "customer_id": { "type": ["string", "null"], "pattern": "^cus_" },
+    "amount": { "type": "integer", "minimum": 0, "description": "Amount in minor units." },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "open", "paid", "void", "uncollectible"],
+      "description": "Invoice lifecycle status."
+    },
+    "description": { "type": ["string", "null"], "maxLength": 500 },
+    "payment_intent_id": {
+      "type": ["string", "null"],
+      "pattern": "^pi_",
+      "description": "The PaymentIntent created when this invoice was finalized."
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "finalized_at": { "type": ["string", "null"], "format": "date-time" },
+    "voided_at": { "type": ["string", "null"], "format": "date-time" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

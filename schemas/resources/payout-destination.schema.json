@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/payout-destination/v1",
+  "title": "PayoutDestination",
+  "description": "A verified payout destination for a Payee. May be a Stripe Connect account, a USDC wallet (Base or Ethereum), or an ETH wallet. The raw processor credentials (Stripe account secret, private key) are never exposed. Only the public reference is returned.",
+  "type": "object",
+  "required": ["id", "object", "payee_id", "rail_type", "status", "is_default", "version", "created_at", "updated_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^pydst_",
+      "examples": ["pydst_01HZXA1NQJRTGQ6J8DY4CZ9V4F"]
+    },
+    "object": { "type": "string", "const": "payout_destination" },
+    "payee_id": { "type": "string", "pattern": "^py_" },
+    "rail_type": {
+      "type": "string",
+      "enum": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending_verification", "active", "rejected", "inactive"],
+      "description": "Server-managed verification status."
+    },
+    "is_default": {
+      "type": "boolean",
+      "description": "Whether this is the default payout destination for the payee. Only one destination can be default at a time."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optimistic concurrency version. Increments on each update."
+    },
+    "processor_ref": {
+      "type": ["string", "null"],
+      "description": "Public processor reference (e.g. Stripe Connect account ID acct_1Q...). Never contains secret material.",
+      "maxLength": 128
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "pydst_01HZXA1NQJRTGQ6J8DY4CZ9V4F",
+      "object": "payout_destination",
+      "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+      "rail_type": "stripe",
+      "status": "pending_verification",
+      "is_default": true,
+      "version": 1,
+      "processor_ref": "acct_1QExamplePublicRef",
+      "metadata": { "cdp:source_system": "partner_portal" },
+      "created_at": "2026-04-06T18:34:21Z",
+      "updated_at": "2026-04-06T18:34:21Z"
+    }
+  ]
+}

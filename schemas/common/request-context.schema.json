@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/common/request-context/v1",
+  "title": "RequestContext",
+  "description": "Optional request context included in events for reconciliation. Contains the request ID, idempotency key, API key prefix, origin, and actor type that triggered the event.",
+  "type": "object",
+  "required": ["request_id", "actor_type"],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "Unique identifier for the API request that triggered this event.",
+      "maxLength": 64
+    },
+    "idempotency_key": {
+      "type": ["string", "null"],
+      "description": "The idempotency key from the originating request, if one was provided.",
+      "maxLength": 128
+    },
+    "api_key_prefix": {
+      "type": "string",
+      "description": "The prefix of the API key used (e.g. cdp_test_, cdp_live_). Never includes the secret portion.",
+      "examples": ["cdp_test_", "cdp_live_"]
+    },
+    "origin": {
+      "type": "string",
+      "description": "Origin of the request (e.g. api, sdk:typescript:0.1.0).",
+      "maxLength": 128
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": ["api_key", "external_client", "internal_service"],
+      "description": "Type of actor that made the request."
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "request_id": "req_01HZX8M0E4Q2YGNZ1W0N3G1F8J",
+      "idempotency_key": "d74d58c4-c1e2-44b6-9150-521ca7b2f14a",
+      "api_key_prefix": "cdp_test_",
+      "origin": "sdk:typescript:0.1.0",
+      "actor_type": "api_key"
+    }
+  ]
+}

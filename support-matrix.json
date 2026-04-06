@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "api_version": "2025-01-01",
+  "features": [
+    { "feature": "payees", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "payee_aliases", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "payout_destinations", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "customers", "sandbox_api": true, "live_api": true, "mock_server": false, "typescript_sdk": true, "python_sdk": false },
+    { "feature": "invoices", "sandbox_api": true, "live_api": true, "mock_server": false, "typescript_sdk": true, "python_sdk": false },
+    { "feature": "payment_intents", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "transactions", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "provenance_link_attachment", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "settlements", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "refunds", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "events_api", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "webhook_endpoints", "sandbox_api": true, "live_api": true, "mock_server": false, "typescript_sdk": true, "python_sdk": false },
+    { "feature": "webhook_signature_verification", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true },
+    { "feature": "capabilities_endpoint", "sandbox_api": true, "live_api": true, "mock_server": true, "typescript_sdk": true, "python_sdk": true }
+  ],
+  "rails": [
+    { "rail": "stripe", "sandbox_api": true, "live_api": true, "mock_server": true },
+    { "rail": "usdc_base", "sandbox_api": true, "live_api": true, "mock_server": false },
+    { "rail": "usdc_ethereum", "sandbox_api": true, "live_api": true, "mock_server": false },
+    { "rail": "eth_ethereum", "sandbox_api": true, "live_api": true, "mock_server": false }
+  ],
+  "notes": [
+    "Mock server is a development aid and only supports a subset of live behavior.",
+    "Sandbox and live resources are environment-scoped and non-portable.",
+    "Support matrix should be updated whenever a feature becomes available across an additional surface."
+  ]
+}

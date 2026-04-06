@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/payee/v1",
+  "title": "Payee",
+  "description": "A payee (vendor, merchant, or partner) who receives settlements. Corresponds to the private platform's merchant_profiles concept. The processor integration reference (e.g. Stripe Connect account ID) is not exposed publicly.",
+  "type": "object",
+  "required": ["id", "object", "entity_type", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^py_",
+      "description": "Unique payee identifier.",
+      "examples": ["py_01HZX8E77KN1KZ9M2G5D5Q4N4V"]
+    },
+    "object": { "type": "string", "const": "payee" },
+    "entity_type": {
+      "type": "string",
+      "enum": ["individual", "company"],
+      "description": "Whether this payee is an individual or a company."
+    },
+    "legal_name": {
+      "type": ["string", "null"],
+      "maxLength": 255,
+      "description": "Legal name of the payee."
+    },
+    "email": {
+      "type": ["string", "null"],
+      "format": "email",
+      "description": "Contact email for the payee."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "active", "suspended", "inactive"],
+      "description": "Current onboarding/activation status."
+    },
+    "kyc_status": {
+      "type": "string",
+      "enum": ["not_started", "pending", "approved", "rejected"],
+      "description": "KYC verification status. Server-managed — do not set directly."
+    },
+    "default_payout_method": {
+      "type": ["string", "null"],
+      "enum": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum", null],
+      "description": "Default rail for settlements to this payee."
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "description": "Namespaced key-value metadata (cdp:, partner:, ext: prefixes).",
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+      "object": "payee",
+      "entity_type": "company",
+      "legal_name": "Atlas Synthetic Labs, Inc.",
+      "email": "payments@atlas-synthetic.example",
+      "status": "active",
+      "kyc_status": "pending",
+      "default_payout_method": "stripe",
+      "metadata": { "cdp:source_system": "partner_portal" },
+      "created_at": "2026-04-06T18:30:11Z",
+      "updated_at": "2026-04-06T18:30:11Z",
+      "livemode": false
+    }
+  ]
+}

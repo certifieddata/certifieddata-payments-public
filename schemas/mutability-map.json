@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MutabilityMap",
+  "description": "Defines which fields on each resource are mutable, and when.",
+  "version": "1.0.0",
+  "resources": {
+    "transaction": {
+      "provenance_links": {
+        "mutable_until": "captured",
+        "immutable_after": "captured",
+        "description": "Provenance links can be attached or modified until the transaction is captured. After capture, error provenance.immutable_after_capture is returned."
+      },
+      "status": { "mutable": false, "server_managed": true },
+      "amount": { "mutable": false },
+      "currency": { "mutable": false },
+      "rail": { "mutable": false },
+      "receipt": { "mutable": false, "server_managed": true, "description": "Issued by server at capture." }
+    },
+    "receipt": {
+      "*": { "mutable": false, "description": "Receipts are immutable after issuance. No fields can be modified." }
+    },
+    "payee": {
+      "legal_name": { "mutable": true },
+      "email": { "mutable": true },
+      "default_payout_method": { "mutable": true },
+      "metadata": { "mutable": true },
+      "status": { "mutable": false, "server_managed": true },
+      "kyc_status": { "mutable": false, "server_managed": true }
+    },
+    "payout_destination": {
+      "is_default": { "mutable": true },
+      "processor_ref": { "mutable": false, "server_managed": true },
+      "status": { "mutable": false, "server_managed": true }
+    },
+    "settlement": {
+      "transaction_ids": { "mutable": false, "description": "Set at creation, not modifiable." },
+      "status": { "mutable": false, "server_managed": true },
+      "cancelable_while": ["draft"]
+    },
+    "payment_intent": {
+      "status": { "mutable": false, "server_managed": true },
+      "amount": { "mutable": false },
+      "currency": { "mutable": false },
+      "rail": { "mutable": false }
+    }
+  }
+}

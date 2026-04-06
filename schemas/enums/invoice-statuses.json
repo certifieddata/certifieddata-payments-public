@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "enum_name": "InvoiceStatus",
+  "description": "Lifecycle statuses for an Invoice resource.",
+  "stability": "stable",
+  "values": ["draft", "open", "paid", "void", "uncollectible"]
+}

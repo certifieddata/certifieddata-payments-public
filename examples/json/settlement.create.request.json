@@ -1,0 +1,12 @@
+{
+  "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+  "destination_id": "pydst_01HZXA1NQJRTGQ6J8DY4CZ9V4F",
+  "amount": 25000,
+  "currency": "USD",
+  "transaction_ids": [
+    "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V"
+  ],
+  "metadata": {
+    "cdp:settlement_batch": "batch_001"
+  }
+}

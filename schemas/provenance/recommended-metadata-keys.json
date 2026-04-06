@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "description": "Canonical registry of recommended provenance_metadata keys by namespace.",
+  "namespaces": {
+    "cdp:": {
+      "description": "CertifiedData platform internal references",
+      "keys": [
+        { "key": "cdp:workflow_id", "description": "Platform workflow identifier", "example": "wf_abc123" },
+        { "key": "cdp:source_system", "description": "Originating system slug", "example": "certifieddata-platform" },
+        { "key": "cdp:job_id", "description": "Background job identifier", "example": "job_xyz789" },
+        { "key": "cdp:policy_id", "description": "Policy that authorized this transaction", "example": "pol_research_v2" },
+        { "key": "cdp:session_id", "description": "Agent or user session identifier", "example": "sess_01HXZ..."},
+        { "key": "cdp:trace_id", "description": "Distributed trace identifier for observability", "example": "trace_01HXZ..." }
+      ]
+    },
+    "partner:": {
+      "description": "Partner or integration system references",
+      "keys": [
+        { "key": "partner:invoice_ref", "description": "Partner invoice reference", "example": "INV-2026-001" },
+        { "key": "partner:order_id", "description": "Partner order identifier", "example": "ORD-88991" },
+        { "key": "partner:account_ref", "description": "Partner's internal account reference", "example": "acct_np_4421" }
+      ]
+    },
+    "ext:": {
+      "description": "External system references (ERP, CRM, etc.)",
+      "keys": [
+        { "key": "ext:erp_order_id", "description": "ERP system order identifier", "example": "ERP-56789" },
+        { "key": "ext:crm_deal_id", "description": "CRM deal or opportunity identifier", "example": "deal_CRM_0042" }
+      ]
+    }
+  }
+}

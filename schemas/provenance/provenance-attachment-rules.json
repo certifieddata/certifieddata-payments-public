@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "description": "Rules governing when and how provenance links can be attached to resources.",
+  "resources": {
+    "transaction": {
+      "attach_endpoint": "POST /v1/transactions/{id}/attach-links",
+      "mutable_while_status_in": ["created", "submitted"],
+      "immutable_from_status": "captured",
+      "error_on_immutable": "provenance.immutable_after_capture",
+      "idempotent": true,
+      "overwrite_behavior": "replace_entire_link_set",
+      "appears_in_events": true,
+      "note": "Attach links BEFORE capture. On capture, provenance is locked and a receipt is issued."
+    }
+  },
+  "metadata_rules": {
+    "key_format": "{namespace}:{key}",
+    "allowed_namespaces": ["cdp:", "partner:", "ext:"],
+    "max_keys": 20,
+    "max_value_length_chars": 256,
+    "key_pattern": "^(cdp:|partner:|ext:)[a-z0-9_]{1,60}$"
+  }
+}

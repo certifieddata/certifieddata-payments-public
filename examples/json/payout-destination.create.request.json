@@ -1,0 +1,1 @@
+{ "rail_type": "stripe", "is_default": true, "processor_ref": "acct_1QExamplePublicRef", "metadata": { "cdp:source_system": "partner_portal" } }

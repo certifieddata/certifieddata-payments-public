@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/provenance-link-set/v1",
+  "title": "ProvenanceLinkSet",
+  "description": "A set of provenance links connecting a transaction or settlement to the AI artifacts, certificates, decisions, datasets, models, or outputs it funds. Links are immutable after the transaction reaches the `captured` status.",
+  "type": "object",
+  "properties": {
+    "artifact_id": {
+      "type": ["string", "null"],
+      "description": "CertifiedData artifact identifier this payment funds.",
+      "maxLength": 64
+    },
+    "certificate_id": {
+      "type": ["string", "null"],
+      "description": "CertifiedData certificate identifier linked to this transaction.",
+      "maxLength": 64
+    },
+    "decision_id": {
+      "type": ["string", "null"],
+      "description": "DecisionLedger decision record identifier linked to this transaction.",
+      "maxLength": 64
+    },
+    "dataset_id": {
+      "type": ["string", "null"],
+      "description": "Dataset identifier linked to this transaction.",
+      "maxLength": 64
+    },
+    "model_id": {
+      "type": ["string", "null"],
+      "description": "Model identifier linked to this transaction.",
+      "maxLength": 64
+    },
+    "output_id": {
+      "type": ["string", "null"],
+      "description": "AI output identifier linked to this transaction.",
+      "maxLength": 64
+    },
+    "receipt_hash": {
+      "type": ["string", "null"],
+      "description": "SHA-256 digest of the canonical payment receipt payload (sha256: prefix). This is the provenance-level reference to the receipt, distinct from the receipt object's own id.",
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "examples": ["sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0"]
+    },
+    "external_reference": {
+      "type": ["string", "null"],
+      "description": "Freeform external reference string (e.g. partner:invoice-44821). Max 128 characters.",
+      "maxLength": 128
+    },
+    "provenance_metadata": {
+      "type": ["object", "null"],
+      "description": "Namespaced key-value metadata. Keys must use a recognized namespace prefix (cdp:, partner:, ext:). Max 20 keys, max 256 chars per value.",
+      "maxProperties": 20,
+      "propertyNames": {
+        "pattern": "^(cdp:|partner:|ext:).{1,60}$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 256
+      },
+      "examples": [
+        {
+          "cdp:workflow_id": "wf_2026_04_06_001",
+          "cdp:source_system": "partner_portal",
+          "partner:invoice_ref": "INV-44821"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "artifact_id": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+      "certificate_id": "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
+      "decision_id": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+      "receipt_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+      "external_reference": "partner:invoice-44821",
+      "provenance_metadata": {
+        "cdp:source_system": "partner_portal",
+        "cdp:workflow_id": "wf_2026_04_06_001"
+      }
+    }
+  ]
+}

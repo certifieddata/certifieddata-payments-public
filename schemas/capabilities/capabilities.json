@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "api_version": "2025-01-01",
+  "environments": ["sandbox", "live"],
+  "resources": [
+    "payee", "payee_alias", "payout_destination", "customer", "invoice",
+    "payment_intent", "transaction", "settlement", "refund", "event", "webhook_endpoint"
+  ],
+  "payment_rails": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum"],
+  "event_types": [
+    "payee.created", "payee.updated", "payee.alias.created",
+    "payout_destination.created", "payout_destination.updated",
+    "invoice.created", "invoice.finalized", "invoice.voided",
+    "payment_intent.created", "payment_intent.confirmed", "payment_intent.canceled",
+    "transaction.created", "transaction.captured", "transaction.canceled", "transaction.links_attached",
+    "settlement.created", "settlement.submitted", "settlement.succeeded", "settlement.failed",
+    "refund.created", "refund.succeeded", "refund.failed",
+    "webhook_endpoint.created", "webhook_endpoint.updated"
+  ],
+  "provenance_link_types": [
+    "artifact_id", "certificate_id", "decision_id", "dataset_id", "model_id",
+    "output_id", "receipt_hash", "external_reference", "provenance_metadata"
+  ],
+  "idempotency": {
+    "supported": true,
+    "header_name": "Idempotency-Key",
+    "required_endpoints": [
+      "POST /v1/payees",
+      "POST /v1/transactions",
+      "POST /v1/settlements",
+      "POST /v1/refunds"
+    ],
+    "recommended_endpoints": [
+      "POST /v1/payment-intents",
+      "POST /v1/invoices"
+    ]
+  },
+  "webhooks": {
+    "supported": true,
+    "signature_algorithm": "hmac-sha256",
+    "signature_header": "CDP-Signature",
+    "timestamp_header": "CDP-Timestamp",
+    "timestamp_tolerance_seconds": 300
+  },
+  "pagination": {
+    "default_limit": 20,
+    "max_limit": 100,
+    "cursor_based": true
+  },
+  "provenance_metadata": {
+    "max_keys": 20,
+    "max_value_length": 256,
+    "namespacing_required": true,
+    "allowed_namespaces": ["cdp:", "partner:", "ext:"]
+  },
+  "per_resource_mutability": {
+    "transaction": { "mutable_after_capture": false, "provenance_links_mutable_until": "captured" },
+    "receipt": { "mutable": false },
+    "settlement": { "cancelable_before_submit": true }
+  },
+  "sdk_versions": { "typescript": "0.1.0", "python": "0.1.0" },
+  "mock_server_supported_resources": [
+    "payee", "payee_alias", "payout_destination", "payment_intent",
+    "transaction", "settlement", "refund", "event"
+  ]
+}

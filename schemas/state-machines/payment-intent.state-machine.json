@@ -1,0 +1,25 @@
+{
+  "resource": "payment_intent",
+  "version": "1.0.0",
+  "description": "PaymentIntent lifecycle. Represents the payer-facing intent to collect funds. When a PaymentIntent is captured, it transitions to succeeded and a Transaction is created.",
+  "states": ["created", "confirmed", "processing", "succeeded", "failed", "canceled"],
+  "initial_state": "created",
+  "terminal_states": ["succeeded", "failed", "canceled"],
+  "transitions": [
+    { "from": "created", "to": "confirmed", "trigger": "POST /v1/payment-intents/{id}/confirm" },
+    { "from": "confirmed", "to": "processing", "trigger": "platform" },
+    { "from": "processing", "to": "succeeded", "trigger": "platform" },
+    { "from": "processing", "to": "failed", "trigger": "platform" },
+    { "from": "created", "to": "canceled", "trigger": "POST /v1/payment-intents/{id}/cancel" },
+    { "from": "confirmed", "to": "canceled", "trigger": "POST /v1/payment-intents/{id}/cancel" }
+  ],
+  "forbidden_transitions": [
+    { "from": "succeeded", "to": "*", "reason": "Terminal state." },
+    { "from": "failed", "to": "*", "reason": "Terminal state." },
+    { "from": "canceled", "to": "*", "reason": "Terminal state." }
+  ],
+  "annotations": {
+    "transaction_created_at": "succeeded",
+    "note": "PaymentIntent is the payer-facing collection object. Transaction is the immutable ledger record created when this reaches succeeded."
+  }
+}

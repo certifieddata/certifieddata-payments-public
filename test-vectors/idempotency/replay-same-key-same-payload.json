@@ -1,0 +1,16 @@
+{
+  "name": "same_request_same_key_replay",
+  "description": "Replaying the same request with the same idempotency key and same payload must return the same resource with the same ID and HTTP 201.",
+  "endpoint": "POST /v1/payees",
+  "idempotency_key": "d74d58c4-c1e2-44b6-9150-521ca7b2f14a",
+  "request_body": {
+    "entity_type": "company",
+    "legal_name": "Atlas Synthetic Labs, Inc.",
+    "email": "payments@atlas-synthetic.example",
+    "default_payout_method": "stripe"
+  },
+  "first_response_status": 201,
+  "replay_response_status": 201,
+  "expect_same_resource_id": true,
+  "expected_resource_id": "py_test_0001"
+}

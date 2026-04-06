@@ -1,0 +1,27 @@
+{
+  "profile_id": "settlement",
+  "title": "Settlement",
+  "version": "1.0.0",
+  "description": "Batch payout to a payee: group captured transactions into a settlement and submit for processing.",
+  "required_endpoints": [
+    "POST /v1/settlements",
+    "POST /v1/settlements/{id}/submit"
+  ],
+  "prerequisite_endpoints": [
+    "POST /v1/transactions/{id}/capture"
+  ],
+  "required_schemas": ["Settlement", "Transaction"],
+  "expected_events": [
+    "settlement.created",
+    "settlement.submitted",
+    "settlement.succeeded"
+  ],
+  "docs": ["./docs/settlements.md"],
+  "state_machines": ["./schemas/state-machines/settlement.state-machine.json"],
+  "idempotency_required": true,
+  "notes": [
+    "Only captured transactions should be included in settlements.",
+    "Settlements can be canceled before submission (while in draft status).",
+    "settlement.succeeded is emitted asynchronously after submission."
+  ]
+}

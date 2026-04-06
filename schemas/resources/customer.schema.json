@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/customer/v1",
+  "title": "Customer",
+  "description": "A customer (payer) who initiates or funds payment intents.",
+  "type": "object",
+  "required": ["id", "object", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^cus_",
+      "examples": ["cus_01HZX8FQ8P9W9A3D9ZJ5A6V8Q2"]
+    },
+    "object": { "type": "string", "const": "customer" },
+    "email": { "type": ["string", "null"], "format": "email" },
+    "name": { "type": ["string", "null"], "maxLength": 255 },
+    "status": {
+      "type": "string",
+      "enum": ["active", "inactive"],
+      "description": "Customer account status."
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "cus_01HZX8FQ8P9W9A3D9ZJ5A6V8Q2",
+      "object": "customer",
+      "email": "buyer@example.com",
+      "name": "Research Buyer",
+      "status": "active",
+      "metadata": {},
+      "created_at": "2026-04-06T18:36:00Z",
+      "updated_at": "2026-04-06T18:36:00Z",
+      "livemode": false
+    }
+  ]
+}

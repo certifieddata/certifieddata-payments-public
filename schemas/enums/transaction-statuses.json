@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "enum_name": "TransactionStatus",
+  "description": "Lifecycle statuses for a Transaction resource.",
+  "stability": "stable",
+  "values": ["created", "submitted", "captured", "succeeded", "failed", "canceled"]
+}

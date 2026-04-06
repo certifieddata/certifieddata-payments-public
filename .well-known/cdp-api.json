@@ -1,0 +1,10 @@
+{
+  "_comment": "CDP API discovery file. Mirrors api-manifest.json for well-known path discovery.",
+  "manifest": "../api-manifest.json",
+  "product": "CertifiedData Payments",
+  "api_version": "2025-01-01",
+  "openapi": "../openapi/certifieddata-payments-v1.openapi.yaml",
+  "asyncapi": "../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml",
+  "capabilities": "../schemas/capabilities/capabilities.json",
+  "llm_guide": "../llms-full.txt"
+}

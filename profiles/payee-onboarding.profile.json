@@ -1,0 +1,26 @@
+{
+  "profile_id": "payee-onboarding",
+  "title": "Payee Onboarding",
+  "version": "1.0.0",
+  "description": "Onboard a new payee: create the payee record, register an alias for external system lookup, and add a payout destination.",
+  "required_endpoints": [
+    "POST /v1/payees",
+    "POST /v1/payees/{payee_id}/aliases",
+    "POST /v1/payees/{payee_id}/payout-destinations"
+  ],
+  "required_schemas": ["Payee", "PayeeAlias", "PayoutDestination"],
+  "expected_events": [
+    "payee.created",
+    "payee.alias.created",
+    "payout_destination.created"
+  ],
+  "example_files": ["./examples/agentic-payee-onboarding/create-payee-with-alias.ts"],
+  "docs": ["./docs/payees.md", "./docs/payout-destinations.md"],
+  "state_machines": ["./schemas/state-machines/payout-destination.state-machine.json"],
+  "idempotency_required": true,
+  "notes": [
+    "Aliases enable external systems to look up payees by their own reference IDs.",
+    "KYC status is server-managed: pending → verified | rejected.",
+    "Payout destination status begins as pending_verification and transitions to active when verified."
+  ]
+}

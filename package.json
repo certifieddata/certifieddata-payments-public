@@ -1,0 +1,30 @@
+{
+  "name": "certifieddata-payments-public",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CertifiedData Payments — public SDK, contract, and tooling",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "mock": "pnpm --filter @certifieddata/payments-mock-server start",
+    "validate:openapi": "redocly lint openapi/certifieddata-payments-v1.openapi.yaml",
+    "validate:schemas": "node scripts/validate-schemas.js",
+    "validate:vectors": "node scripts/validate-vectors.js"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@redocly/cli": "^1.10.0",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^3.0.1",
+    "turbo": "^1.13.0",
+    "typescript": "^5.4.0"
+  },
+  "preinstall": "npx only-allow pnpm"
+}

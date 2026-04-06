@@ -1,0 +1,70 @@
+# CertifiedData Payments — AI Agent Discovery Index
+
+Site:      https://certifieddata.io/agent-payments
+Platform:  CertifiedData Payments
+Full:      https://github.com/certifieddata/certifieddata-payments-public/blob/main/llms-full.txt
+
+CertifiedData Payments (CDP) is a provenance-aware payments and settlement layer for the CertifiedData ecosystem.
+It enables transactions that carry verifiable links to AI artifacts, certificates, datasets, decisions, and models.
+
+## Discovery
+
+> Machine discovery manifest — start here
+api-manifest.json
+
+> Capabilities manifest
+schemas/capabilities/capabilities.json
+
+> Operational constraints
+constraints.json
+
+## REST API
+
+> OpenAPI 3.1 contract
+openapi/certifieddata-payments-v1.openapi.yaml
+
+## Events and Webhooks
+
+> AsyncAPI contract
+asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+
+## Schemas
+
+> Resource schemas
+schemas/resources/
+
+> Common primitives
+schemas/common/
+
+> State machines
+schemas/state-machines/
+
+> Error catalog
+schemas/errors/error-catalog.json
+
+> Enum registries
+schemas/enums/
+
+## Examples and Test Vectors
+
+> JSON payload examples
+examples/json/
+
+> Test vectors (webhook signature, idempotency, provenance)
+test-vectors/
+
+## SDKs
+
+> TypeScript SDK
+packages/typescript-sdk/
+
+> Python SDK
+packages/python-sdk/
+
+## Documentation
+
+> Docs index
+docs/docs-index.json
+
+> Overview
+docs/overview.md

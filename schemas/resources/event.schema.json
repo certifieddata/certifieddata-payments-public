@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/event/v1",
+  "title": "Event",
+  "description": "A CDP event envelope. All events share this structure. The data field contains a snapshot of the relevant resource at the time of the event.",
+  "type": "object",
+  "required": ["id", "object", "event_type", "event_version", "api_version", "occurred_at", "environment", "livemode", "resource_type", "resource_id", "data"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^evt_",
+      "description": "Unique event identifier.",
+      "examples": ["evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C"]
+    },
+    "object": { "type": "string", "const": "event" },
+    "event_type": {
+      "type": "string",
+      "description": "Stable event type string (e.g. transaction.captured). See schemas/enums/event-types.json for all values.",
+      "examples": ["transaction.captured", "payee.created", "settlement.succeeded"]
+    },
+    "event_version": {
+      "type": "string",
+      "description": "Schema version of this event shape.",
+      "examples": ["1.0.0"]
+    },
+    "api_version": {
+      "type": "string",
+      "description": "API version active when this event was generated.",
+      "examples": ["2025-01-01"]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 UTC timestamp when the event occurred."
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["sandbox", "live"]
+    },
+    "livemode": { "type": "boolean" },
+    "resource_type": {
+      "type": "string",
+      "description": "The resource type this event is about.",
+      "examples": ["transaction", "payee", "settlement"]
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "The ID of the resource this event is about."
+    },
+    "data": {
+      "type": "object",
+      "description": "A snapshot of the resource at the time of the event."
+    },
+    "provenance": {
+      "type": ["object", "null"],
+      "description": "Provenance links from the resource, if applicable."
+    },
+    "request_context": {
+      "type": ["object", "null"],
+      "description": "Request context from the API call that triggered this event, if available."
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C",
+      "object": "event",
+      "event_type": "transaction.captured",
+      "event_version": "1.0.0",
+      "api_version": "2025-01-01",
+      "occurred_at": "2026-04-06T18:42:11Z",
+      "environment": "sandbox",
+      "livemode": false,
+      "resource_type": "transaction",
+      "resource_id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+      "data": { "id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V", "status": "captured", "amount": 25000 },
+      "provenance": null,
+      "request_context": null
+    }
+  ]
+}

@@ -1,0 +1,1237 @@
+openapi: "3.1.0"
+info:
+  title: CertifiedData Payments API
+  version: "2025-01-01"
+  description: |
+    Provenance-aware payments and settlement for AI artifacts, certifications, and decision-linked commerce.
+
+    **Machine-readable artifacts:**
+    - Canonical resource schemas: `../schemas/resources/`
+    - State machines: `../schemas/state-machines/`
+    - Error catalog: `../schemas/errors/error-catalog.json`
+    - Capabilities: `../schemas/capabilities/capabilities.json`
+    - Discovery: `../api-manifest.json`
+  contact:
+    name: CertifiedData Support
+    url: https://certifieddata.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: https://api.certifieddata.io
+    description: Production
+  - url: https://sandbox.certifieddata.io
+    description: Sandbox
+  - url: http://localhost:3456
+    description: Mock server (local development)
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Payees
+    description: Vendors and contractors who receive payments
+  - name: Payment Intents
+    description: Payer-facing collection objects
+  - name: Transactions
+    description: Immutable post-capture ledger records
+  - name: Settlements
+    description: Batch payouts to payee destinations
+  - name: Refunds
+    description: Transaction reversals
+  - name: Events
+    description: Queryable event log
+  - name: Webhooks
+    description: Webhook endpoint management
+  - name: Meta
+    description: Health, capabilities, version
+
+paths:
+  # ─── Payees ────────────────────────────────────────────────────────────────
+
+  /v1/payees:
+    post:
+      operationId: createPayee
+      summary: Create a payee
+      tags: [Payees]
+      x-idempotency-required: required
+      x-resource-type: payee
+      x-webhook-emits: [payee.created]
+      x-sdk-method: client.payees.create
+      x-mutates: true
+      x-environment-scoped: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/payee.schema.json#/$defs/CreatePayeeParams"
+            examples:
+              company:
+                $ref: "../examples/json/payee.create.request.json"
+      responses:
+        "201":
+          description: Payee created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payee.schema.json"
+              examples:
+                company:
+                  $ref: "../examples/json/payee.create.response.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+    get:
+      operationId: listPayees
+      summary: List payees
+      tags: [Payees]
+      x-resource-type: payee
+      x-sdk-method: client.payees.list
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Payee list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayeePaginationEnvelope"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+  /v1/payees/{payee_id}:
+    get:
+      operationId: getPayee
+      summary: Retrieve a payee
+      tags: [Payees]
+      x-resource-type: payee
+      x-sdk-method: client.payees.get
+      parameters:
+        - $ref: "#/components/parameters/PayeeId"
+      responses:
+        "200":
+          description: Payee
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payee.schema.json"
+        "401":
+          $ref: "#/components/responses/AuthError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+    patch:
+      operationId: updatePayee
+      summary: Update a payee
+      tags: [Payees]
+      x-idempotency-required: recommended
+      x-resource-type: payee
+      x-webhook-emits: [payee.updated]
+      x-sdk-method: client.payees.update
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/PayeeId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/payee.schema.json#/$defs/UpdatePayeeParams"
+      responses:
+        "200":
+          description: Updated payee
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payee.schema.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+  /v1/payees/{payee_id}/aliases:
+    post:
+      operationId: createPayeeAlias
+      summary: Create a payee alias
+      tags: [Payees]
+      x-idempotency-required: required
+      x-resource-type: payee_alias
+      x-webhook-emits: [payee.alias.created]
+      x-sdk-method: client.payees.createAlias
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/PayeeId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/payee-alias.schema.json#/$defs/CreatePayeeAliasParams"
+            examples:
+              basic:
+                $ref: "../examples/json/payee-alias.create.request.json"
+      responses:
+        "201":
+          description: Alias created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payee-alias.schema.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+    get:
+      operationId: listPayeeAliases
+      summary: List aliases for a payee
+      tags: [Payees]
+      x-resource-type: payee_alias
+      x-sdk-method: client.payees.listAliases
+      parameters:
+        - $ref: "#/components/parameters/PayeeId"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Alias list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayeeAliasPaginationEnvelope"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+  /v1/payees/{payee_id}/payout-destinations:
+    post:
+      operationId: createPayoutDestination
+      summary: Create a payout destination
+      tags: [Payees]
+      x-idempotency-required: required
+      x-resource-type: payout_destination
+      x-webhook-emits: [payout_destination.created]
+      x-sdk-method: client.payees.createPayoutDestination
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/PayeeId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/payout-destination.schema.json#/$defs/CreatePayoutDestinationParams"
+            examples:
+              stripe:
+                $ref: "../examples/json/payout-destination.create.request.json"
+      responses:
+        "201":
+          description: Payout destination created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payout-destination.schema.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+    get:
+      operationId: listPayoutDestinations
+      summary: List payout destinations for a payee
+      tags: [Payees]
+      x-resource-type: payout_destination
+      x-sdk-method: client.payees.listPayoutDestinations
+      parameters:
+        - $ref: "#/components/parameters/PayeeId"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Payout destination list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayoutDestinationPaginationEnvelope"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+  # ─── Payment Intents ────────────────────────────────────────────────────────
+
+  /v1/payment-intents:
+    post:
+      operationId: createPaymentIntent
+      summary: Create a payment intent
+      description: |
+        A PaymentIntent is the payer-facing authorization/collection object.
+        When captured, an immutable Transaction record is created.
+      tags: [Payment Intents]
+      x-idempotency-required: recommended
+      x-resource-type: payment_intent
+      x-state-machine: payment-intent
+      x-webhook-emits: [payment_intent.created]
+      x-sdk-method: client.paymentIntents.create
+      x-mutates: true
+      x-environment-scoped: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/payment-intent.schema.json#/$defs/CreatePaymentIntentParams"
+            examples:
+              basic:
+                $ref: "../examples/json/payment-intent.create.request.json"
+      responses:
+        "201":
+          description: Payment intent created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payment-intent.schema.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+    get:
+      operationId: listPaymentIntents
+      summary: List payment intents
+      tags: [Payment Intents]
+      x-resource-type: payment_intent
+      x-sdk-method: client.paymentIntents.list
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Payment intent list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntentPaginationEnvelope"
+
+  /v1/payment-intents/{payment_intent_id}:
+    get:
+      operationId: getPaymentIntent
+      summary: Retrieve a payment intent
+      tags: [Payment Intents]
+      x-resource-type: payment_intent
+      x-sdk-method: client.paymentIntents.get
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+      responses:
+        "200":
+          description: Payment intent
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payment-intent.schema.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+  /v1/payment-intents/{payment_intent_id}/confirm:
+    post:
+      operationId: confirmPaymentIntent
+      summary: Confirm a payment intent
+      tags: [Payment Intents]
+      x-idempotency-required: recommended
+      x-resource-type: payment_intent
+      x-state-machine: payment-intent
+      x-webhook-emits: [payment_intent.confirmed]
+      x-sdk-method: client.paymentIntents.confirm
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Confirmed payment intent
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payment-intent.schema.json"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+  /v1/payment-intents/{payment_intent_id}/cancel:
+    post:
+      operationId: cancelPaymentIntent
+      summary: Cancel a payment intent
+      tags: [Payment Intents]
+      x-idempotency-required: recommended
+      x-resource-type: payment_intent
+      x-state-machine: payment-intent
+      x-webhook-emits: [payment_intent.canceled]
+      x-sdk-method: client.paymentIntents.cancel
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/PaymentIntentId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Canceled payment intent
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/payment-intent.schema.json"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+  # ─── Transactions ───────────────────────────────────────────────────────────
+
+  /v1/transactions:
+    post:
+      operationId: createTransaction
+      summary: Create a transaction
+      description: |
+        Creates an immutable commercial ledger record. Transactions may have provenance links
+        attached before capture. After capture, provenance is immutable and a receipt is issued.
+      tags: [Transactions]
+      x-idempotency-required: required
+      x-resource-type: transaction
+      x-state-machine: transaction
+      x-provenance-support: attach-links
+      x-webhook-emits: [transaction.created]
+      x-sdk-method: client.transactions.create
+      x-mutates: true
+      x-environment-scoped: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/transaction.schema.json#/$defs/CreateTransactionParams"
+            examples:
+              basic:
+                $ref: "../examples/json/transaction.create.request.json"
+      responses:
+        "201":
+          description: Transaction created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/transaction.schema.json"
+              examples:
+                basic:
+                  $ref: "../examples/json/transaction.create.response.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+    get:
+      operationId: listTransactions
+      summary: List transactions
+      tags: [Transactions]
+      x-resource-type: transaction
+      x-sdk-method: client.transactions.list
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Transaction list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionPaginationEnvelope"
+
+  /v1/transactions/{transaction_id}:
+    get:
+      operationId: getTransaction
+      summary: Retrieve a transaction
+      tags: [Transactions]
+      x-resource-type: transaction
+      x-sdk-method: client.transactions.get
+      parameters:
+        - $ref: "#/components/parameters/TransactionId"
+      responses:
+        "200":
+          description: Transaction
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/transaction.schema.json"
+              examples:
+                withProvenance:
+                  $ref: "../examples/json/transaction.with-full-provenance.response.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+  /v1/transactions/{transaction_id}/attach-links:
+    post:
+      operationId: attachProvenanceLinks
+      summary: Attach provenance links to a transaction
+      description: |
+        Attaches a ProvenanceLinkSet to a transaction. Links are mutable until the transaction
+        reaches `captured` status. After capture, this endpoint returns 409
+        (`provenance.immutable_after_capture`).
+      tags: [Transactions]
+      x-idempotency-required: recommended
+      x-resource-type: transaction
+      x-provenance-support: attach-links
+      x-webhook-emits: [transaction.links_attached]
+      x-sdk-method: client.transactions.attachLinks
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/TransactionId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/provenance-link-set.schema.json"
+            examples:
+              withLinks:
+                $ref: "../examples/json/transaction.attach-links.request.json"
+      responses:
+        "200":
+          description: Transaction with provenance attached
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/transaction.schema.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "409":
+          description: Provenance immutable after capture
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/transactions/{transaction_id}/capture:
+    post:
+      operationId: captureTransaction
+      summary: Capture a transaction
+      description: |
+        Captures a transaction. On capture: provenance becomes immutable, a receipt is issued
+        and embedded on the transaction, and a `transaction.captured` event is emitted.
+      tags: [Transactions]
+      x-idempotency-required: recommended
+      x-resource-type: transaction
+      x-state-machine: transaction
+      x-webhook-emits: [transaction.captured]
+      x-sdk-method: client.transactions.capture
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/TransactionId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Captured transaction (receipt embedded)
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/transaction.schema.json"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+  /v1/transactions/{transaction_id}/cancel:
+    post:
+      operationId: cancelTransaction
+      summary: Cancel a transaction
+      tags: [Transactions]
+      x-idempotency-required: recommended
+      x-resource-type: transaction
+      x-state-machine: transaction
+      x-webhook-emits: [transaction.canceled]
+      x-sdk-method: client.transactions.cancel
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/TransactionId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Canceled transaction
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/transaction.schema.json"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+  # ─── Settlements ────────────────────────────────────────────────────────────
+
+  /v1/settlements:
+    post:
+      operationId: createSettlement
+      summary: Create a settlement
+      tags: [Settlements]
+      x-idempotency-required: required
+      x-resource-type: settlement
+      x-state-machine: settlement
+      x-webhook-emits: [settlement.created]
+      x-sdk-method: client.settlements.create
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/settlement.schema.json#/$defs/CreateSettlementParams"
+            examples:
+              basic:
+                $ref: "../examples/json/settlement.create.request.json"
+      responses:
+        "201":
+          description: Settlement created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/settlement.schema.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+    get:
+      operationId: listSettlements
+      summary: List settlements
+      tags: [Settlements]
+      x-resource-type: settlement
+      x-sdk-method: client.settlements.list
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Settlement list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettlementPaginationEnvelope"
+
+  /v1/settlements/{settlement_id}:
+    get:
+      operationId: getSettlement
+      summary: Retrieve a settlement
+      tags: [Settlements]
+      x-resource-type: settlement
+      x-sdk-method: client.settlements.get
+      parameters:
+        - $ref: "#/components/parameters/SettlementId"
+      responses:
+        "200":
+          description: Settlement
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/settlement.schema.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+  /v1/settlements/{settlement_id}/submit:
+    post:
+      operationId: submitSettlement
+      summary: Submit a settlement for processing
+      tags: [Settlements]
+      x-idempotency-required: required
+      x-resource-type: settlement
+      x-state-machine: settlement
+      x-webhook-emits: [settlement.submitted, settlement.succeeded, settlement.failed]
+      x-sdk-method: client.settlements.submit
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/SettlementId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Settlement submitted
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/settlement.schema.json"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+  /v1/settlements/{settlement_id}/cancel:
+    post:
+      operationId: cancelSettlement
+      summary: Cancel a settlement
+      tags: [Settlements]
+      x-idempotency-required: recommended
+      x-resource-type: settlement
+      x-state-machine: settlement
+      x-sdk-method: client.settlements.cancel
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/SettlementId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: Canceled settlement
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/settlement.schema.json"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+
+  # ─── Refunds ────────────────────────────────────────────────────────────────
+
+  /v1/refunds:
+    post:
+      operationId: createRefund
+      summary: Create a refund
+      tags: [Refunds]
+      x-idempotency-required: required
+      x-resource-type: refund
+      x-state-machine: refund
+      x-webhook-emits: [refund.created]
+      x-sdk-method: client.refunds.create
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/refund.schema.json#/$defs/CreateRefundParams"
+      responses:
+        "201":
+          description: Refund created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/refund.schema.json"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/AuthError"
+
+    get:
+      operationId: listRefunds
+      summary: List refunds
+      tags: [Refunds]
+      x-resource-type: refund
+      x-sdk-method: client.refunds.list
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Refund list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefundPaginationEnvelope"
+
+  /v1/refunds/{refund_id}:
+    get:
+      operationId: getRefund
+      summary: Retrieve a refund
+      tags: [Refunds]
+      x-resource-type: refund
+      x-sdk-method: client.refunds.get
+      parameters:
+        - $ref: "#/components/parameters/RefundId"
+      responses:
+        "200":
+          description: Refund
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/refund.schema.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+  # ─── Events ─────────────────────────────────────────────────────────────────
+
+  /v1/events:
+    get:
+      operationId: listEvents
+      summary: List events
+      tags: [Events]
+      x-resource-type: event
+      x-sdk-method: client.events.list
+      parameters:
+        - name: event_type
+          in: query
+          schema:
+            type: string
+          description: Filter by event type (e.g. `transaction.captured`)
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Event list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventPaginationEnvelope"
+
+  /v1/events/{event_id}:
+    get:
+      operationId: getEvent
+      summary: Retrieve an event
+      tags: [Events]
+      x-resource-type: event
+      x-sdk-method: client.events.get
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: Event
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/event.schema.json"
+              examples:
+                transactionCaptured:
+                  $ref: "../examples/json/event.transaction.captured.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+  # ─── Webhooks ───────────────────────────────────────────────────────────────
+
+  /v1/webhook-endpoints:
+    post:
+      operationId: createWebhookEndpoint
+      summary: Create a webhook endpoint
+      tags: [Webhooks]
+      x-idempotency-required: recommended
+      x-resource-type: webhook_endpoint
+      x-sdk-method: client.webhooks.create
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/resources/webhook-endpoint.schema.json#/$defs/CreateWebhookEndpointParams"
+      responses:
+        "201":
+          description: Webhook endpoint created (secret only returned here)
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/webhook-endpoint.schema.json"
+
+    get:
+      operationId: listWebhookEndpoints
+      summary: List webhook endpoints
+      tags: [Webhooks]
+      x-resource-type: webhook_endpoint
+      x-sdk-method: client.webhooks.list
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartingAfter"
+      responses:
+        "200":
+          description: Webhook endpoint list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpointPaginationEnvelope"
+
+  /v1/webhook-endpoints/{webhook_endpoint_id}:
+    get:
+      operationId: getWebhookEndpoint
+      summary: Retrieve a webhook endpoint
+      tags: [Webhooks]
+      x-resource-type: webhook_endpoint
+      x-sdk-method: client.webhooks.get
+      parameters:
+        - $ref: "#/components/parameters/WebhookEndpointId"
+      responses:
+        "200":
+          description: Webhook endpoint
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/webhook-endpoint.schema.json"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+
+    patch:
+      operationId: updateWebhookEndpoint
+      summary: Update a webhook endpoint
+      tags: [Webhooks]
+      x-idempotency-required: recommended
+      x-resource-type: webhook_endpoint
+      x-sdk-method: client.webhooks.update
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/WebhookEndpointId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                enabled_events:
+                  type: array
+                  items:
+                    type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Updated webhook endpoint
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/resources/webhook-endpoint.schema.json"
+
+  /v1/webhook-endpoints/{webhook_endpoint_id}/rotate-secret:
+    post:
+      operationId: rotateWebhookSecret
+      summary: Rotate a webhook endpoint secret
+      tags: [Webhooks]
+      x-idempotency-required: recommended
+      x-resource-type: webhook_endpoint
+      x-sdk-method: client.webhooks.rotateSecret
+      x-mutates: true
+      parameters:
+        - $ref: "#/components/parameters/WebhookEndpointId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: New secret returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secret:
+                    type: string
+                    description: New webhook signing secret
+
+  /v1/webhook-endpoints/{webhook_endpoint_id}/test:
+    post:
+      operationId: testWebhookEndpoint
+      summary: Send a test event to a webhook endpoint
+      tags: [Webhooks]
+      x-idempotency-required: not-supported
+      x-resource-type: webhook_endpoint
+      x-sdk-method: client.webhooks.test
+      parameters:
+        - $ref: "#/components/parameters/WebhookEndpointId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [event_type]
+              properties:
+                event_type:
+                  type: string
+      responses:
+        "200":
+          description: Test result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delivered:
+                    type: boolean
+                  event_id:
+                    type: string
+
+  # ─── Meta ───────────────────────────────────────────────────────────────────
+
+  /v1/health:
+    get:
+      operationId: getHealth
+      summary: Health check
+      tags: [Meta]
+      x-sdk-method: client.capabilities.health
+      security: []
+      responses:
+        "200":
+          description: Service health
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, degraded]
+                  mode:
+                    type: string
+                    enum: [live, mock]
+                  livemode:
+                    type: boolean
+                  api_version:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /v1/capabilities:
+    get:
+      operationId: getCapabilities
+      summary: Get capabilities manifest
+      description: |
+        Returns the capabilities manifest for the current environment.
+        Canonical static definition: `schemas/capabilities/capabilities.json`
+      tags: [Meta]
+      x-sdk-method: client.capabilities.get
+      security: []
+      responses:
+        "200":
+          description: Capabilities manifest
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/capabilities/capabilities.json"
+
+  /v1/version:
+    get:
+      operationId: getVersion
+      summary: Get version manifest
+      description: Returns the contents of `versions.json`.
+      tags: [Meta]
+      x-sdk-method: client.capabilities.version
+      security: []
+      responses:
+        "200":
+          description: Version manifest
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        CDP API key. Use `cdp_test_...` for sandbox, `cdp_live_...` for production.
+        Example: `Authorization: Bearer cdp_test_...`
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 128
+      description: Idempotency key (max 128 chars). Required for all state-changing POST operations.
+
+    PayeeId:
+      name: payee_id
+      in: path
+      required: true
+      schema:
+        type: string
+    PaymentIntentId:
+      name: payment_intent_id
+      in: path
+      required: true
+      schema:
+        type: string
+    TransactionId:
+      name: transaction_id
+      in: path
+      required: true
+      schema:
+        type: string
+    SettlementId:
+      name: settlement_id
+      in: path
+      required: true
+      schema:
+        type: string
+    RefundId:
+      name: refund_id
+      in: path
+      required: true
+      schema:
+        type: string
+    EventId:
+      name: event_id
+      in: path
+      required: true
+      schema:
+        type: string
+    WebhookEndpointId:
+      name: webhook_endpoint_id
+      in: path
+      required: true
+      schema:
+        type: string
+
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    StartingAfter:
+      name: starting_after
+      in: query
+      schema:
+        type: string
+      description: Cursor for pagination — the ID of the last item on the previous page.
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            http_status:
+              type: integer
+            message:
+              type: string
+            retryable:
+              type: boolean
+
+    PayeePaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/payee.schema.json"
+
+    PayeeAliasPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/payee-alias.schema.json"
+
+    PayoutDestinationPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/payout-destination.schema.json"
+
+    PaymentIntentPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/payment-intent.schema.json"
+
+    TransactionPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/transaction.schema.json"
+
+    SettlementPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/settlement.schema.json"
+
+    RefundPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/refund.schema.json"
+
+    EventPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/event.schema.json"
+
+    WebhookEndpointPaginationEnvelope:
+      allOf:
+        - $ref: "../schemas/common/pagination-envelope.schema.json"
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: "../schemas/resources/webhook-endpoint.schema.json"
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    AuthError:
+      description: Authentication error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ConflictError:
+      description: State conflict or idempotency conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"

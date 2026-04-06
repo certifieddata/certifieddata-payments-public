@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://certifieddata.io/schemas/resources/refund/v1",
+  "title": "Refund",
+  "description": "A full or partial refund of a captured transaction.",
+  "type": "object",
+  "required": ["id", "object", "transaction_id", "amount", "currency", "status", "created_at", "updated_at", "livemode"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^rf_",
+      "examples": ["rf_01HZXBQQ91S4KQ8F5W3E2AVD7T"]
+    },
+    "object": { "type": "string", "const": "refund" },
+    "transaction_id": { "type": "string", "pattern": "^tx_" },
+    "amount": { "type": "integer", "minimum": 1, "description": "Refund amount in minor units. Must be > 0 and <= original transaction amount." },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "status": {
+      "type": "string",
+      "enum": ["created", "processing", "succeeded", "failed"]
+    },
+    "reason": {
+      "type": ["string", "null"],
+      "enum": ["duplicate", "fraudulent", "customer_request", "partial_adjustment", null],
+      "description": "Reason for the refund."
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "maxProperties": 20,
+      "propertyNames": { "pattern": "^(cdp:|partner:|ext:).{1,60}$" },
+      "additionalProperties": { "type": "string", "maxLength": 256 }
+    },
+    "succeeded_at": { "type": ["string", "null"], "format": "date-time" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "livemode": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "id": "rf_01HZXBQQ91S4KQ8F5W3E2AVD7T",
+      "object": "refund",
+      "transaction_id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+      "amount": 5000,
+      "currency": "USD",
+      "status": "created",
+      "reason": "partial_adjustment",
+      "metadata": { "cdp:source_system": "support_console" },
+      "succeeded_at": null,
+      "created_at": "2026-04-06T18:53:15Z",
+      "updated_at": "2026-04-06T18:53:15Z",
+      "livemode": false
+    }
+  ]
+}

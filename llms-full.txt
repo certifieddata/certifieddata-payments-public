@@ -1,0 +1,137 @@
+CertifiedData Payments (CDP) — machine-facing repository guide
+
+OVERVIEW
+CertifiedData Payments (CDP) is the provenance-aware commerce and settlement contract for the CertifiedData ecosystem.
+This repository contains the PUBLIC developer and machine-facing contract layer for CDP.
+This repository does NOT contain private payment execution internals.
+
+PUBLIC / PRIVATE BOUNDARY
+Public: API contract, event contract, schemas, SDKs, examples, test vectors, docs, mock server, discovery manifests
+Private: payment processor secret material, routing heuristics, treasury internals, compliance internals, DB migrations, internal payout execution logic, signing key custody internals
+
+HOW TO READ THIS REPOSITORY
+1. api-manifest.json
+2. schemas/capabilities/capabilities.json
+3. constraints.json
+4. support-matrix.json
+5. openapi/certifieddata-payments-v1.openapi.yaml
+6. asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+7. schemas/common/* and schemas/resources/*
+8. schemas/state-machines/*
+9. examples/json and test-vectors
+10. docs markdown (explanation/navigation only)
+
+SOURCE OF TRUTH
+REST: openapi/certifieddata-payments-v1.openapi.yaml
+Events: asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+Shared models: schemas/common/* and schemas/resources/*
+Lifecycle: schemas/state-machines/*
+Errors: schemas/errors/error-catalog.json
+Capabilities: schemas/capabilities/capabilities.json
+Constraints: constraints.json
+Compatibility: support-matrix.json
+
+DISCOVERY FILES
+Primary: api-manifest.json
+Secondary: docs/docs-index.json, schemas/enums/event-types.json, schemas/enums/payment-rails.json, schemas/enums/transaction-statuses.json
+
+RESOURCE ID PREFIXES
+py_ payee | pya_ payee alias | pydst_ payout destination | cus_ customer
+inv_ invoice | pi_ payment intent | tx_ transaction | stl_ settlement
+rf_ refund | evt_ event | wh_ webhook endpoint | idem_ idempotency record
+
+CORE DIFFERENTIATOR
+CDP is provenance-aware. Transactions, settlements, events, and related objects may be linked to:
+artifact_id, certificate_id, decision_id, dataset_id, model_id, output_id, receipt_hash, external_reference, provenance_metadata
+Provenance link shape: schemas/resources/provenance-link-set.schema.json
+
+MACHINE-READABLE OPERATING RULE
+When a concept appears in both prose and a machine-readable artifact, prefer the machine-readable artifact.
+
+REST SURFACE
+Canonical: openapi/certifieddata-payments-v1.openapi.yaml
+Core families: payees, payout destinations, customers, invoices, payment intents, transactions, settlements, refunds, webhook endpoints, events, capabilities, health
+
+EVENT SURFACE
+Canonical: asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+Envelope fields: id, event_type, event_version, api_version, occurred_at, environment, livemode, resource_type, resource_id, data, provenance, request_context
+
+RESOURCE INDEX
+payee         | py_     | schemas/resources/payee.schema.json          | POST/GET /v1/payees
+payee_alias   | pya_    | schemas/resources/payee-alias.schema.json     | POST/GET /v1/payees/{id}/aliases
+payout_dest   | pydst_  | schemas/resources/payout-destination.schema.json | POST/GET /v1/payees/{id}/payout-destinations
+customer      | cus_    | schemas/resources/customer.schema.json        | POST/GET /v1/customers
+invoice       | inv_    | schemas/resources/invoice.schema.json         | POST/GET/PATCH /v1/invoices
+payment_intent| pi_     | schemas/resources/payment-intent.schema.json  | POST/GET /v1/payment-intents
+transaction   | tx_     | schemas/resources/transaction.schema.json     | POST/GET /v1/transactions
+settlement    | stl_    | schemas/resources/settlement.schema.json      | POST/GET /v1/settlements
+refund        | rf_     | schemas/resources/refund.schema.json          | POST/GET /v1/refunds
+event         | evt_    | schemas/resources/event.schema.json           | GET /v1/events
+webhook_ep    | wh_     | schemas/resources/webhook-endpoint.schema.json| POST/GET/PATCH /v1/webhook-endpoints
+
+EVENT INDEX
+payee.created              | payee         | POST /v1/payees
+payee.updated              | payee         | PATCH /v1/payees/{id}
+payee.alias.created        | payee_alias   | POST /v1/payees/{id}/aliases
+payout_destination.created | payout_dest   | POST /v1/payees/{id}/payout-destinations
+invoice.created            | invoice       | POST /v1/invoices
+invoice.finalized          | invoice       | POST /v1/invoices/{id}/finalize
+invoice.voided             | invoice       | POST /v1/invoices/{id}/void
+payment_intent.created     | payment_intent| POST /v1/payment-intents
+payment_intent.confirmed   | payment_intent| POST /v1/payment-intents/{id}/confirm
+payment_intent.canceled    | payment_intent| POST /v1/payment-intents/{id}/cancel
+transaction.created        | transaction   | POST /v1/transactions
+transaction.captured       | transaction   | POST /v1/transactions/{id}/capture
+transaction.canceled       | transaction   | POST /v1/transactions/{id}/cancel
+transaction.links_attached | transaction   | POST /v1/transactions/{id}/attach-links
+settlement.created         | settlement    | POST /v1/settlements
+settlement.submitted       | settlement    | POST /v1/settlements/{id}/submit
+settlement.succeeded       | settlement    | async — platform event
+settlement.failed          | settlement    | async — platform event
+refund.created             | refund        | POST /v1/refunds
+refund.succeeded           | refund        | async — platform event
+refund.failed              | refund        | async — platform event
+
+WORKFLOW INDEX
+payee-onboarding:          POST /v1/payees → POST /v1/payees/{id}/aliases → POST /v1/payees/{id}/payout-destinations
+certified-artifact-purchase: POST /v1/payment-intents → POST /v1/transactions → POST /v1/transactions/{id}/attach-links → POST /v1/transactions/{id}/capture
+settlement:                POST /v1/settlements → POST /v1/settlements/{id}/submit
+refund:                    POST /v1/refunds
+
+TEST VECTOR INDEX
+test-vectors/webhook-signature.valid.json     — valid HMAC-SHA256 webhook signature
+test-vectors/webhook-signature.invalid.json   — invalid signature (tampered v1 value)
+test-vectors/idempotency.same-request-replay.json — idempotent replay, same key + payload
+test-vectors/idempotency.payload-mismatch.json    — same key, different payload → 409
+test-vectors/provenance.attach-before-capture.valid.json   — attach links before capture → 200
+test-vectors/provenance.attach-after-capture.invalid.json  — attach links after capture → 409
+test-vectors/event.transaction.captured.fixture.json       — canonical event fixture
+
+VERSIONING RULES
+API version: 2025-01-01 (passed as CDP-API-Version header)
+Schema versions: semver in each schema file
+SDK versions: see versions.json
+Never rename stable enum values — add new ones with deprecation notice only
+Never remove fields — mark deprecated with a minor version bump
+
+ENVIRONMENTS
+sandbox | live — environment-scoped, non-portable
+Sandbox: cdp_test_... API keys, livemode: false
+Live: cdp_live_... API keys, livemode: true
+
+SDKS
+TypeScript: @certifieddata/payments — packages/typescript-sdk
+Python: certifieddata-payments — packages/python-sdk
+
+ENUM REGISTRIES
+schemas/enums/event-types.json | schemas/enums/payment-rails.json | schemas/enums/transaction-statuses.json
+
+LIMITS AND CONSTRAINTS
+Canonical: constraints.json
+Key limits: idempotency key max 128 chars, metadata max 20 keys, provenance links immutable after capture,
+webhook signature tolerance 300 seconds, pagination default 20 max 100
+
+AGENT GUIDANCE
+Prefer explicit enums, structured examples, source-of-truth artifacts, constraints manifests, state machine JSON.
+Do not infer unsupported payment rails, unsupported statuses, private routing logic, compliance internals, internal service topology.
+If ambiguity: read manifest → capability manifest → OpenAPI/AsyncAPI → schema → state machine → prose docs

@@ -1,0 +1,17 @@
+{
+  "resource": "refund",
+  "version": "1.0.0",
+  "description": "Refund lifecycle.",
+  "states": ["created", "processing", "succeeded", "failed"],
+  "initial_state": "created",
+  "terminal_states": ["succeeded", "failed"],
+  "transitions": [
+    { "from": "created", "to": "processing", "trigger": "platform" },
+    { "from": "processing", "to": "succeeded", "trigger": "platform" },
+    { "from": "processing", "to": "failed", "trigger": "platform" }
+  ],
+  "forbidden_transitions": [
+    { "from": "succeeded", "to": "*", "reason": "Terminal state." },
+    { "from": "failed", "to": "*", "reason": "Terminal state." }
+  ]
+}

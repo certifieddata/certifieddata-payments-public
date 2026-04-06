@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "enum_name": "EventType",
+  "description": "Canonical CDP event type strings. These values are stable protocol identifiers and are never renamed after publication.",
+  "stability": "stable",
+  "values": [
+    "payee.created",
+    "payee.updated",
+    "payee.alias.created",
+    "payout_destination.created",
+    "payout_destination.updated",
+    "invoice.created",
+    "invoice.finalized",
+    "invoice.voided",
+    "payment_intent.created",
+    "payment_intent.confirmed",
+    "payment_intent.canceled",
+    "transaction.created",
+    "transaction.captured",
+    "transaction.canceled",
+    "transaction.links_attached",
+    "settlement.created",
+    "settlement.submitted",
+    "settlement.succeeded",
+    "settlement.failed",
+    "refund.created",
+    "refund.succeeded",
+    "refund.failed",
+    "webhook_endpoint.created",
+    "webhook_endpoint.updated"
+  ]
+}
