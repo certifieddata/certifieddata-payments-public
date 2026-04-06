@@ -39,9 +39,10 @@ export function withIdempotency(req: Request, res: Response, next: NextFunction)
 
   // Intercept the json() call to cache the response
   const originalJson = res.json.bind(res);
-  res.json = function (body: unknown) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (res as any).json = function (body: unknown) {
     setIdempotencyRecord(key, res.statusCode, {
-      ...(body as object),
+      ...(typeof body === "object" && body !== null ? body : {}),
       _req_body: req.body ?? {},
     });
     return originalJson(body);

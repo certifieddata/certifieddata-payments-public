@@ -7,7 +7,7 @@ import { RefundsResource } from "./resources/refunds.js";
 import { EventsResource } from "./resources/events.js";
 import { WebhooksResource } from "./resources/webhooks.js";
 import { CapabilitiesResource } from "./resources/capabilities.js";
-import { verifyWebhookSignature } from "./utils/webhooks.js";
+import { verifyWebhookSignature, type VerifyWebhookSignatureResult } from "./utils/webhooks.js";
 
 export interface CertifiedDataPaymentsClientOptions {
   /** CDP API key — use `cdp_test_...` for sandbox, `cdp_live_...` for production */
@@ -83,7 +83,13 @@ export class CertifiedDataPaymentsClient {
     timestampHeader: string,
     secret: string,
     toleranceSeconds = 300
-  ): Promise<boolean> {
-    return verifyWebhookSignature(rawBody, signatureHeader, timestampHeader, secret, toleranceSeconds);
+  ): Promise<VerifyWebhookSignatureResult> {
+    return verifyWebhookSignature({
+      payload: rawBody,
+      signature: signatureHeader,
+      timestamp: timestampHeader,
+      secret,
+      toleranceSeconds,
+    });
   }
 }

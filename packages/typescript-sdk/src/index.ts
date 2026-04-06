@@ -70,4 +70,5 @@ export {
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 export { verifyWebhookSignature } from "./utils/webhooks.js";
+export type { VerifyWebhookSignatureParams, VerifyWebhookSignatureResult } from "./utils/webhooks.js";
 export { listAll } from "./utils/pagination.js";

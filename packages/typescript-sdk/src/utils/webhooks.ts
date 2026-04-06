@@ -70,7 +70,10 @@ export async function verifyWebhookSignature(
   const keyData = encoder.encode(secret);
   const messageData = encoder.encode(signedPayload);
 
-  const cryptoKey = await crypto.subtle.importKey(
+  // Use globalThis.crypto (Web Crypto API, available in Node.js ≥ 18)
+  const subtle = globalThis.crypto.subtle;
+
+  const cryptoKey = await subtle.importKey(
     "raw",
     keyData,
     { name: "HMAC", hash: "SHA-256" },
@@ -78,7 +81,7 @@ export async function verifyWebhookSignature(
     ["sign"]
   );
 
-  const signatureBuffer = await crypto.subtle.sign("HMAC", cryptoKey, messageData);
+  const signatureBuffer = await subtle.sign("HMAC", cryptoKey, messageData);
   const computedHex = Array.from(new Uint8Array(signatureBuffer))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");

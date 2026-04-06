@@ -2,6 +2,7 @@ import type { CDPClientConfig } from "../utils/request.js";
 import { makeRequest } from "../utils/request.js";
 import type { PaginationEnvelope, ListParams } from "../types/common.js";
 import type { WebhookEndpoint, CreateWebhookEndpointParams } from "../types/resources.js";
+import { verifyWebhookSignature } from "../utils/webhooks.js";
 
 export class WebhooksResource {
   constructor(private readonly config: CDPClientConfig) {}
@@ -78,7 +79,13 @@ export class WebhooksResource {
     secret: string,
     toleranceSeconds = 300
   ): Promise<boolean> {
-    const { verifyWebhookSignature } = await import("../utils/webhooks.js");
-    return verifyWebhookSignature(rawBody, signatureHeader, timestampHeader, secret, toleranceSeconds);
+    const result = await verifyWebhookSignature({
+      payload: rawBody,
+      signature: signatureHeader,
+      timestamp: timestampHeader,
+      secret,
+      toleranceSeconds,
+    });
+    return result.valid;
   }
 }
