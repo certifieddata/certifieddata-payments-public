@@ -64,3 +64,11 @@ export interface ListParams {
   limit?: number;
   starting_after?: string;
 }
+
+/** Monetary amount with ISO 4217 currency code. */
+export interface Money {
+  /** Amount in the smallest currency unit (e.g. cents for USD). */
+  amount: number;
+  /** ISO 4217 currency code (e.g. "USD", "EUR"). */
+  currency: string;
+}

@@ -9,7 +9,7 @@ export interface CDPClientConfig {
   apiKey: string;
   baseUrl?: string;
   apiVersion?: string;
-  defaultIdempotencyKey?: string;
+  idempotencyKey?: string;
 }
 
 const DEFAULT_BASE_URL = "https://api.certifieddata.io";
@@ -22,7 +22,7 @@ export async function makeRequest<T>(
   options?: {
     body?: unknown;
     query?: Record<string, string | number | undefined>;
-    idempotencyKey?: string;
+    idempotencyKey?: string | undefined;
   }
 ): Promise<T> {
   const baseUrl = config.baseUrl ?? DEFAULT_BASE_URL;
@@ -51,11 +51,11 @@ export async function makeRequest<T>(
     headers["Idempotency-Key"] = options.idempotencyKey;
   }
 
-  const response = await fetch(url, {
-    method,
-    headers,
-    body: options?.body !== undefined ? JSON.stringify(options.body) : undefined,
-  });
+  const fetchInit: RequestInit = { method, headers };
+  if (options?.body !== undefined) {
+    fetchInit.body = JSON.stringify(options.body);
+  }
+  const response = await fetch(url, fetchInit);
 
   const data: unknown = await response.json();
 

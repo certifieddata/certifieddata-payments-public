@@ -44,7 +44,7 @@ export function listResources<T>(
 export function updateResource<T extends { id: string }>(
   resource: string,
   id: string,
-  updates: Partial<T>
+  updates: Record<string, unknown>
 ): T | undefined {
   const store = getStore(resource);
   const existing = store.get(id) as T | undefined;

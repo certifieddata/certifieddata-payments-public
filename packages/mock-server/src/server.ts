@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type Express } from "express";
 import payeesRouter from "./routes/payees.js";
 import transactionsRouter from "./routes/transactions.js";
 import paymentIntentsRouter from "./routes/payment-intents.js";
@@ -42,7 +42,7 @@ const CAPABILITIES = {
   },
 };
 
-export function createApp() {
+export function createApp(): Express {
   const app = express();
   app.use(express.json());
 

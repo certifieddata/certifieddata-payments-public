@@ -22,8 +22,8 @@ export class CDPError extends Error {
     this.code = response.code;
     this.httpStatus = response.http_status;
     this.retryable = response.retryable;
-    this.docsUrl = response.docs_url;
-    this.validationErrors = response.validation_errors;
+    if (response.docs_url !== undefined) this.docsUrl = response.docs_url;
+    if (response.validation_errors !== undefined) this.validationErrors = response.validation_errors;
   }
 }
 

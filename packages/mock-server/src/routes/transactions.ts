@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { type Router as ExpressRouter, Router } from "express";
 import { generateId } from "../lib/id-generator.js";
 import { saveResource, getResource, listResources, updateResource } from "../lib/store.js";
 import { emitEvent } from "../lib/event-bus.js";
 import { withIdempotency } from "../middleware/idempotency.js";
 
-const router = Router();
+const router: ExpressRouter = Router();
 
 const IMMUTABLE_AFTER = new Set(["captured", "succeeded", "failed", "canceled"]);
 

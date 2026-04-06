@@ -37,7 +37,7 @@ export class CertifiedDataPaymentsClient {
       apiKey: options.apiKey,
       baseUrl: options.baseUrl ?? "https://api.certifieddata.io",
       apiVersion: options.apiVersion ?? "2025-01-01",
-      idempotencyKey: options.idempotencyKey,
+      ...(options.idempotencyKey !== undefined ? { idempotencyKey: options.idempotencyKey } : {}),
     };
 
     this.payees = new PayeesResource(this.config);
@@ -62,8 +62,8 @@ export class CertifiedDataPaymentsClient {
   withIdempotencyKey(key: string): CertifiedDataPaymentsClient {
     return new CertifiedDataPaymentsClient({
       apiKey: this.config.apiKey,
-      baseUrl: this.config.baseUrl,
-      apiVersion: this.config.apiVersion,
+      ...(this.config.baseUrl !== undefined ? { baseUrl: this.config.baseUrl } : {}),
+      ...(this.config.apiVersion !== undefined ? { apiVersion: this.config.apiVersion } : {}),
       idempotencyKey: key,
     });
   }

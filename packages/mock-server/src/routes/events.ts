@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { type Router as ExpressRouter, Router } from "express";
 import { listEvents, getEvent } from "../lib/event-bus.js";
 
-const router = Router();
+const router: ExpressRouter = Router();
 
 router.get("/", (req, res) => {
   const result = listEvents({
