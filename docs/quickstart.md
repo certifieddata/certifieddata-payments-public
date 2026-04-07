@@ -1,114 +1,120 @@
 # Quickstart
 
-## 1. Install the SDK
+This guide gets you running locally with the mock server and either SDK.
+
+## 1. Install an SDK
+
+### TypeScript
 
 ```bash
-# TypeScript
 pnpm add @certifieddata/payments
+```
 
-# Python
+### Python
+
+```bash
 pip install certifieddata-payments
 ```
 
-## 2. Start the mock server (local development)
+## 2. Start the mock server
 
 ```bash
-git clone https://github.com/certifieddata/certifieddata-payments-public.git
-cd certifieddata-payments-public
 pnpm install
-pnpm mock
-# Mock server running at http://localhost:3456
+pnpm --filter @certifieddata/payments-mock-server start
 ```
 
-## 3. Create a Payee
+Health check:
 
-```typescript
+```bash
+curl http://localhost:3456/v1/health
+```
+
+Expected response:
+
+```json
+{ "status": "ok", "mode": "mock", "livemode": false }
+```
+
+## 3. Set environment variables
+
+```bash
+export CDP_API_KEY=cdp_test_your_key
+export CDP_API_VERSION=2025-01-01
+export CDP_BASE_URL=http://localhost:3456
+```
+
+## 4. Create a client
+
+### TypeScript
+
+```ts
 import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
 
 const client = new CertifiedDataPaymentsClient({
-  apiKey: "cdp_test_...",
-  baseUrl: "http://localhost:3456", // or https://api.certifieddata.io
+  apiKey: process.env.CDP_API_KEY!,
+  apiVersion: "2025-01-01",
+  baseUrl: process.env.CDP_BASE_URL,
 });
-
-const payee = await client.payees.create(
-  {
-    entity_type: "company",
-    legal_name: "Atlas Synthetic Labs, Inc.",
-    email: "payments@atlas-synthetic.example",
-    default_payout_method: "stripe",
-    metadata: { "cdp:source_system": "partner_portal" },
-  },
-  { idempotencyKey: "payee-atlas-001" }
-);
-
-console.log(payee.id); // py_test_0001
 ```
 
-## 4. Create a Transaction with provenance links
+### Python
 
-```typescript
-// Create payment intent
-const intent = await client.paymentIntents.create(
-  {
-    customer_id: "cus_...",
-    amount: 25000,
-    currency: "USD",
-    rail: "stripe",
-    description: "Certified artifact purchase",
-  },
-  { idempotencyKey: "pi-certified-001" }
-);
+```python
+from certifieddata_payments import CertifiedDataPaymentsClient
 
-// Create transaction
-const tx = await client.transactions.create(
-  {
-    payment_intent_id: intent.id,
-    payee_id: payee.id,
-    amount: 25000,
-    currency: "USD",
-    rail: "stripe",
-  },
-  { idempotencyKey: "tx-certified-001" }
-);
-
-// Attach provenance links (must be done before capture)
-await client.transactions.attachLinks(tx.id, {
-  artifact_id: "art_...",
-  certificate_id: "cert_...",
-  decision_id: "dec_...",
-  provenance_metadata: {
-    "cdp:workflow_id": "wf_123",
-    "partner:invoice_ref": "INV-44821",
-  },
-});
-
-// Capture
-const captured = await client.transactions.capture(tx.id);
-console.log(captured.receipt?.id); // rcpt_...
-console.log(captured.receipt?.schema_version); // payment_receipt.v1
+client = CertifiedDataPaymentsClient(
+    api_key="cdp_test_your_key",
+    api_version="2025-01-01",
+    base_url="http://localhost:3456",
+)
 ```
 
-## 5. Verify webhook signatures
+## 5. Create a transaction
 
-```typescript
-import { verifyWebhookSignature } from "@certifieddata/payments/webhooks";
+Typical flow:
 
-// In your webhook handler
-const isValid = verifyWebhookSignature({
-  payload: rawBody,
-  signature: req.headers["cdp-signature"],
-  timestamp: req.headers["cdp-timestamp"],
-  secret: process.env.CDP_WEBHOOK_SECRET,
-});
+1. create or reference a customer
+2. create a payment intent or transaction
+3. attach provenance links
+4. confirm the payment flow
+5. listen for webhook lifecycle events
 
-if (!isValid) {
-  return res.status(400).json({ error: "Invalid signature" });
+### Example shape
+
+```json
+{
+  "amount": 4900,
+  "currency": "usd",
+  "customer_id": "cus_123"
 }
 ```
+
+## 6. Attach provenance links
+
+Attach commercial context to the funded object:
+
+- artifact ID
+- certificate ID
+- decision ID
+- workflow or invoice references
+- partner metadata
+
+See [`docs/provenance-links.md`](./provenance-links.md).
+
+## 7. Add webhook handling
+
+Before going live:
+
+- verify webhook signatures using test vectors in `test-vectors/webhook-signature/`
+- store event IDs for idempotency
+- make handlers idempotent
+- reconcile against transaction and settlement records
+
+See [`docs/webhooks.md`](./webhooks.md).
 
 ## Next steps
 
 - [Authentication](./authentication.md)
-- [Provenance Linking](./provenance-linking.md)
-- [Webhooks](./webhooks.md)
-- [Errors](./errors.md)
+- [API resources](./api-resources.md)
+- [Environments and versioning](./environments-and-versioning.md)
+- [Errors and idempotency](./errors-and-idempotency.md)

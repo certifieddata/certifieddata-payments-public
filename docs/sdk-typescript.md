@@ -2,105 +2,130 @@
 
 The `@certifieddata/payments` package is the official TypeScript/Node.js SDK for CertifiedData Payments.
 
-## Installation
+**Repo path:** [`packages/typescript-sdk/`](../packages/typescript-sdk/)
+
+## Install
 
 ```bash
-npm install @certifieddata/payments
-# or
 pnpm add @certifieddata/payments
 ```
 
-**Requirements:** Node.js ≥ 18 (uses native `fetch`), ESM.
+## Client setup
 
-## Quick start
-
-```typescript
+```ts
 import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
 
 const client = new CertifiedDataPaymentsClient({
   apiKey: process.env.CDP_API_KEY!,
-  // baseUrl: "http://localhost:3456",  // point to mock server for local dev
+  apiVersion: "2025-01-01",
 });
-
-const payee = await client.payees.create(
-  { entity_type: "company", legal_name: "Acme Corp" },
-  { idempotencyKey: "create-payee-acme-001" }
-);
 ```
 
-## Client options
+### Sandbox / mock server
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `apiKey` | `string` | Required. Use `cdp_test_` for sandbox, `cdp_live_` for production. |
-| `baseUrl` | `string` | Defaults to `https://api.certifieddata.io`. Override for mock server. |
-| `apiVersion` | `string` | Defaults to `2025-01-01`. |
-| `idempotencyKey` | `string` | Attach a key to every mutating request on this instance. |
-
-## Idempotency
-
-Pass per-request:
-```typescript
-await client.transactions.create(params, { idempotencyKey: "tx-001" });
+```ts
+const client = new CertifiedDataPaymentsClient({
+  apiKey: "cdp_test_your_key",
+  apiVersion: "2025-01-01",
+  baseUrl: "http://localhost:3456",
+});
 ```
 
-Or use a scoped client:
-```typescript
-const idempotent = client.withIdempotencyKey("my-operation-001");
-await idempotent.transactions.create(params);
+## Idempotent requests
+
+Scope idempotency to a specific write operation:
+
+```ts
+const idempotent = client.withIdempotencyKey("my-unique-key-001");
+
+const payee = await idempotent.payees.create({
+  entity_type: "company",
+  legal_name: "Atlas Synthetic Labs, Inc.",
+  email: "payments@atlas-synthetic.example",
+});
 ```
 
-## Webhook verification
+## Create a transaction
 
-```typescript
-const isValid = await client.verifyWebhookSignature(
+```ts
+const tx = await client.transactions.create({
+  payment_intent_id: "pi_01HZX8H75Z6X8C5X7JQY6B4M2N",
+  payee_id: "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+  amount: 4900,
+  currency: "usd",
+  rail: "stripe",
+  description: "Certified artifact purchase",
+});
+```
+
+## Attach provenance links
+
+Provenance links are immutable after capture. Attach before confirming payment.
+
+```ts
+await client.transactions.attachLinks(tx.id, {
+  artifact_id: "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+  certificate_id: "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
+  decision_id: "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+  provenance_metadata: {
+    "cdp:workflow_id": "wf_123",
+    "cdp:source_system": "certifieddata-platform",
+  },
+});
+```
+
+## Verify a webhook signature
+
+```ts
+const isValid = await client.webhooks.verifySignature(
   rawBody,
-  req.headers["cdp-signature"],
-  req.headers["cdp-timestamp"],
-  process.env.CDP_WEBHOOK_SECRET!
+  signatureHeader,  // CDP-Signature header value
+  timestampHeader,  // CDP-Timestamp header value
+  webhookSecret,
 );
 ```
 
-Or use the standalone function:
-```typescript
-import { verifyWebhookSignature } from "@certifieddata/payments";
-```
+Validate your implementation using the test vectors in [`test-vectors/webhook-signature/`](../test-vectors/webhook-signature/).
 
 ## Pagination
 
-```typescript
-import { listAll } from "@certifieddata/payments";
+All list endpoints return cursor-paginated results:
 
-const allPayees = await listAll((params) => client.payees.list(params));
+```ts
+const first = await client.transactions.list({ limit: 20 });
+
+if (first.has_more) {
+  const next = await client.transactions.list({
+    limit: 20,
+    starting_after: first.data[first.data.length - 1].id,
+  });
+}
 ```
-
-## Resources
-
-| Client property | Endpoints |
-|-----------------|-----------|
-| `client.payees` | Payees, aliases, payout destinations |
-| `client.paymentIntents` | Payment intents |
-| `client.transactions` | Transactions, attach-links, capture |
-| `client.settlements` | Settlements, submit, cancel |
-| `client.refunds` | Refunds |
-| `client.events` | Events |
-| `client.webhooks` | Webhook endpoints, signature verification |
-| `client.capabilities` | Capabilities, health, version |
 
 ## Error handling
 
-```typescript
-import { CDPError, CDPConflictError } from "@certifieddata/payments";
+```ts
+import { CdpApiError } from "@certifieddata/payments";
 
 try {
-  await client.transactions.attachLinks(txId, links);
+  await client.transactions.create({ ... });
 } catch (err) {
-  if (err instanceof CDPConflictError && err.code === "provenance.immutable_after_capture") {
-    // Transaction already captured — provenance is locked
+  if (err instanceof CdpApiError) {
+    console.error(err.code, err.httpStatus, err.message);
   }
 }
 ```
 
-## Source
+## Best use cases
 
-[packages/typescript-sdk/](../packages/typescript-sdk/)
+- server-side platform billing flows
+- webhook consumers
+- internal reconciliation tooling
+- certified artifact purchase flows
+
+## Related
+
+- [Python SDK](./sdk-python.md)
+- [Authentication](./authentication.md)
+- [Provenance links](./provenance-links.md)
+- [Sandbox and mock server](./sandbox-and-mock-server.md)

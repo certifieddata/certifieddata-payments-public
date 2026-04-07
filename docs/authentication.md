@@ -1,40 +1,47 @@
 # Authentication
 
-## API Keys
+CDP authenticates requests using API keys and explicit API version headers.
 
-CDP uses bearer token authentication.
+## API keys
 
+Supported key formats:
+
+- Sandbox: `cdp_test_...`
+- Live: `cdp_live_...`
+
+Pass the key in the Authorization header:
+
+```http
+Authorization: Bearer cdp_test_xxx
 ```
-Authorization: Bearer cdp_test_...   # sandbox
-Authorization: Bearer cdp_live_...   # live
-```
 
-Key prefixes encode the environment:
-- `cdp_test_` — sandbox (`livemode: false`)
-- `cdp_live_` — live (`livemode: true`)
+## API versioning
 
-## API Version header
+Send the version header on every request:
 
-Always pass the API version header:
-
-```
+```http
 CDP-API-Version: 2025-01-01
 ```
 
-## Idempotency
+If the header is omitted, the API uses the latest version. Pinning the version is strongly recommended for production integrations.
 
-All mutating POST endpoints require an idempotency key:
+## Environment rules
 
-```
-Idempotency-Key: your-unique-key-here
-```
+- sandbox keys only work in sandbox
+- live keys only work in live environments
+- object IDs are environment-scoped and non-portable
+- webhook secrets are environment-scoped
+- test data must not be assumed valid in live mode
 
-See [Idempotency](./idempotency.md) for details.
+## Security guidance
 
-## Environment isolation
+- never expose live API keys in client-side browser code
+- store credentials in environment variables or a secrets manager
+- rotate credentials on a fixed schedule
+- maintain separate webhook consumers for sandbox and live environments
+- treat `cdp_live_` keys as production secrets with equivalent access controls
 
-Sandbox and live resources are non-portable. A sandbox `py_test_...` ID will not resolve against the live API. Always use matching keys for the environment you intend to target.
+## Related
 
-## Webhook signatures
-
-Webhook delivery uses HMAC-SHA256 signatures. See [Webhooks](./webhooks.md) for the signature verification protocol.
+- [Environments and versioning](./environments-and-versioning.md)
+- [Webhooks](./webhooks.md)

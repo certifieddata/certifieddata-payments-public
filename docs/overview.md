@@ -1,56 +1,81 @@
 # CertifiedData Payments — Overview
 
-CertifiedData Payments (CDP) is a provenance-aware commerce and settlement layer for the CertifiedData ecosystem. It enables payments that carry verifiable links to the AI artifacts, certificates, datasets, decisions, and models they fund.
+CertifiedData Payments (CDP) is a provenance-aware payments and settlement API for certified AI artifacts.
 
-## Machine-readable-first
+CDP helps developers, platforms, and machine actors create commercial events that stay linked to the artifacts, certificates, datasets, and decision records they fund.
 
-This documentation is a supplement to the machine-readable contract. For authoritative definitions, start with:
+## What CDP does
 
-- [`api-manifest.json`](../api-manifest.json) — root discovery entrypoint
-- [`openapi/certifieddata-payments-v1.openapi.yaml`](../openapi/certifieddata-payments-v1.openapi.yaml) — REST contract
-- [`schemas/resources/`](../schemas/resources/) — canonical resource definitions
+CDP provides:
 
-## Core resources
+- payee onboarding and payout destination records
+- customers, invoices, payment intents, and transactions
+- settlements and refunds
+- provenance links to artifacts, certificates, and decisions
+- webhook and event delivery for lifecycle changes
+- sandbox and mock-server support for integration testing
 
-| Resource | Prefix | Description |
-|---|---|---|
-| Payee | `py_` | A vendor or merchant who receives settlements |
-| PayeeAlias | `pya_` | External-system reference mapped to a Payee |
-| PayoutDestination | `pydst_` | A verified payout destination for a Payee |
-| Customer | `cus_` | A payer who funds PaymentIntents |
-| Invoice | `inv_` | A request for payment |
-| PaymentIntent | `pi_` | Payer-facing collection intent |
-| Transaction | `tx_` | Immutable ledger record created at capture |
-| Settlement | `stl_` | Payout batch from CDP to a Payee |
-| Refund | `rf_` | Full or partial reversal of a Transaction |
+## Public repo and contracts
 
-## Core differentiator: Provenance linking
+Canonical public repo:
 
-Transactions carry provenance links to the artifacts and decisions they fund:
+- `https://github.com/certifieddata/certifieddata-payments-public`
 
-```
-artifact_id, certificate_id, decision_id, dataset_id, model_id,
-output_id, receipt_hash, external_reference, provenance_metadata
-```
+Canonical machine-readable contracts:
 
-Provenance links are mutable until a transaction is captured. After capture, they are immutable.
+- REST API: [`openapi/certifieddata-payments-v1.openapi.yaml`](../openapi/certifieddata-payments-v1.openapi.yaml)
+- Events/Webhooks: [`asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`](../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml)
+- Schemas: [`schemas/`](../schemas/)
+- Discovery manifest: [`api-manifest.json`](../api-manifest.json)
 
-## PaymentIntent vs Transaction
+## SDKs
 
-These are distinct concepts:
+- TypeScript SDK: [`packages/typescript-sdk/`](../packages/typescript-sdk/)
+- Python SDK: [`packages/python-sdk/`](../packages/python-sdk/)
 
-- **PaymentIntent** — payer-facing collection intent. Can be confirmed or canceled before capture.
-- **Transaction** — immutable ledger record created when a PaymentIntent is captured. Cannot be modified after creation, only annotated.
+## Core idea: provenance-aware commerce
 
-## Environments
+A normal payment tells you money moved.
 
-- `sandbox` — `cdp_test_...` API keys, `livemode: false`
-- `live` — `cdp_live_...` API keys, `livemode: true`
+A CDP transaction can also tell you:
 
-IDs and credentials are environment-scoped and non-portable.
+- what artifact or service was purchased
+- what certificate or attestation applied
+- what decision record or policy reference was attached
+- what settlement or refund happened later
+- what machine-readable proof exists for reconciliation
 
-## Next steps
+## Design principles
 
-- [Quickstart](./quickstart.md)
-- [Authentication](./authentication.md)
-- [Provenance Linking](./provenance-linking.md)
+- machine-readable first
+- explicit lifecycle states
+- idempotent writes
+- stable, environment-scoped identifiers
+- provenance links as first-class fields
+- SDKs that map directly to the public contract
+
+## Where to start
+
+For most teams:
+
+1. read [`docs/quickstart.md`](./quickstart.md)
+2. install an SDK
+3. run the mock server
+4. inspect the OpenAPI and AsyncAPI contracts
+5. integrate webhooks and idempotent writes
+
+## Docs index
+
+| Doc | Contents |
+|---|---|
+| [quickstart.md](./quickstart.md) | Get running in minutes |
+| [authentication.md](./authentication.md) | API keys and versioning |
+| [api-resources.md](./api-resources.md) | Resource types and relationships |
+| [provenance-links.md](./provenance-links.md) | Linking payments to artifacts and certificates |
+| [webhooks.md](./webhooks.md) | Event delivery and signature verification |
+| [sdk-typescript.md](./sdk-typescript.md) | TypeScript SDK reference |
+| [sdk-python.md](./sdk-python.md) | Python SDK reference |
+| [environments-and-versioning.md](./environments-and-versioning.md) | Sandbox, live, and API versioning |
+| [pricing-and-plans.md](./pricing-and-plans.md) | Plan tiers and billing behavior |
+| [errors-and-idempotency.md](./errors-and-idempotency.md) | Error codes and safe retries |
+| [sandbox-and-mock-server.md](./sandbox-and-mock-server.md) | Local development with mock server |

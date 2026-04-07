@@ -1,71 +1,104 @@
 # Webhooks
 
-CDP delivers signed events to your registered webhook endpoints.
+CDP delivers signed webhook events to your registered endpoints for transaction, settlement, and refund lifecycle changes.
 
-## Registration
+## Event contract
 
-```
-POST /v1/webhook-endpoints
-{
-  "url": "https://your-domain.example/webhooks/cdp",
-  "enabled_events": ["transaction.captured", "settlement.succeeded"],
-  "description": "Production webhook"
-}
-```
+Canonical event definitions:
 
-Use `["*"]` for all events.
+- [`asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`](../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml)
+
+## Typical events
+
+- `payee.created`
+- `transaction.created`
+- `transaction.captured`
+- `transaction.links_attached`
+- `settlement.submitted`
+- `settlement.succeeded`
+- `settlement.failed`
+- `refund.created`
+- `refund.succeeded`
+- `refund.failed`
+
+Full event type registry: [`schemas/enums/event-types.json`](../schemas/enums/event-types.json)
 
 ## Signature verification
 
-All requests include:
-- `CDP-Signature: t={timestamp},v1={hmac_sha256}`
-- `CDP-Timestamp: {unix_timestamp}`
-- `CDP-Event-Id: {event_id}`
-- `CDP-Api-Version: {api_version}`
+CDP signs every delivery with HMAC-SHA256.
 
-### Signing algorithm
+**Signature header:** `CDP-Signature: t={timestamp},v1={hmac}`
+**Timestamp header:** `CDP-Timestamp: {unix_timestamp}`
+**Tolerance:** 300 seconds
 
-1. Construct the signed payload: `{timestamp}.{raw_body}`
-2. Compute HMAC-SHA256 with your webhook secret as the key
-3. Compare with the `v1` value in `CDP-Signature`
-4. Reject if the timestamp is more than 300 seconds from now
+Signed payload template:
 
-### TypeScript example
-
-```typescript
-import { verifyWebhookSignature } from "@certifieddata/payments/webhooks";
-
-const isValid = verifyWebhookSignature({
-  payload: rawBody,           // string — the raw request body
-  signature: sigHeader,       // CDP-Signature header value
-  timestamp: timestampHeader, // CDP-Timestamp header value
-  secret: webhookSecret,      // your endpoint's secret
-});
+```
+{timestamp}.{raw_body}
 ```
 
-### Python example
+Compute the expected signature:
 
-```python
-from certifieddata_payments import verify_webhook_signature
-
-is_valid = verify_webhook_signature(
-    payload=raw_body,
-    signature=request.headers["CDP-Signature"],
-    timestamp=request.headers["CDP-Timestamp"],
-    secret=webhook_secret,
-)
+```ts
+const signed = `${timestamp}.${rawBody}`;
+const expected = crypto
+  .createHmac("sha256", webhookSecret)
+  .update(signed)
+  .digest("hex");
 ```
 
-## Machine-readable constraints
+Compare `v1` from the header to the computed value. Reject if they differ or if the timestamp is outside the 300-second window.
 
-- Signature algorithm: `hmac-sha256`
-- Timestamp tolerance: 300 seconds
-- See [`constraints.json`](../constraints.json) for all webhook limits
+### Test vectors
 
-## Test vectors
+Machine-readable test vectors for signature verification:
 
-See [`test-vectors/webhook-signature/`](../test-vectors/webhook-signature/) for valid and invalid signature test cases.
+- [`test-vectors/webhook-signature/`](../test-vectors/webhook-signature/)
+
+Use these to validate your verification implementation before going live.
 
 ## Event envelope
 
-All events share the same envelope. See [`schemas/resources/event.schema.json`](../schemas/resources/event.schema.json) and [`examples/json/event.transaction.captured.json`](../examples/json/event.transaction.captured.json).
+Every event shares this shape:
+
+```json
+{
+  "id": "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C",
+  "event_type": "transaction.captured",
+  "event_version": "1.0.0",
+  "api_version": "2025-01-01",
+  "occurred_at": "2026-04-06T18:42:11Z",
+  "environment": "sandbox",
+  "livemode": false,
+  "resource_type": "transaction",
+  "resource_id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+  "data": { ... },
+  "provenance": { ... },
+  "request_context": { ... }
+}
+```
+
+Field definitions: [`schemas/resources/event.schema.json`](../schemas/resources/event.schema.json)
+
+## Receiver guidance
+
+Webhook consumers must:
+
+- verify the signature on every delivery
+- persist the event `id` before processing — use it as an idempotency key
+- respond with `200` promptly — move long-running work to an async queue
+- handle retries gracefully — the same event may be delivered more than once
+- reconcile event state against your own transaction records
+
+## Operational guidance
+
+- maintain separate webhook endpoints for sandbox and live
+- log delivery attempts, event IDs, and processing outcomes
+- alert on unexpected `5xx` delivery failures from CDP
+- reconcile webhook events against transaction state in your own DB
+
+## Related
+
+- [Idempotency](./errors-and-idempotency.md)
+- [Errors](./errors-and-idempotency.md)
+- [Test vectors](../test-vectors/)

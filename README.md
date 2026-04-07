@@ -6,18 +6,32 @@ CertifiedData Payments (CDP) is a commerce and settlement layer built for the [C
 
 ---
 
+## Public routes
+
+- **Public repo**: `https://github.com/certifieddata/certifieddata-payments-public`
+- **Docs index**: `./docs/overview.md`
+- **REST contract**: `./openapi/certifieddata-payments-v1.openapi.yaml`
+- **Events/webhooks**: `./asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`
+- **TypeScript SDK**: `./packages/typescript-sdk/`
+- **Python SDK**: `./packages/python-sdk/`
+- **Mock server**: `./packages/mock-server/`
+- **Examples**: `./examples/`
+- **Discovery manifest**: `./api-manifest.json`
+
+---
+
 ## What this repository contains
 
 | Directory | Contents |
 |---|---|
 | `openapi/` | OpenAPI 3.1 REST contract |
 | `asyncapi/` | AsyncAPI event/webhook contract |
-| `schemas/` | JSON Schemas (resources, common primitives, enums, state machines, errors, capabilities) |
+| `schemas/` | JSON Schemas for resources, primitives, enums, lifecycle states, errors, and capabilities |
 | `packages/typescript-sdk/` | `@certifieddata/payments` TypeScript SDK |
 | `packages/python-sdk/` | `certifieddata-payments` Python SDK |
 | `packages/mock-server/` | Local mock server for development and testing |
-| `examples/` | JSON payloads and runnable code examples |
-| `test-vectors/` | Machine-readable test vectors (webhook signature, idempotency, provenance) |
+| `examples/` | JSON payloads and runnable examples |
+| `test-vectors/` | Machine-readable test vectors for webhooks, idempotency, and provenance |
 | `docs/` | Markdown documentation |
 | `api-manifest.json` | Root machine-discovery entrypoint |
 | `constraints.json` | Canonical operational limits |
@@ -52,45 +66,33 @@ Start there. Markdown docs are explanatory supplements, not the source of truth.
 ## Quick start
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Start mock server
 pnpm --filter @certifieddata/payments-mock-server start
-
-# GET /v1/health
 curl http://localhost:3456/v1/health
-# → { "status": "ok", "mode": "mock", "livemode": false }
 ```
+
+Expected:
+
+```json
+{ "status": "ok", "mode": "mock", "livemode": false }
+```
+
+See:
+
+- [Overview](./docs/overview.md)
+- [Quickstart](./docs/quickstart.md)
+- [Authentication](./docs/authentication.md)
+- [TypeScript SDK](./docs/sdk-typescript.md)
+- [Python SDK](./docs/sdk-python.md)
+- [Webhooks](./docs/webhooks.md)
 
 ---
 
 ## SDK install
 
 ```bash
-# TypeScript
 pnpm add @certifieddata/payments
-
-# Python
 pip install certifieddata-payments
-```
-
----
-
-## Core concept: Provenance linking
-
-CDP is built around provenance-aware commerce. Every transaction can be linked to the artifact, certificate, dataset, model, or decision it funds:
-
-```typescript
-await client.transactions.attachLinks("tx_...", {
-  artifact_id: "art_...",
-  certificate_id: "cert_...",
-  decision_id: "dec_...",
-  provenance_metadata: {
-    "cdp:workflow_id": "wf_123",
-    "partner:invoice_ref": "INV-44821"
-  }
-});
 ```
 
 ---
@@ -99,7 +101,11 @@ await client.transactions.attachLinks("tx_...", {
 
 Current API version: `2025-01-01`
 
-Pass as a header: `CDP-API-Version: 2025-01-01`
+Send:
+
+```http
+CDP-API-Version: 2025-01-01
+```
 
 ---
 
@@ -114,6 +120,6 @@ IDs and credentials are environment-scoped and non-portable.
 
 ## Related
 
-- [CertifiedData.io](https://certifieddata.io) — AI artifact certification platform
-- [API reference](./docs/overview.md)
+- [CertifiedData.io](https://certifieddata.io)
+- [Docs overview](./docs/overview.md)
 - [Machine discovery manifest](./api-manifest.json)

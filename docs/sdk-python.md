@@ -2,86 +2,110 @@
 
 The `certifieddata-payments` package is the official Python SDK for CertifiedData Payments.
 
-## Installation
+**Repo path:** [`packages/python-sdk/`](../packages/python-sdk/)
+
+## Install
 
 ```bash
 pip install certifieddata-payments
 ```
 
-**Requirements:** Python ≥ 3.9. Uses `httpx` for HTTP and `pydantic` v2 for validation.
-
-## Quick start
+## Client setup
 
 ```python
 from certifieddata_payments import CertifiedDataPaymentsClient
 
-client = CertifiedDataPaymentsClient(api_key="cdp_test_...")
-
-payee = client.payees.create(
-    entity_type="company",
-    legal_name="Acme Corp",
-    idempotency_key="create-payee-acme-001",
+client = CertifiedDataPaymentsClient(
+    api_key="cdp_live_your_key",
+    api_version="2025-01-01",
 )
-print(payee["id"])
 ```
 
-## Client options
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `api_key` | `str` | Required. Use `cdp_test_` for sandbox, `cdp_live_` for production. |
-| `base_url` | `str` | Defaults to `https://api.certifieddata.io`. |
-| `api_version` | `str` | Defaults to `2025-01-01`. |
-| `timeout` | `float` | Request timeout in seconds (default 30). |
-
-## Context manager
+### Sandbox / mock server
 
 ```python
-with CertifiedDataPaymentsClient(api_key="cdp_test_...") as client:
-    payee = client.payees.create(entity_type="company", ...)
+client = CertifiedDataPaymentsClient(
+    api_key="cdp_test_your_key",
+    api_version="2025-01-01",
+    base_url="http://localhost:3456",
+)
 ```
 
-## Webhook verification
+## Create a transaction
 
 ```python
-from certifieddata_payments import verify_webhook_signature
+tx = client.transactions.create({
+    "payment_intent_id": "pi_01HZX8H75Z6X8C5X7JQY6B4M2N",
+    "payee_id": "py_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+    "amount": 4900,
+    "currency": "usd",
+    "rail": "stripe",
+    "description": "Certified artifact purchase",
+})
+```
 
-is_valid = verify_webhook_signature(
-    raw_body=request.body,
+## Attach provenance links
+
+```python
+client.transactions.attach_links(tx["id"], {
+    "artifact_id": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+    "certificate_id": "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
+    "decision_id": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+    "provenance_metadata": {
+        "cdp:workflow_id": "wf_123",
+        "cdp:source_system": "certifieddata-platform",
+    },
+})
+```
+
+## Verify a webhook signature
+
+```python
+from certifieddata_payments.webhooks import verify_signature
+
+is_valid = verify_signature(
+    raw_body=raw_body,
     signature_header=request.headers["CDP-Signature"],
     timestamp_header=request.headers["CDP-Timestamp"],
-    secret=os.environ["CDP_WEBHOOK_SECRET"],
+    secret=webhook_secret,
 )
 ```
 
-## Resources
+## Pagination
 
-| Attribute | Endpoints |
-|-----------|-----------|
-| `client.payees` | Payees, aliases, payout destinations |
-| `client.payment_intents` | Payment intents |
-| `client.transactions` | Transactions, attach_links, capture |
-| `client.settlements` | Settlements, submit, cancel |
-| `client.refunds` | Refunds |
-| `client.events` | Events |
+```python
+page = client.transactions.list(limit=20)
+
+while page.get("has_more"):
+    last_id = page["data"][-1]["id"]
+    page = client.transactions.list(limit=20, starting_after=last_id)
+```
 
 ## Error handling
 
 ```python
-from certifieddata_payments import CDPConflictError
+from certifieddata_payments.errors import CdpApiError
 
 try:
-    client.transactions.attach_links(tx_id, certificate_id="cert_...")
-except CDPConflictError as e:
-    if e.code == "provenance.immutable_after_capture":
-        # Transaction already captured — provenance is locked
-        pass
+    client.transactions.create({...})
+except CdpApiError as e:
+    print(e.code, e.http_status, e.message)
 ```
 
-## Note on async
+## Best use cases
 
-The V1 Python SDK is sync-only. An async variant is planned for a future release.
+- backend services and scheduled jobs
+- workflow orchestration
+- reconciliation and audit scripts
+- reporting pipelines
 
-## Source
+## Notes
 
-[packages/python-sdk/](../packages/python-sdk/)
+The Python SDK is synchronous-first in V1. Async support is planned for a future release.
+
+## Related
+
+- [TypeScript SDK](./sdk-typescript.md)
+- [Authentication](./authentication.md)
+- [Provenance links](./provenance-links.md)
+- [Sandbox and mock server](./sandbox-and-mock-server.md)
