@@ -1,13 +1,13 @@
 # Payees
 
-A **Payee** (`py_` prefix) represents a vendor, contractor, or AI service provider who receives payments via the CertifiedData Payments platform.
+A **Payee** (`py_` prefix) represents a vendor, contractor, or AI service provider who receives payments via the CertifiedData Agent Commerce platform.
 
 ## Machine-readable references
 
 - Schema: [schemas/resources/payee.schema.json](../schemas/resources/payee.schema.json)
 - Example request: [examples/json/payee.create.request.json](../examples/json/payee.create.request.json)
 - Example response: [examples/json/payee.create.response.json](../examples/json/payee.create.response.json)
-- OpenAPI operations: [openapi/certifieddata-payments-v1.openapi.yaml](../openapi/certifieddata-payments-v1.openapi.yaml) → `/v1/payees`
+- OpenAPI operations: [openapi/certifieddata-agent-commerce-v1.openapi.yaml](../openapi/certifieddata-agent-commerce-v1.openapi.yaml) → `/v1/payees`
 
 ## Endpoints
 

@@ -1,4 +1,4 @@
-import { createCDPError, type CDPErrorResponse } from "../errors/base.js";
+import { createCDACError, type CDACErrorResponse } from "../errors/base.js";
 
 export interface RequestOptions {
   idempotencyKey?: string;
@@ -42,7 +42,7 @@ export async function makeRequest<T>(
 
   const headers: Record<string, string> = {
     "Authorization": `Bearer ${config.apiKey}`,
-    "CDP-API-Version": apiVersion,
+    "CDAC-API-Version": apiVersion,
     "Content-Type": "application/json",
     "Accept": "application/json",
   };
@@ -60,8 +60,8 @@ export async function makeRequest<T>(
   const data: unknown = await response.json();
 
   if (!response.ok) {
-    const errorResponse = data as CDPErrorResponse;
-    throw createCDPError(errorResponse.error);
+    const errorResponse = data as CDACErrorResponse;
+    throw createCDACError(errorResponse.error);
   }
 
   return data as T;

@@ -43,6 +43,6 @@ const version = await client.capabilities.version();
 | `pagination.default_limit` | 20 |
 | `pagination.max_limit` | 100 |
 | `webhooks.signature_algorithm` | `hmac-sha256` |
-| `webhooks.signature_header` | `CDP-Signature` |
+| `webhooks.signature_header` | `CDAC-Signature` |
 
 Agents should prefer [schemas/capabilities/capabilities.json](../schemas/capabilities/capabilities.json) as the static source of truth, and use `GET /v1/capabilities` to confirm runtime environment support.

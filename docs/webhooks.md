@@ -6,7 +6,7 @@ CDP delivers signed webhook events to your registered endpoints for transaction,
 
 Canonical event definitions:
 
-- [`asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`](../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml)
+- [`asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml`](../asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml)
 
 ## Typical events
 
@@ -27,8 +27,8 @@ Full event type registry: [`schemas/enums/event-types.json`](../schemas/enums/ev
 
 CDP signs every delivery with HMAC-SHA256.
 
-**Signature header:** `CDP-Signature: t={timestamp},v1={hmac}`
-**Timestamp header:** `CDP-Timestamp: {unix_timestamp}`
+**Signature header:** `CDAC-Signature: t={timestamp},v1={hmac}`
+**Timestamp header:** `CDAC-Timestamp: {unix_timestamp}`
 **Tolerance:** 300 seconds
 
 Signed payload template:

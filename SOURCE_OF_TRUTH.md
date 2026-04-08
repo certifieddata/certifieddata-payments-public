@@ -1,4 +1,4 @@
-# CertifiedData Payments — Source of Truth Hierarchy
+# CertifiedData Agent Commerce — Source of Truth Hierarchy
 
 ## Purpose
 
@@ -11,14 +11,14 @@ Defines the source-of-truth hierarchy to prevent drift across OpenAPI, AsyncAPI,
 ### 1. REST surface
 **Canonical source:** OpenAPI 3.1
 
-File: `openapi/certifieddata-payments-v1.openapi.yaml`
+File: `openapi/certifieddata-agent-commerce-v1.openapi.yaml`
 
 Source of truth for: endpoints, methods, parameters, headers, request/response contracts, auth model, pagination structure, examples embedded in operations.
 
 ### 2. Event surface
 **Canonical source:** AsyncAPI
 
-File: `asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`
+File: `asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml`
 
 Source of truth for: event envelope, event types, webhook payload structure, delivery metadata, header expectations, event examples.
 

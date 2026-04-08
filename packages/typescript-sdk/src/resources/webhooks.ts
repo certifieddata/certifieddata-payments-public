@@ -67,8 +67,8 @@ export class WebhooksResource {
    * Verify a webhook signature from an incoming CDP webhook request.
    *
    * @param rawBody - The raw request body as a string (before any JSON parsing)
-   * @param signatureHeader - Value of the CDP-Signature header (e.g. "t=1712428931,v1=abc...")
-   * @param timestampHeader - Value of the CDP-Timestamp header
+   * @param signatureHeader - Value of the CDAC-Signature header (e.g. "t=1712428931,v1=abc...")
+   * @param timestampHeader - Value of the CDAC-Timestamp header
    * @param secret - Your webhook endpoint secret
    * @param toleranceSeconds - Maximum age of webhook in seconds (default: 300)
    */

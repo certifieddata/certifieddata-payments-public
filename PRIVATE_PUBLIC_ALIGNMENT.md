@@ -1,8 +1,8 @@
-# CertifiedData Payments — Private to Public Alignment
+# CertifiedData Agent Commerce — Private to Public Alignment
 
 ## Purpose
 
-Maps private platform concepts to public CertifiedData Payments contract concepts.
+Maps private platform concepts to public CertifiedData Agent Commerce contract concepts.
 
 ---
 

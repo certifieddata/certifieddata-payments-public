@@ -1,13 +1,13 @@
 # Events
 
-Events represent things that happen in the CertifiedData Payments system. They are queryable via `GET /v1/events` and also delivered via webhooks.
+Events represent things that happen in the CertifiedData Agent Commerce system. They are queryable via `GET /v1/events` and also delivered via webhooks.
 
 ## Machine-readable references
 
 - Schema: [schemas/resources/event.schema.json](../schemas/resources/event.schema.json)
 - Event types: [schemas/enums/event-types.json](../schemas/enums/event-types.json)
 - Event-resource map: [schemas/event-resource-map.json](../schemas/event-resource-map.json)
-- AsyncAPI contract: [asyncapi/certifieddata-payments-events-v1.asyncapi.yaml](../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml)
+- AsyncAPI contract: [asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml](../asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml)
 - Example: [examples/json/event.transaction.captured.json](../examples/json/event.transaction.captured.json)
 
 ## Event envelope

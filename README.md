@@ -12,14 +12,14 @@ pnpm add @certifieddata/payments
 # or: npm install @certifieddata/payments
 
 # Python
-pip install certifieddata-payments
+pip install certifieddata-agent-commerce
 ```
 
 ## Configure
 
 ```bash
-export CDP_API_KEY=cdp_test_xxx
-export CDP_BASE_URL=https://sandbox.certifieddata.io
+export CDAC_API_KEY=cdp_test_xxx
+export CDAC_BASE_URL=https://sandbox.certifieddata.io
 ```
 
 Sandbox keys start with `cdp_test_`. Live keys start with `cdp_live_`.
@@ -27,10 +27,10 @@ Sandbox keys start with `cdp_test_`. Live keys start with `cdp_live_`.
 ## Run a payment
 
 ```ts
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const client = new CertifiedDataPaymentsClient({
-  // reads CDP_API_KEY + CDP_BASE_URL from env automatically
+const client = new CertifiedDataAgentCommerceClient({
+  // reads CDAC_API_KEY + CDAC_BASE_URL from env automatically
 });
 
 // Phase 1 — agent declares intent
@@ -52,10 +52,10 @@ console.log(capture.receipt);
 ```
 
 ```python
-from certifieddata_payments import CertifiedDataPaymentsClient
+from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient
 
-# reads CDP_API_KEY + CDP_BASE_URL from env automatically
-client = CertifiedDataPaymentsClient()
+# reads CDAC_API_KEY + CDAC_BASE_URL from env automatically
+client = CertifiedDataAgentCommerceClient()
 
 tx = client.transactions.create(
     amount=2500,   # cents
@@ -121,12 +121,12 @@ Run the mock server for development without sandbox credentials:
 
 ```bash
 pnpm install
-pnpm --filter @certifieddata/payments-mock-server start
+pnpm --filter @certifieddata/agent-commerce-mock-server start
 # → http://localhost:3456
 ```
 
 ```bash
-CDP_API_KEY=cdp_test_any CDP_BASE_URL=http://localhost:3456 \
+CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
   node examples/claude-demo/demo.mjs
 ```
 
@@ -140,7 +140,7 @@ CDP_API_KEY=cdp_test_any CDP_BASE_URL=http://localhost:3456 \
 | `asyncapi/` | AsyncAPI event/webhook contract |
 | `schemas/` | JSON Schemas — resources, enums, lifecycle state machines, errors |
 | `packages/typescript-sdk/` | `@certifieddata/payments` TypeScript SDK |
-| `packages/python-sdk/` | `certifieddata-payments` Python SDK |
+| `packages/python-sdk/` | `certifieddata-agent-commerce` Python SDK |
 | `packages/mock-server/` | Local mock server for development |
 | `examples/claude-demo/` | Runnable end-to-end demo (Python + TypeScript) |
 | `examples/` | JSON payload examples and runnable scripts |
@@ -155,14 +155,14 @@ CDP_API_KEY=cdp_test_any CDP_BASE_URL=http://localhost:3456 \
 
 ```bash
 # Python
-pip install certifieddata-payments
-CDP_API_KEY=cdp_test_xxx CDP_BASE_URL=https://sandbox.certifieddata.io \
+pip install certifieddata-agent-commerce
+CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
   python examples/claude-demo/demo.py
 
 # TypeScript
 pnpm install
-CDP_API_KEY=cdp_test_xxx CDP_BASE_URL=https://sandbox.certifieddata.io \
-  pnpm --filter @certifieddata/payments-demo start
+CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
+  pnpm --filter @certifieddata/agent-commerce-demo start
 ```
 
 The demo runs all 5 phases and prints the signed receipt + independent verification result.
@@ -182,8 +182,8 @@ The demo runs all 5 phases and prints the signed receipt + independent verificat
 
 The canonical sources of truth are:
 
-- **REST API** → `openapi/certifieddata-payments-v1.openapi.yaml`
-- **Events** → `asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`
+- **REST API** → `openapi/certifieddata-agent-commerce-v1.openapi.yaml`
+- **Events** → `asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml`
 - **Resource shapes** → `schemas/resources/*.schema.json`
 - **Lifecycle rules** → `schemas/state-machines/*.json`
 - **Discovery** → `api-manifest.json`

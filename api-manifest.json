@@ -1,8 +1,8 @@
 {
   "manifest_version": "1.0.0",
   "product": {
-    "name": "CertifiedData Payments",
-    "short_name": "cdp",
+    "name": "CertifiedData Agent Commerce",
+    "short_name": "cdac",
     "description": "Provenance-aware payments and settlement contract for certified AI artifacts, certifications, and decision-linked commerce."
   },
   "api": {
@@ -11,8 +11,8 @@
     "default_environment": "sandbox"
   },
   "source_of_truth": {
-    "rest": "./openapi/certifieddata-payments-v1.openapi.yaml",
-    "events": "./asyncapi/certifieddata-payments-events-v1.asyncapi.yaml",
+    "rest": "./openapi/certifieddata-agent-commerce-v1.openapi.yaml",
+    "events": "./asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml",
     "schemas_common": "./schemas/common/",
     "schemas_resources": "./schemas/resources/",
     "state_machines": "./schemas/state-machines/",
@@ -36,7 +36,7 @@
       "language": "typescript"
     },
     "python": {
-      "name": "certifieddata-payments",
+      "name": "certifieddata-agent-commerce",
       "path": "./packages/python-sdk",
       "language": "python"
     }

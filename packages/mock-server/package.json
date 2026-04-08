@@ -1,7 +1,7 @@
 {
-  "name": "@certifieddata/payments-mock-server",
+  "name": "@certifieddata/agent-commerce-mock-server",
   "version": "0.1.0",
-  "description": "CertifiedData Payments mock server for local development and testing",
+  "description": "CertifiedData Agent Commerce mock server for local development and testing",
   "private": true,
   "type": "module",
   "main": "dist/index.js",

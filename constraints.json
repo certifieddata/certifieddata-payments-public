@@ -48,10 +48,10 @@
   },
   "webhooks": {
     "signature_algorithm": "hmac-sha256",
-    "signature_header": "CDP-Signature",
-    "timestamp_header": "CDP-Timestamp",
-    "event_id_header": "CDP-Event-Id",
-    "api_version_header": "CDP-Api-Version",
+    "signature_header": "CDAC-Signature",
+    "timestamp_header": "CDAC-Timestamp",
+    "event_id_header": "CDAC-Event-Id",
+    "api_version_header": "CDAC-Api-Version",
     "timestamp_tolerance_seconds": 300,
     "max_payload_bytes": 262144
   },

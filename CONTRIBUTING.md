@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to CertifiedData Payments.
+Thank you for your interest in contributing to CertifiedData Agent Commerce.
 
 ## Before you contribute
 

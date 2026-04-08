@@ -8,9 +8,9 @@
   "signed_payload_template": "{timestamp}.{payload}",
   "expected_signature_header": "t=1712428931,v1=9f6cb9c8c2c6f0f8e4dbf76a6d9b56eb3d65d4f16f58af9075a8d0d43f3b80ec",
   "expected_headers": {
-    "CDP-Timestamp": "1712428931",
-    "CDP-Event-Id": "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C",
-    "CDP-Api-Version": "2025-01-01"
+    "CDAC-Timestamp": "1712428931",
+    "CDAC-Event-Id": "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C",
+    "CDAC-Api-Version": "2025-01-01"
   },
   "verification_expectations": {
     "valid": true,

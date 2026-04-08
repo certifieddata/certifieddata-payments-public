@@ -1,6 +1,6 @@
-# CertifiedData Payments — Overview
+# CertifiedData Agent Commerce — Overview
 
-CertifiedData Payments (CDP) is a provenance-aware payments and settlement API for certified AI artifacts.
+CertifiedData Agent Commerce (CDP) is a provenance-aware payments and settlement API for certified AI artifacts.
 
 CDP helps developers, platforms, and machine actors create commercial events that stay linked to the artifacts, certificates, datasets, and decision records they fund.
 
@@ -19,12 +19,12 @@ CDP provides:
 
 Canonical public repo:
 
-- `https://github.com/certifieddata/certifieddata-payments-public`
+- `https://github.com/certifieddata/certifieddata-agent-commerce-public`
 
 Canonical machine-readable contracts:
 
-- REST API: [`openapi/certifieddata-payments-v1.openapi.yaml`](../openapi/certifieddata-payments-v1.openapi.yaml)
-- Events/Webhooks: [`asyncapi/certifieddata-payments-events-v1.asyncapi.yaml`](../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml)
+- REST API: [`openapi/certifieddata-agent-commerce-v1.openapi.yaml`](../openapi/certifieddata-agent-commerce-v1.openapi.yaml)
+- Events/Webhooks: [`asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml`](../asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml)
 - Schemas: [`schemas/`](../schemas/)
 - Discovery manifest: [`api-manifest.json`](../api-manifest.json)
 

@@ -1,8 +1,8 @@
 {
-  "name": "certifieddata-payments-public",
+  "name": "certifieddata-agent-commerce-public",
   "version": "0.1.0",
   "private": true,
-  "description": "CertifiedData Payments — public SDK, contract, and tooling",
+  "description": "CertifiedData Agent Commerce — public SDK, contract, and tooling",
   "engines": {
     "node": ">=18",
     "pnpm": ">=9"
@@ -13,8 +13,8 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "mock": "pnpm --filter @certifieddata/payments-mock-server start",
-    "validate:openapi": "redocly lint openapi/certifieddata-payments-v1.openapi.yaml",
+    "mock": "pnpm --filter @certifieddata/agent-commerce-mock-server start",
+    "validate:openapi": "redocly lint openapi/certifieddata-agent-commerce-v1.openapi.yaml",
     "validate:schemas": "node scripts/validate-schemas.js",
     "validate:vectors": "node scripts/validate-vectors.js"
   },

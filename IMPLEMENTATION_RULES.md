@@ -1,10 +1,10 @@
-# CertifiedData Payments Public Repo — Implementation Rules
+# CertifiedData Agent Commerce Public Repo — Implementation Rules
 
 ## Purpose
 
-This document defines the implementation rules for the public CertifiedData Payments repository.
+This document defines the implementation rules for the public CertifiedData Agent Commerce repository.
 
-The goal of this repo is to expose the public, machine-readable integration surface for CertifiedData Payments (CDP), including:
+The goal of this repo is to expose the public, machine-readable integration surface for CertifiedData Agent Commerce (CDP), including:
 - REST API contract
 - event contract
 - JSON schemas

@@ -1,7 +1,7 @@
-CertifiedData Payments (CDP) — machine-facing repository guide
+CertifiedData Agent Commerce (CDP) — machine-facing repository guide
 
 OVERVIEW
-CertifiedData Payments (CDP) is the provenance-aware commerce and settlement contract for the CertifiedData ecosystem.
+CertifiedData Agent Commerce (CDP) is the provenance-aware commerce and settlement contract for the CertifiedData ecosystem.
 This repository contains the PUBLIC developer and machine-facing contract layer for CDP.
 This repository does NOT contain private payment execution internals.
 
@@ -14,16 +14,16 @@ HOW TO READ THIS REPOSITORY
 2. schemas/capabilities/capabilities.json
 3. constraints.json
 4. support-matrix.json
-5. openapi/certifieddata-payments-v1.openapi.yaml
-6. asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+5. openapi/certifieddata-agent-commerce-v1.openapi.yaml
+6. asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml
 7. schemas/common/* and schemas/resources/*
 8. schemas/state-machines/*
 9. examples/json and test-vectors
 10. docs markdown (explanation/navigation only)
 
 SOURCE OF TRUTH
-REST: openapi/certifieddata-payments-v1.openapi.yaml
-Events: asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+REST: openapi/certifieddata-agent-commerce-v1.openapi.yaml
+Events: asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml
 Shared models: schemas/common/* and schemas/resources/*
 Lifecycle: schemas/state-machines/*
 Errors: schemas/errors/error-catalog.json
@@ -49,11 +49,11 @@ MACHINE-READABLE OPERATING RULE
 When a concept appears in both prose and a machine-readable artifact, prefer the machine-readable artifact.
 
 REST SURFACE
-Canonical: openapi/certifieddata-payments-v1.openapi.yaml
+Canonical: openapi/certifieddata-agent-commerce-v1.openapi.yaml
 Core families: payees, payout destinations, customers, invoices, payment intents, transactions, settlements, refunds, webhook endpoints, events, capabilities, health
 
 EVENT SURFACE
-Canonical: asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+Canonical: asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml
 Envelope fields: id, event_type, event_version, api_version, occurred_at, environment, livemode, resource_type, resource_id, data, provenance, request_context
 
 RESOURCE INDEX
@@ -108,7 +108,7 @@ test-vectors/provenance.attach-after-capture.invalid.json  — attach links afte
 test-vectors/event.transaction.captured.fixture.json       — canonical event fixture
 
 VERSIONING RULES
-API version: 2025-01-01 (passed as CDP-API-Version header)
+API version: 2025-01-01 (passed as CDAC-API-Version header)
 Schema versions: semver in each schema file
 SDK versions: see versions.json
 Never rename stable enum values — add new ones with deprecation notice only
@@ -121,7 +121,7 @@ Live: cdp_live_... API keys, livemode: true
 
 SDKS
 TypeScript: @certifieddata/payments — packages/typescript-sdk
-Python: certifieddata-payments — packages/python-sdk
+Python: certifieddata-agent-commerce — packages/python-sdk
 
 ENUM REGISTRIES
 schemas/enums/event-types.json | schemas/enums/payment-rails.json | schemas/enums/transaction-statuses.json

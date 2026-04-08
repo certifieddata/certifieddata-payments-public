@@ -1,14 +1,14 @@
 {
   "_comment": "CDP events discovery. Event types, envelope shape, and webhook headers.",
-  "asyncapi": "../asyncapi/certifieddata-payments-events-v1.asyncapi.yaml",
+  "asyncapi": "../asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml",
   "event_types_ref": "../schemas/enums/event-types.json",
   "event_envelope_schema": "../schemas/resources/event.schema.json",
   "webhook_signing": {
     "algorithm": "hmac-sha256",
-    "signature_header": "CDP-Signature",
-    "timestamp_header": "CDP-Timestamp",
-    "event_id_header": "CDP-Event-Id",
-    "api_version_header": "CDP-Api-Version",
+    "signature_header": "CDAC-Signature",
+    "timestamp_header": "CDAC-Timestamp",
+    "event_id_header": "CDAC-Event-Id",
+    "api_version_header": "CDAC-Api-Version",
     "signed_payload_template": "{timestamp}.{raw_body}",
     "signature_format": "t={timestamp},v1={hmac_hex}",
     "tolerance_seconds": 300

@@ -1,4 +1,4 @@
-export interface CDPErrorResponse {
+export interface CDACErrorResponse {
   error: {
     code: string;
     message: string;
@@ -9,16 +9,16 @@ export interface CDPErrorResponse {
   };
 }
 
-export class CDPError extends Error {
+export class CDACError extends Error {
   readonly code: string;
   readonly httpStatus: number;
   readonly retryable: boolean;
   readonly docsUrl?: string;
   readonly validationErrors?: Array<{ field: string; message: string }>;
 
-  constructor(response: CDPErrorResponse["error"]) {
+  constructor(response: CDACErrorResponse["error"]) {
     super(response.message);
-    this.name = "CDPError";
+    this.name = "CDACError";
     this.code = response.code;
     this.httpStatus = response.http_status;
     this.retryable = response.retryable;
@@ -27,56 +27,56 @@ export class CDPError extends Error {
   }
 }
 
-export class CDPAuthError extends CDPError {
-  constructor(response: CDPErrorResponse["error"]) {
+export class CDACAuthError extends CDACError {
+  constructor(response: CDACErrorResponse["error"]) {
     super(response);
-    this.name = "CDPAuthError";
+    this.name = "CDACAuthError";
   }
 }
 
-export class CDPValidationError extends CDPError {
-  constructor(response: CDPErrorResponse["error"]) {
+export class CDACValidationError extends CDACError {
+  constructor(response: CDACErrorResponse["error"]) {
     super(response);
-    this.name = "CDPValidationError";
+    this.name = "CDACValidationError";
   }
 }
 
-export class CDPNotFoundError extends CDPError {
-  constructor(response: CDPErrorResponse["error"]) {
+export class CDACNotFoundError extends CDACError {
+  constructor(response: CDACErrorResponse["error"]) {
     super(response);
-    this.name = "CDPNotFoundError";
+    this.name = "CDACNotFoundError";
   }
 }
 
-export class CDPConflictError extends CDPError {
-  constructor(response: CDPErrorResponse["error"]) {
+export class CDACConflictError extends CDACError {
+  constructor(response: CDACErrorResponse["error"]) {
     super(response);
-    this.name = "CDPConflictError";
+    this.name = "CDACConflictError";
   }
 }
 
-export class CDPRateLimitError extends CDPError {
-  constructor(response: CDPErrorResponse["error"]) {
+export class CDACRateLimitError extends CDACError {
+  constructor(response: CDACErrorResponse["error"]) {
     super(response);
-    this.name = "CDPRateLimitError";
+    this.name = "CDACRateLimitError";
   }
 }
 
-export function createCDPError(response: CDPErrorResponse["error"]): CDPError {
+export function createCDACError(response: CDACErrorResponse["error"]): CDACError {
   if (response.http_status === 401 || response.http_status === 403) {
-    return new CDPAuthError(response);
+    return new CDACAuthError(response);
   }
   if (response.http_status === 400 && response.code.startsWith("validation.")) {
-    return new CDPValidationError(response);
+    return new CDACValidationError(response);
   }
   if (response.http_status === 404) {
-    return new CDPNotFoundError(response);
+    return new CDACNotFoundError(response);
   }
   if (response.http_status === 409) {
-    return new CDPConflictError(response);
+    return new CDACConflictError(response);
   }
   if (response.http_status === 429) {
-    return new CDPRateLimitError(response);
+    return new CDACRateLimitError(response);
   }
-  return new CDPError(response);
+  return new CDACError(response);
 }

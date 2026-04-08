@@ -1,6 +1,6 @@
 # TypeScript SDK
 
-The `@certifieddata/payments` package is the official TypeScript/Node.js SDK for CertifiedData Payments.
+The `@certifieddata/payments` package is the official TypeScript/Node.js SDK for CertifiedData Agent Commerce.
 
 **Repo path:** [`packages/typescript-sdk/`](../packages/typescript-sdk/)
 
@@ -13,10 +13,10 @@ pnpm add @certifieddata/payments
 ## Client setup
 
 ```ts
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const client = new CertifiedDataPaymentsClient({
-  apiKey: process.env.CDP_API_KEY!,
+const client = new CertifiedDataAgentCommerceClient({
+  apiKey: process.env.CDAC_API_KEY!,
   apiVersion: "2025-01-01",
 });
 ```
@@ -24,7 +24,7 @@ const client = new CertifiedDataPaymentsClient({
 ### Sandbox / mock server
 
 ```ts
-const client = new CertifiedDataPaymentsClient({
+const client = new CertifiedDataAgentCommerceClient({
   apiKey: "cdp_test_your_key",
   apiVersion: "2025-01-01",
   baseUrl: "http://localhost:3456",
@@ -79,8 +79,8 @@ await client.transactions.attachLinks(tx.id, {
 ```ts
 const isValid = await client.webhooks.verifySignature(
   rawBody,
-  signatureHeader,  // CDP-Signature header value
-  timestampHeader,  // CDP-Timestamp header value
+  signatureHeader,  // CDAC-Signature header value
+  timestampHeader,  // CDAC-Timestamp header value
   webhookSecret,
 );
 ```

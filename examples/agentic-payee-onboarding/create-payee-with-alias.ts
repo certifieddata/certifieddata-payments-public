@@ -8,9 +8,9 @@
  *   npx tsx examples/agentic-payee-onboarding/create-payee-with-alias.ts
  */
 
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const client = new CertifiedDataPaymentsClient({
+const client = new CertifiedDataAgentCommerceClient({
   apiKey: "cdp_test_example_key",
   baseUrl: "http://localhost:3456",
 });

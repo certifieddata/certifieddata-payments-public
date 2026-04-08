@@ -18,12 +18,12 @@ def verify_webhook_signature(
     CDP signs webhooks using HMAC-SHA256 over the string:
         ``{timestamp}.{raw_body}``
 
-    The ``CDP-Signature`` header has the format::
+    The ``CDAC-Signature`` header has the format::
         ``t={timestamp},v1={hmac_hex}``
 
     :param raw_body: Raw request body (str or bytes) — before any JSON parsing.
-    :param signature_header: Value of the ``CDP-Signature`` header.
-    :param timestamp_header: Value of the ``CDP-Timestamp`` header.
+    :param signature_header: Value of the ``CDAC-Signature`` header.
+    :param timestamp_header: Value of the ``CDAC-Timestamp`` header.
     :param secret: Webhook endpoint secret.
     :param tolerance_seconds: Maximum age of the webhook in seconds (default 300).
     :returns: True if the signature is valid and within the timestamp tolerance.
@@ -33,7 +33,7 @@ def verify_webhook_signature(
     try:
         ts = int(timestamp_header)
     except (ValueError, TypeError) as exc:
-        raise ValueError(f"Invalid CDP-Timestamp header: {timestamp_header!r}") from exc
+        raise ValueError(f"Invalid CDAC-Timestamp header: {timestamp_header!r}") from exc
 
     # Check timestamp tolerance
     now = int(time.time())

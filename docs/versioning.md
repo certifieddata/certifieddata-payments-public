@@ -2,13 +2,13 @@
 
 ## API versioning
 
-CertifiedData Payments uses date-based API versioning.
+CertifiedData Agent Commerce uses date-based API versioning.
 
 Current version: `2025-01-01`
 
 Pass the version in every request:
 ```
-CDP-API-Version: 2025-01-01
+CDAC-API-Version: 2025-01-01
 ```
 
 SDKs send this header automatically.

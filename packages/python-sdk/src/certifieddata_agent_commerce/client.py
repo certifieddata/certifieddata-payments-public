@@ -1,4 +1,4 @@
-"""CertifiedData Payments Python SDK — main client."""
+"""CertifiedData Agent Commerce Python SDK — main client."""
 
 import os
 from typing import Optional
@@ -13,19 +13,19 @@ from .resources.events import EventsResource
 from .webhooks import verify_webhook_signature as _verify_webhook_signature
 
 
-class CertifiedDataPaymentsClient:
+class CertifiedDataAgentCommerceClient:
     """
-    CertifiedData Payments API client.
+    CertifiedData Agent Commerce API client.
 
     Usage::
 
-        from certifieddata_payments import CertifiedDataPaymentsClient
+        from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient
 
-        # api_key reads CDP_API_KEY, base_url reads CDP_BASE_URL
-        client = CertifiedDataPaymentsClient()
+        # api_key reads CDAC_API_KEY, base_url reads CDAC_BASE_URL
+        client = CertifiedDataAgentCommerceClient()
 
         # or pass explicitly:
-        client = CertifiedDataPaymentsClient(
+        client = CertifiedDataAgentCommerceClient(
             api_key="cdp_test_...",
             base_url="https://sandbox.certifieddata.io",
         )
@@ -41,10 +41,10 @@ class CertifiedDataPaymentsClient:
         api_version: str = "2025-01-01",
         timeout: float = 30.0,
     ) -> None:
-        resolved_key = api_key or os.environ.get("CDP_API_KEY")
+        resolved_key = api_key or os.environ.get("CDAC_API_KEY")
         if not resolved_key:
-            raise ValueError("api_key is required. Pass it directly or set CDP_API_KEY.")
-        resolved_url = base_url or os.environ.get("CDP_BASE_URL") or "https://certifieddata.io"
+            raise ValueError("api_key is required. Pass it directly or set CDAC_API_KEY.")
+        resolved_url = base_url or os.environ.get("CDAC_BASE_URL") or "https://certifieddata.io"
         self._http = HttpClient(
             api_key=resolved_key,
             base_url=resolved_url,
@@ -70,8 +70,8 @@ class CertifiedDataPaymentsClient:
         Verify a CDP webhook signature.
 
         :param raw_body: Raw request body before any JSON parsing.
-        :param signature_header: ``CDP-Signature`` header value.
-        :param timestamp_header: ``CDP-Timestamp`` header value.
+        :param signature_header: ``CDAC-Signature`` header value.
+        :param timestamp_header: ``CDAC-Timestamp`` header value.
         :param secret: Webhook endpoint secret.
         :param tolerance_seconds: Timestamp tolerance in seconds (default 300).
         """
@@ -83,7 +83,7 @@ class CertifiedDataPaymentsClient:
         """Close the underlying HTTP client."""
         self._http.close()
 
-    def __enter__(self) -> "CertifiedDataPaymentsClient":
+    def __enter__(self) -> "CertifiedDataAgentCommerceClient":
         return self
 
     def __exit__(self, *_: object) -> None:

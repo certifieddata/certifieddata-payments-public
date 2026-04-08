@@ -13,14 +13,14 @@ pnpm add @certifieddata/payments
 ### Python
 
 ```bash
-pip install certifieddata-payments
+pip install certifieddata-agent-commerce
 ```
 
 ## 2. Start the mock server
 
 ```bash
 pnpm install
-pnpm --filter @certifieddata/payments-mock-server start
+pnpm --filter @certifieddata/agent-commerce-mock-server start
 ```
 
 Health check:
@@ -38,9 +38,9 @@ Expected response:
 ## 3. Set environment variables
 
 ```bash
-export CDP_API_KEY=cdp_test_your_key
+export CDAC_API_KEY=cdp_test_your_key
 export CDP_API_VERSION=2025-01-01
-export CDP_BASE_URL=http://localhost:3456
+export CDAC_BASE_URL=http://localhost:3456
 ```
 
 ## 4. Create a client
@@ -48,21 +48,21 @@ export CDP_BASE_URL=http://localhost:3456
 ### TypeScript
 
 ```ts
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const client = new CertifiedDataPaymentsClient({
-  apiKey: process.env.CDP_API_KEY!,
+const client = new CertifiedDataAgentCommerceClient({
+  apiKey: process.env.CDAC_API_KEY!,
   apiVersion: "2025-01-01",
-  baseUrl: process.env.CDP_BASE_URL,
+  baseUrl: process.env.CDAC_BASE_URL,
 });
 ```
 
 ### Python
 
 ```python
-from certifieddata_payments import CertifiedDataPaymentsClient
+from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient
 
-client = CertifiedDataPaymentsClient(
+client = CertifiedDataAgentCommerceClient(
     api_key="cdp_test_your_key",
     api_version="2025-01-01",
     base_url="http://localhost:3456",

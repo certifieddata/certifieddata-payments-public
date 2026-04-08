@@ -27,7 +27,7 @@ Current documented API version: `2025-01-01`
 Send this header on every request:
 
 ```http
-CDP-API-Version: 2025-01-01
+CDAC-API-Version: 2025-01-01
 ```
 
 If omitted, the API uses the latest version. Pinning the version is strongly recommended for production integrations.

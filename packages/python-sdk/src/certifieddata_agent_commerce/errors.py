@@ -1,10 +1,10 @@
-"""CDP error classes. All errors inherit from CDPError."""
+"""CDP error classes. All errors inherit from CDACError."""
 
 from typing import Any, Optional
 
 
-class CDPError(Exception):
-    """Base class for all CertifiedData Payments SDK errors."""
+class CDACError(Exception):
+    """Base class for all CertifiedData Agent Commerce SDK errors."""
 
     def __init__(
         self,
@@ -26,11 +26,11 @@ class CDPError(Exception):
         return f"{self.__class__.__name__}(code={self.code!r}, http_status={self.http_status}, message={self.message!r})"
 
 
-class CDPAuthError(CDPError):
+class CDACAuthError(CDACError):
     """Authentication failed (401/403)."""
 
 
-class CDPValidationError(CDPError):
+class CDACValidationError(CDACError):
     """Request validation failed (400)."""
 
     def __init__(self, message: str, *, validation_errors: Optional[list[Any]] = None, **kwargs: Any) -> None:
@@ -38,15 +38,15 @@ class CDPValidationError(CDPError):
         self.validation_errors = validation_errors or []
 
 
-class CDPNotFoundError(CDPError):
+class CDACNotFoundError(CDACError):
     """Resource not found (404)."""
 
 
-class CDPConflictError(CDPError):
+class CDACConflictError(CDACError):
     """Conflict — state transition error or idempotency conflict (409)."""
 
 
-class CDPRateLimitError(CDPError):
+class CDACRateLimitError(CDACError):
     """Rate limit exceeded (429). Retryable."""
 
     def __init__(self, message: str, *, retry_after: Optional[int] = None, **kwargs: Any) -> None:
@@ -55,16 +55,16 @@ class CDPRateLimitError(CDPError):
 
 
 def _raise_for_status(http_status: int, body: Any) -> None:
-    """Raise an appropriate CDPError from an HTTP status and error body."""
+    """Raise an appropriate CDACError from an HTTP status and error body."""
     error = body.get("error", {}) if isinstance(body, dict) else {}
     code = error.get("code", "unknown")
     message = error.get("message", "An unexpected error occurred.")
     retryable = error.get("retryable", False)
 
     if http_status == 401 or http_status == 403:
-        raise CDPAuthError(message, http_status=http_status, code=code, raw=body)
+        raise CDACAuthError(message, http_status=http_status, code=code, raw=body)
     if http_status == 400:
-        raise CDPValidationError(
+        raise CDACValidationError(
             message,
             http_status=http_status,
             code=code,
@@ -72,9 +72,9 @@ def _raise_for_status(http_status: int, body: Any) -> None:
             validation_errors=error.get("errors", []),
         )
     if http_status == 404:
-        raise CDPNotFoundError(message, http_status=http_status, code=code, raw=body)
+        raise CDACNotFoundError(message, http_status=http_status, code=code, raw=body)
     if http_status == 409:
-        raise CDPConflictError(message, http_status=http_status, code=code, raw=body)
+        raise CDACConflictError(message, http_status=http_status, code=code, raw=body)
     if http_status == 429:
-        raise CDPRateLimitError(message, http_status=http_status, code=code, raw=body)
-    raise CDPError(message, http_status=http_status, code=code, retryable=retryable, raw=body)
+        raise CDACRateLimitError(message, http_status=http_status, code=code, raw=body)
+    raise CDACError(message, http_status=http_status, code=code, retryable=retryable, raw=body)

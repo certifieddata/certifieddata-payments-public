@@ -8,9 +8,9 @@
  *   pnpm install
  *
  * Run:
- *   CDP_API_KEY=cdp_test_xxx tsx examples/claude-demo/demo.ts
+ *   CDAC_API_KEY=cdp_test_xxx tsx examples/claude-demo/demo.ts
  *   # against sandbox:
- *   CDP_API_KEY=cdp_test_xxx CDP_BASE_URL=https://sandbox.certifieddata.io \
+ *   CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
  *     tsx examples/claude-demo/demo.ts
  *
  * Phases:
@@ -21,9 +21,9 @@
  *   5 — Independent verification (public, no auth)
  */
 
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const BASE_URL = process.env["CDP_BASE_URL"] ?? "https://certifieddata.io";
+const BASE_URL = process.env["CDAC_BASE_URL"] ?? "https://certifieddata.io";
 
 const C = {
   reset:  "\x1b[0m",
@@ -52,14 +52,14 @@ async function main(): Promise<void> {
   console.log(`${C.grey}Target: ${BASE_URL}${C.reset}`);
   console.log(`${C.grey}SDK:    @certifieddata/payments${C.reset}`);
 
-  // Init client — reads CDP_API_KEY + CDP_BASE_URL from env
-  let client: CertifiedDataPaymentsClient;
+  // Init client — reads CDAC_API_KEY + CDAC_BASE_URL from env
+  let client: CertifiedDataAgentCommerceClient;
   try {
-    client = new CertifiedDataPaymentsClient();
+    client = new CertifiedDataAgentCommerceClient();
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`\n  ${C.red}Config error:${C.reset} ${msg}`);
-    console.error("  Set:  export CDP_API_KEY=cdp_test_xxx");
+    console.error("  Set:  export CDAC_API_KEY=cdp_test_xxx");
     process.exit(1);
   }
 

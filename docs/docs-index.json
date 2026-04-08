@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "product": "CertifiedData Payments",
+  "product": "CertifiedData Agent Commerce",
   "entries": [
     { "slug": "overview", "title": "Overview", "path": "./docs/overview.md", "category": "getting-started" },
     { "slug": "quickstart", "title": "Quickstart", "path": "./docs/quickstart.md", "category": "getting-started" },
@@ -24,8 +24,8 @@
   ],
   "related_machine_readable_artifacts": {
     "manifest": "./api-manifest.json",
-    "openapi": "./openapi/certifieddata-payments-v1.openapi.yaml",
-    "asyncapi": "./asyncapi/certifieddata-payments-events-v1.asyncapi.yaml",
+    "openapi": "./openapi/certifieddata-agent-commerce-v1.openapi.yaml",
+    "asyncapi": "./asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml",
     "capabilities": "./schemas/capabilities/capabilities.json",
     "errors": "./schemas/errors/error-catalog.json",
     "constraints": "./constraints.json"

@@ -5,12 +5,12 @@ CertifiedData Agent Commerce — End-to-End Demo (Python)
 Demonstrates the 5-phase agent payment workflow using the live SDK.
 
 Setup:
-    pip install certifieddata-payments
+    pip install certifieddata-agent-commerce
 
 Run:
-    CDP_API_KEY=cdp_test_xxx python examples/claude-demo/demo.py
+    CDAC_API_KEY=cdp_test_xxx python examples/claude-demo/demo.py
     # against sandbox:
-    CDP_API_KEY=cdp_test_xxx CDP_BASE_URL=https://sandbox.certifieddata.io \
+    CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
         python examples/claude-demo/demo.py
 
 Phases:
@@ -27,9 +27,9 @@ import json
 import requests
 
 try:
-    from certifieddata_payments import CertifiedDataPaymentsClient, CDPError
+    from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient, CDACError
 except ImportError:
-    print("\n  SDK not installed. Run:\n    pip install certifieddata-payments\n", file=sys.stderr)
+    print("\n  SDK not installed. Run:\n    pip install certifieddata-agent-commerce\n", file=sys.stderr)
     sys.exit(1)
 
 
@@ -55,20 +55,20 @@ def fail(label: str, detail: str) -> None:
     sys.exit(1)
 
 
-BASE_URL = os.environ.get("CDP_BASE_URL", "https://certifieddata.io")
+BASE_URL = os.environ.get("CDAC_BASE_URL", "https://certifieddata.io")
 
 
 def main() -> None:
     print(f"\n{C.BOLD}CertifiedData Agent Commerce — Demo{C.RESET}")
     print(f"{C.GREY}Target: {BASE_URL}{C.RESET}")
-    print(f"{C.GREY}SDK:    certifieddata-payments{C.RESET}")
+    print(f"{C.GREY}SDK:    certifieddata-agent-commerce{C.RESET}")
 
-    # Init client — reads CDP_API_KEY + CDP_BASE_URL from env
+    # Init client — reads CDAC_API_KEY + CDAC_BASE_URL from env
     try:
-        client = CertifiedDataPaymentsClient()
+        client = CertifiedDataAgentCommerceClient()
     except ValueError as e:
         print(f"\n  {C.RED}Config error:{C.RESET} {e}", file=sys.stderr)
-        print("  Set:  export CDP_API_KEY=cdp_test_xxx", file=sys.stderr)
+        print("  Set:  export CDAC_API_KEY=cdp_test_xxx", file=sys.stderr)
         sys.exit(1)
 
     # ── Phase 1: Agent declares intent ───────────────────────────────────────────
@@ -100,7 +100,7 @@ def main() -> None:
 
     try:
         capture = client.transactions.capture(tx_id)
-    except CDPError as e:
+    except CDACError as e:
         fail("capture", f"API error {e.status_code}: {e}")
 
     status  = capture.get("status")

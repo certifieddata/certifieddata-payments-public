@@ -38,8 +38,8 @@
   "webhooks": {
     "supported": true,
     "signature_algorithm": "hmac-sha256",
-    "signature_header": "CDP-Signature",
-    "timestamp_header": "CDP-Timestamp",
+    "signature_header": "CDAC-Signature",
+    "timestamp_header": "CDAC-Timestamp",
     "timestamp_tolerance_seconds": 300
   },
   "pagination": {

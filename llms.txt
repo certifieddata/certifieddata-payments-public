@@ -31,12 +31,12 @@ constraints.json
 ## REST API
 
 > OpenAPI 3.1 contract
-openapi/certifieddata-payments-v1.openapi.yaml
+openapi/certifieddata-agent-commerce-v1.openapi.yaml
 
 ## Events and Webhooks
 
 > AsyncAPI contract
-asyncapi/certifieddata-payments-events-v1.asyncapi.yaml
+asyncapi/certifieddata-agent-commerce-events-v1.asyncapi.yaml
 
 ## Schemas
 
@@ -71,7 +71,7 @@ test-vectors/
 > TypeScript SDK — @certifieddata/payments
 packages/typescript-sdk/
 
-> Python SDK — certifieddata-payments
+> Python SDK — certifieddata-agent-commerce
 packages/python-sdk/
 
 > Mock server for local development
@@ -85,7 +85,7 @@ docs/docs-index.json
 > Overview
 docs/overview.md
 
-> Authentication (CDP_API_KEY, cdp_test_ vs cdp_live_)
+> Authentication (CDAC_API_KEY, cdp_test_ vs cdp_live_)
 docs/authentication.md
 
 > Quickstart

@@ -1,6 +1,6 @@
 openapi: "3.1.0"
 info:
-  title: CertifiedData Payments API
+  title: CertifiedData Agent Commerce API
   version: "2025-01-01"
   description: |
     Provenance-aware payments and settlement for AI artifacts, certifications, and decision-linked commerce.

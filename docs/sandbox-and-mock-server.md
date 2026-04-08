@@ -21,7 +21,7 @@ The mock server is a local development tool you run yourself. It simulates the C
 
 ```bash
 pnpm install
-pnpm --filter @certifieddata/payments-mock-server start
+pnpm --filter @certifieddata/agent-commerce-mock-server start
 ```
 
 ### Health check
@@ -87,7 +87,7 @@ Use the mock server to:
 ### TypeScript
 
 ```ts
-const client = new CertifiedDataPaymentsClient({
+const client = new CertifiedDataAgentCommerceClient({
   apiKey: "cdp_test_any",
   apiVersion: "2025-01-01",
   baseUrl: "http://localhost:3456",
@@ -97,7 +97,7 @@ const client = new CertifiedDataPaymentsClient({
 ### Python
 
 ```python
-client = CertifiedDataPaymentsClient(
+client = CertifiedDataAgentCommerceClient(
     api_key="cdp_test_any",
     api_version="2025-01-01",
     base_url="http://localhost:3456",

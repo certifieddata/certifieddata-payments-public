@@ -9,14 +9,14 @@ import { WebhooksResource } from "./resources/webhooks.js";
 import { CapabilitiesResource } from "./resources/capabilities.js";
 import { verifyWebhookSignature, type VerifyWebhookSignatureResult } from "./utils/webhooks.js";
 
-export interface CertifiedDataPaymentsClientOptions {
+export interface CertifiedDataAgentCommerceClientOptions {
   /**
    * CDP API key — use `cdp_test_...` for sandbox, `cdp_live_...` for production.
-   * Reads `CDP_API_KEY` from the environment if omitted.
+   * Reads `CDAC_API_KEY` from the environment if omitted.
    */
   apiKey?: string;
   /**
-   * API base URL. Reads `CDP_BASE_URL` from the environment if omitted.
+   * API base URL. Reads `CDAC_BASE_URL` from the environment if omitted.
    * Defaults to `https://certifieddata.io`.
    * Sandbox: `https://sandbox.certifieddata.io`
    */
@@ -27,7 +27,7 @@ export interface CertifiedDataPaymentsClientOptions {
   idempotencyKey?: string;
 }
 
-export class CertifiedDataPaymentsClient {
+export class CertifiedDataAgentCommerceClient {
   readonly payees: PayeesResource;
   readonly paymentIntents: PaymentIntentsResource;
   readonly transactions: TransactionsResource;
@@ -39,14 +39,14 @@ export class CertifiedDataPaymentsClient {
 
   private readonly config: CDPClientConfig;
 
-  constructor(options: CertifiedDataPaymentsClientOptions = {}) {
-    const key = options.apiKey ?? process.env["CDP_API_KEY"];
+  constructor(options: CertifiedDataAgentCommerceClientOptions = {}) {
+    const key = options.apiKey ?? process.env["CDAC_API_KEY"];
     if (!key) {
-      throw new Error("apiKey is required. Pass it directly or set CDP_API_KEY.");
+      throw new Error("apiKey is required. Pass it directly or set CDAC_API_KEY.");
     }
     this.config = {
       apiKey: key,
-      baseUrl: options.baseUrl ?? process.env["CDP_BASE_URL"] ?? "https://certifieddata.io",
+      baseUrl: options.baseUrl ?? process.env["CDAC_BASE_URL"] ?? "https://certifieddata.io",
       apiVersion: options.apiVersion ?? "2025-01-01",
       ...(options.idempotencyKey !== undefined ? { idempotencyKey: options.idempotencyKey } : {}),
     };
@@ -70,8 +70,8 @@ export class CertifiedDataPaymentsClient {
    * const idempotent = client.withIdempotencyKey("order-001-pay");
    * await idempotent.transactions.create({ ... });
    */
-  withIdempotencyKey(key: string): CertifiedDataPaymentsClient {
-    return new CertifiedDataPaymentsClient({
+  withIdempotencyKey(key: string): CertifiedDataAgentCommerceClient {
+    return new CertifiedDataAgentCommerceClient({
       apiKey:         this.config.apiKey,
       baseUrl:        this.config.baseUrl,
       apiVersion:     this.config.apiVersion,
@@ -83,8 +83,8 @@ export class CertifiedDataPaymentsClient {
    * Verify an incoming CDP webhook signature.
    *
    * @param rawBody - Raw request body string (before JSON.parse)
-   * @param signatureHeader - `CDP-Signature` header value
-   * @param timestampHeader - `CDP-Timestamp` header value
+   * @param signatureHeader - `CDAC-Signature` header value
+   * @param timestampHeader - `CDAC-Timestamp` header value
    * @param secret - Webhook endpoint secret
    * @param toleranceSeconds - Timestamp tolerance (default: 300)
    */

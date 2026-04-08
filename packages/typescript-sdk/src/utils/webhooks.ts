@@ -1,10 +1,10 @@
 /**
- * Webhook signature verification for CertifiedData Payments.
+ * Webhook signature verification for CertifiedData Agent Commerce.
  *
  * Signing algorithm: HMAC-SHA256
  * Signed payload: {timestamp}.{raw_body}
- * Signature header: CDP-Signature: t={timestamp},v1={hmac_sha256}
- * Timestamp header: CDP-Timestamp: {unix_timestamp}
+ * Signature header: CDAC-Signature: t={timestamp},v1={hmac_sha256}
+ * Timestamp header: CDAC-Timestamp: {unix_timestamp}
  * Tolerance: 300 seconds
  *
  * See test-vectors/webhook-signature/ for verified test cases.
@@ -13,9 +13,9 @@
 export interface VerifyWebhookSignatureParams {
   /** The raw request body string (not parsed). */
   payload: string;
-  /** The CDP-Signature header value: t={timestamp},v1={hmac} */
+  /** The CDAC-Signature header value: t={timestamp},v1={hmac} */
   signature: string;
-  /** The CDP-Timestamp header value (unix timestamp string). */
+  /** The CDAC-Timestamp header value (unix timestamp string). */
   timestamp: string;
   /** The webhook endpoint secret. */
   secret: string;

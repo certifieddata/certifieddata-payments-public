@@ -23,7 +23,7 @@ This repository contains public contract artifacts, SDKs, and a mock server. It 
 - Private signing keys
 - Payment processor secrets
 
-If you believe you have found a vulnerability in the live CertifiedData Payments API or platform, please report it via the email above.
+If you believe you have found a vulnerability in the live CertifiedData Agent Commerce API or platform, please report it via the email above.
 
 ## Safe harbor
 

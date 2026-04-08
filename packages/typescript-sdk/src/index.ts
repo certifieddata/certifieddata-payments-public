@@ -1,6 +1,6 @@
 // ─── Client ───────────────────────────────────────────────────────────────────
-export { CertifiedDataPaymentsClient } from "./client.js";
-export type { CertifiedDataPaymentsClientOptions } from "./client.js";
+export { CertifiedDataAgentCommerceClient } from "./client.js";
+export type { CertifiedDataAgentCommerceClientOptions } from "./client.js";
 
 // ─── Types — Common ───────────────────────────────────────────────────────────
 export type {
@@ -59,13 +59,13 @@ export type {
 
 // ─── Errors ───────────────────────────────────────────────────────────────────
 export {
-  CDPError,
-  CDPAuthError,
-  CDPValidationError,
-  CDPNotFoundError,
-  CDPConflictError,
-  CDPRateLimitError,
-  createCDPError,
+  CDACError,
+  CDACAuthError,
+  CDACValidationError,
+  CDACNotFoundError,
+  CDACConflictError,
+  CDACRateLimitError,
+  createCDACError,
 } from "./errors/base.js";
 
 // ─── Utilities ────────────────────────────────────────────────────────────────

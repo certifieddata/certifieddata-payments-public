@@ -12,9 +12,9 @@
  *   npx tsx examples/certified-artifact-purchase/create-transaction-with-links.ts
  */
 
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const client = new CertifiedDataPaymentsClient({
+const client = new CertifiedDataAgentCommerceClient({
   apiKey: "cdp_test_example_key",
   baseUrl: "http://localhost:3456",
 });

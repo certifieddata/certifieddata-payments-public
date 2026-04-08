@@ -1,9 +1,9 @@
 asyncapi: "3.0.0"
 info:
-  title: CertifiedData Payments Events
+  title: CertifiedData Agent Commerce Events
   version: "1.0.0"
   description: |
-    Event and webhook contract for CertifiedData Payments.
+    Event and webhook contract for CertifiedData Agent Commerce.
 
     All events are delivered via webhooks when a webhook endpoint is configured.
     Events are also queryable via `GET /v1/events`.
@@ -21,10 +21,10 @@ channels:
       CDP delivers events to your registered webhook URL via HTTP POST.
 
       Headers on every webhook delivery:
-      - `CDP-Signature: t={timestamp},v1={hmac_sha256}`
-      - `CDP-Timestamp: {unix_timestamp}`
-      - `CDP-Event-Id: {evt_...}`
-      - `CDP-Api-Version: 2025-01-01`
+      - `CDAC-Signature: t={timestamp},v1={hmac_sha256}`
+      - `CDAC-Timestamp: {unix_timestamp}`
+      - `CDAC-Event-Id: {evt_...}`
+      - `CDAC-Api-Version: 2025-01-01`
       - `Content-Type: application/json`
 
       Signature algorithm: HMAC-SHA256 over `{timestamp}.{raw_body}`
@@ -75,7 +75,7 @@ operations:
     summary: Receive a CDP webhook event
     description: |
       Your server receives a POST request from CDP with a signed event payload.
-      Verify the signature using the CDP-Signature and CDP-Timestamp headers before processing.
+      Verify the signature using the CDAC-Signature and CDAC-Timestamp headers before processing.
 
 components:
   messages:
@@ -261,26 +261,26 @@ components:
     WebhookHeaders:
       type: object
       required:
-        - CDP-Signature
-        - CDP-Timestamp
-        - CDP-Event-Id
-        - CDP-Api-Version
+        - CDAC-Signature
+        - CDAC-Timestamp
+        - CDAC-Event-Id
+        - CDAC-Api-Version
       properties:
-        CDP-Signature:
+        CDAC-Signature:
           type: string
           description: |
             HMAC-SHA256 signature. Format: `t={timestamp},v1={hmac_hex}`
             Signed payload: `{timestamp}.{raw_body}`
           example: "t=1712428931,v1=9f6cb9c8c2c6f0f8e4dbf76a6d9b56eb3d65d4f16f58af9075a8d0d43f3b80ec"
-        CDP-Timestamp:
+        CDAC-Timestamp:
           type: string
           description: Unix timestamp of the event delivery
           example: "1712428931"
-        CDP-Event-Id:
+        CDAC-Event-Id:
           type: string
           description: The `evt_` ID of the event being delivered
           example: "evt_01HZX8M1W3D6K8Q4YJ6A1R9B2C"
-        CDP-Api-Version:
+        CDAC-Api-Version:
           type: string
           description: API version in use
           example: "2025-01-01"

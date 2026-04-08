@@ -18,9 +18,9 @@ class HttpClient:
             base_url=self._base_url,
             headers={
                 "Authorization": f"Bearer {api_key}",
-                "CDP-API-Version": api_version,
+                "CDAC-API-Version": api_version,
                 "Content-Type": "application/json",
-                "User-Agent": "certifieddata-payments-python/0.1.0",
+                "User-Agent": "certifieddata-agent-commerce-python/0.1.0",
             },
             timeout=timeout,
         )

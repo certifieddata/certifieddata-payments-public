@@ -1,21 +1,21 @@
 # Python SDK
 
-The `certifieddata-payments` package is the official Python SDK for CertifiedData Payments.
+The `certifieddata-agent-commerce` package is the official Python SDK for CertifiedData Agent Commerce.
 
 **Repo path:** [`packages/python-sdk/`](../packages/python-sdk/)
 
 ## Install
 
 ```bash
-pip install certifieddata-payments
+pip install certifieddata-agent-commerce
 ```
 
 ## Client setup
 
 ```python
-from certifieddata_payments import CertifiedDataPaymentsClient
+from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient
 
-client = CertifiedDataPaymentsClient(
+client = CertifiedDataAgentCommerceClient(
     api_key="cdp_live_your_key",
     api_version="2025-01-01",
 )
@@ -24,7 +24,7 @@ client = CertifiedDataPaymentsClient(
 ### Sandbox / mock server
 
 ```python
-client = CertifiedDataPaymentsClient(
+client = CertifiedDataAgentCommerceClient(
     api_key="cdp_test_your_key",
     api_version="2025-01-01",
     base_url="http://localhost:3456",
@@ -61,12 +61,12 @@ client.transactions.attach_links(tx["id"], {
 ## Verify a webhook signature
 
 ```python
-from certifieddata_payments.webhooks import verify_signature
+from certifieddata_agent_commerce.webhooks import verify_signature
 
 is_valid = verify_signature(
     raw_body=raw_body,
-    signature_header=request.headers["CDP-Signature"],
-    timestamp_header=request.headers["CDP-Timestamp"],
+    signature_header=request.headers["CDAC-Signature"],
+    timestamp_header=request.headers["CDAC-Timestamp"],
     secret=webhook_secret,
 )
 ```
@@ -84,7 +84,7 @@ while page.get("has_more"):
 ## Error handling
 
 ```python
-from certifieddata_payments.errors import CdpApiError
+from certifieddata_agent_commerce.errors import CdpApiError
 
 try:
     client.transactions.create({...})

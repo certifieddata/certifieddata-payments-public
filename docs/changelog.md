@@ -2,7 +2,7 @@
 
 ## 0.1.0 — 2026-04-06
 
-Initial public release of the CertifiedData Payments public SDK and contract repository.
+Initial public release of the CertifiedData Agent Commerce public SDK and contract repository.
 
 ### Included
 
@@ -15,7 +15,7 @@ Initial public release of the CertifiedData Payments public SDK and contract rep
 - Constraints manifest
 - Support matrix
 - TypeScript SDK (`@certifieddata/payments`)
-- Python SDK skeleton (`certifieddata-payments`)
+- Python SDK skeleton (`certifieddata-agent-commerce`)
 - Mock server
 - JSON examples
 - Test vectors (webhook signature, idempotency, provenance)

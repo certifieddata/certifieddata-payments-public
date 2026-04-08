@@ -77,7 +77,7 @@ Field-level definitions live in the JSON Schemas:
 
 - [`schemas/resources/`](../schemas/resources/)
 - [`schemas/common/`](../schemas/common/)
-- [`openapi/certifieddata-payments-v1.openapi.yaml`](../openapi/certifieddata-payments-v1.openapi.yaml)
+- [`openapi/certifieddata-agent-commerce-v1.openapi.yaml`](../openapi/certifieddata-agent-commerce-v1.openapi.yaml)
 
 ## Related
 

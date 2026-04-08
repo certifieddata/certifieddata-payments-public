@@ -1,8 +1,8 @@
-# CertifiedData Payments — Public / Private Boundary
+# CertifiedData Agent Commerce — Public / Private Boundary
 
 ## Purpose
 
-This document defines what belongs in the public CertifiedData Payments repository and what must remain private.
+This document defines what belongs in the public CertifiedData Agent Commerce repository and what must remain private.
 
 The public repo is intended to be published and consumed by:
 - developers

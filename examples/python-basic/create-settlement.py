@@ -1,5 +1,5 @@
 """
-Example: Create and submit a settlement using the CertifiedData Payments Python SDK.
+Example: Create and submit a settlement using the CertifiedData Agent Commerce Python SDK.
 
 Run against mock server:
     python examples/python-basic/create-settlement.py
@@ -11,9 +11,9 @@ import os
 # Allow running from repo root without installing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../packages/python-sdk/src"))
 
-from certifieddata_payments import CertifiedDataPaymentsClient
+from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient
 
-client = CertifiedDataPaymentsClient(
+client = CertifiedDataAgentCommerceClient(
     api_key="cdp_test_example_key",
     base_url="http://localhost:3456",
 )

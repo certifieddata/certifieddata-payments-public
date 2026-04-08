@@ -1,14 +1,14 @@
 /**
- * Example: Create a payee using the CertifiedData Payments TypeScript SDK.
+ * Example: Create a payee using the CertifiedData Agent Commerce TypeScript SDK.
  *
  * Run against mock server:
- *   pnpm --filter @certifieddata/payments-mock-server start
+ *   pnpm --filter @certifieddata/agent-commerce-mock-server start
  *   npx tsx examples/node-basic/create-payee.ts
  */
 
-import { CertifiedDataPaymentsClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const client = new CertifiedDataPaymentsClient({
+const client = new CertifiedDataAgentCommerceClient({
   apiKey: "cdp_test_example_key",
   baseUrl: "http://localhost:3456",
 });
