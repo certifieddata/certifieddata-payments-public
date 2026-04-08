@@ -1,11 +1,21 @@
-# CertifiedData Payments — AI Agent Discovery Index
+# CertifiedData Agent Commerce — AI Agent Discovery Index
 
-Site:      https://certifieddata.io/agent-payments
-Platform:  CertifiedData Payments
-Full:      https://github.com/certifieddata/certifieddata-payments-public/blob/main/llms-full.txt
+Repo:      https://github.com/certifieddata/certifieddata-agent-commerce-public
+Site:      https://certifieddata.io/agent-commerce
+Platform:  CertifiedData Agent Commerce
+Full:      https://github.com/certifieddata/certifieddata-agent-commerce-public/blob/main/llms-full.txt
 
-CertifiedData Payments (CDP) is a provenance-aware payments and settlement layer for the CertifiedData ecosystem.
-It enables transactions that carry verifiable links to AI artifacts, certificates, datasets, decisions, and models.
+CertifiedData Agent Commerce enables AI agents to complete policy-governed payments.
+Each successful payment returns a cryptographic receipt signed with Ed25519.
+Receipts are independently verifiable — no dashboard, no trust required.
+
+## Quick start
+
+> End-to-end demo (Python, no local infra required)
+examples/claude-demo/demo.py
+
+> End-to-end demo (TypeScript)
+examples/claude-demo/demo.ts
 
 ## Discovery
 
@@ -47,6 +57,9 @@ schemas/enums/
 
 ## Examples and Test Vectors
 
+> Runnable end-to-end demos
+examples/claude-demo/
+
 > JSON payload examples
 examples/json/
 
@@ -55,11 +68,14 @@ test-vectors/
 
 ## SDKs
 
-> TypeScript SDK
+> TypeScript SDK — @certifieddata/payments
 packages/typescript-sdk/
 
-> Python SDK
+> Python SDK — certifieddata-payments
 packages/python-sdk/
+
+> Mock server for local development
+packages/mock-server/
 
 ## Documentation
 
@@ -68,3 +84,9 @@ docs/docs-index.json
 
 > Overview
 docs/overview.md
+
+> Authentication (CDP_API_KEY, cdp_test_ vs cdp_live_)
+docs/authentication.md
+
+> Quickstart
+docs/quickstart.md

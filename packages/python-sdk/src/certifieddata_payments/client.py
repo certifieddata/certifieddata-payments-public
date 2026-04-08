@@ -1,5 +1,6 @@
 """CertifiedData Payments Python SDK — main client."""
 
+import os
 from typing import Optional
 
 from ._http import HttpClient
@@ -18,12 +19,15 @@ class CertifiedDataPaymentsClient:
 
     Usage::
 
-        client = CertifiedDataPaymentsClient(api_key="cdp_test_...")
+        from certifieddata_payments import CertifiedDataPaymentsClient
 
-        payee = client.payees.create(
-            entity_type="company",
-            legal_name="Acme Corp",
-            idempotency_key="create-payee-acme-001",
+        # api_key reads CDP_API_KEY, base_url reads CDP_BASE_URL
+        client = CertifiedDataPaymentsClient()
+
+        # or pass explicitly:
+        client = CertifiedDataPaymentsClient(
+            api_key="cdp_test_...",
+            base_url="https://sandbox.certifieddata.io",
         )
 
     Use ``cdp_test_`` keys for sandbox, ``cdp_live_`` keys for production.
@@ -32,14 +36,18 @@ class CertifiedDataPaymentsClient:
     def __init__(
         self,
         *,
-        api_key: str,
-        base_url: str = "https://api.certifieddata.io",
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
         api_version: str = "2025-01-01",
         timeout: float = 30.0,
     ) -> None:
+        resolved_key = api_key or os.environ.get("CDP_API_KEY")
+        if not resolved_key:
+            raise ValueError("api_key is required. Pass it directly or set CDP_API_KEY.")
+        resolved_url = base_url or os.environ.get("CDP_BASE_URL") or "https://certifieddata.io"
         self._http = HttpClient(
-            api_key=api_key,
-            base_url=base_url,
+            api_key=resolved_key,
+            base_url=resolved_url,
             api_version=api_version,
             timeout=timeout,
         )

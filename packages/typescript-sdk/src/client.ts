@@ -10,9 +10,16 @@ import { CapabilitiesResource } from "./resources/capabilities.js";
 import { verifyWebhookSignature, type VerifyWebhookSignatureResult } from "./utils/webhooks.js";
 
 export interface CertifiedDataPaymentsClientOptions {
-  /** CDP API key — use `cdp_test_...` for sandbox, `cdp_live_...` for production */
-  apiKey: string;
-  /** Override the default base URL (useful for mock server: `http://localhost:3456`) */
+  /**
+   * CDP API key — use `cdp_test_...` for sandbox, `cdp_live_...` for production.
+   * Reads `CDP_API_KEY` from the environment if omitted.
+   */
+  apiKey?: string;
+  /**
+   * API base URL. Reads `CDP_BASE_URL` from the environment if omitted.
+   * Defaults to `https://certifieddata.io`.
+   * Sandbox: `https://sandbox.certifieddata.io`
+   */
   baseUrl?: string;
   /** API version header value. Defaults to `2025-01-01`. */
   apiVersion?: string;
@@ -32,10 +39,14 @@ export class CertifiedDataPaymentsClient {
 
   private readonly config: CDPClientConfig;
 
-  constructor(options: CertifiedDataPaymentsClientOptions) {
+  constructor(options: CertifiedDataPaymentsClientOptions = {}) {
+    const key = options.apiKey ?? process.env["CDP_API_KEY"];
+    if (!key) {
+      throw new Error("apiKey is required. Pass it directly or set CDP_API_KEY.");
+    }
     this.config = {
-      apiKey: options.apiKey,
-      baseUrl: options.baseUrl ?? "https://api.certifieddata.io",
+      apiKey: key,
+      baseUrl: options.baseUrl ?? process.env["CDP_BASE_URL"] ?? "https://certifieddata.io",
       apiVersion: options.apiVersion ?? "2025-01-01",
       ...(options.idempotencyKey !== undefined ? { idempotencyKey: options.idempotencyKey } : {}),
     };
@@ -61,9 +72,9 @@ export class CertifiedDataPaymentsClient {
    */
   withIdempotencyKey(key: string): CertifiedDataPaymentsClient {
     return new CertifiedDataPaymentsClient({
-      apiKey: this.config.apiKey,
-      ...(this.config.baseUrl !== undefined ? { baseUrl: this.config.baseUrl } : {}),
-      ...(this.config.apiVersion !== undefined ? { apiVersion: this.config.apiVersion } : {}),
+      apiKey:         this.config.apiKey,
+      baseUrl:        this.config.baseUrl,
+      apiVersion:     this.config.apiVersion,
       idempotencyKey: key,
     });
   }
