@@ -1,5 +1,7 @@
 # CertifiedData Agent Commerce — Public SDK & Contract
 
+![Image](https://github.com/user-attachments/assets/41a0912a-c6d7-4eb4-a4f1-87b6a702885e)
+
 AI agents can complete policy-governed payments. Each successful payment returns a cryptographic receipt. Receipts are independently verifiable — no dashboard, no trust required.
 
 ---
