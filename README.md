@@ -2,7 +2,7 @@
 
 ![Image](https://github.com/user-attachments/assets/41a0912a-c6d7-4eb4-a4f1-87b6a702885e)
 
-AI agents can complete policy-governed payments. Each successful payment returns a cryptographic receipt. Receipts are independently verifiable — no dashboard, no trust required.
+AI agents can complete policy-governed payments. Each successful capture returns an inline signed receipt, and that receipt is independently verifiable with Ed25519 + SHA-256 — no dashboard or private console required.
 
 ---
 
@@ -72,7 +72,7 @@ print(receipt)
 
 ## Verify publicly
 
-Verification is public and machine-checkable — no API key needed:
+Verification is public, independent, and machine-checkable — no API key needed:
 
 ```bash
 curl https://certifieddata.io/api/payments/verify/<receipt_id>
@@ -90,13 +90,13 @@ Returns:
 }
 ```
 
-This is not just a webhook log or dashboard entry. The receipt is independently verifiable off-platform.
+This is not just a webhook log or dashboard entry. It is a machine-verifiable receipt that can be checked off-platform with the public verify route.
 
 ---
 
 ## Canonical receipt shape
 
-Every successful capture returns a signed receipt inline:
+Every successful capture returns an inline signed receipt:
 
 ```json
 {
@@ -113,13 +113,13 @@ Every successful capture returns a signed receipt inline:
 }
 ```
 
-No second fetch needed. The receipt is always inlined on capture.
+No second fetch is required. The receipt is returned inline on capture, and the demo binds decision lineage with `decision_record_id`.
 
 ---
 
 ## Local development
 
-Run the mock server for development without sandbox credentials:
+Run locally without sandbox credentials:
 
 ```bash
 pnpm install
@@ -128,13 +128,14 @@ pnpm --filter @certifieddata/agent-commerce-mock-server start
 ```
 
 ```bash
-# self-contained Flask mock used by the public demo video
+# self-contained Flask mock used by the public demo flow
 pip install flask
 python examples/claude-demo/mock_server.py
 # → http://localhost:3456
 ```
 
 ```bash
+# local demo
 CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
   pnpm exec tsx examples/claude-demo/demo.ts
 
@@ -186,7 +187,7 @@ CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
   pnpm exec tsx examples/claude-demo/demo.ts
 ```
 
-The demo runs all 5 phases, returns an inline signed receipt from capture, and verifies it independently via the public verify route.
+The demo runs all 5 phases, returns an inline signed receipt from capture, confirms `decision_record_id` is present in the signed payload, and verifies the receipt independently via the public verify route.
 
 ---
 
