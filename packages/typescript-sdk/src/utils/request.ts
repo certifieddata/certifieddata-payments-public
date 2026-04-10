@@ -7,8 +7,8 @@ export interface RequestOptions {
 
 export interface CDPClientConfig {
   apiKey: string;
-  baseUrl?: string;
-  apiVersion?: string;
+  baseUrl: string;
+  apiVersion: string;
   idempotencyKey?: string;
 }
 
