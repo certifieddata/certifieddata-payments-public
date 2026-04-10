@@ -17,6 +17,8 @@ pnpm add @certifieddata/payments
 pip install certifieddata-agent-commerce
 ```
 
+> **Python naming note:** Install name is `certifieddata-agent-commerce` (hyphens). Import name is `certifieddata_agent_commerce` (underscores). This is standard Python convention — they refer to the same package.
+
 ## Configure
 
 ```bash
