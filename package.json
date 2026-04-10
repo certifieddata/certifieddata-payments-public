@@ -19,10 +19,12 @@
     "validate:vectors": "node scripts/validate-vectors.js"
   },
   "devDependencies": {
+    "@certifieddata/payments": "workspace:*",
     "@changesets/cli": "^2.27.1",
     "@redocly/cli": "^1.10.0",
     "ajv": "^8.12.0",
     "ajv-formats": "^3.0.1",
+    "tsx": "^4.21.0",
     "turbo": "^1.13.0",
     "typescript": "^5.4.0"
   },

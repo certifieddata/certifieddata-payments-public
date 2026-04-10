@@ -142,6 +142,15 @@ CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
   python examples/claude-demo/demo.py
 ```
 
+```bash
+# sandbox demo
+CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
+  pnpm exec tsx examples/claude-demo/demo.ts
+
+CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
+  python examples/claude-demo/demo.py
+```
+
 ---
 
 ## What this repository contains
@@ -174,10 +183,10 @@ CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
 # TypeScript
 pnpm install
 CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
-  pnpm --filter @certifieddata/agent-commerce-demo start
+  pnpm exec tsx examples/claude-demo/demo.ts
 ```
 
-The demo runs all 5 phases and prints the signed receipt + independent verification result.
+The demo runs all 5 phases, returns an inline signed receipt from capture, and verifies it independently via the public verify route.
 
 ---
 

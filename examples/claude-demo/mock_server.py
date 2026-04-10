@@ -31,6 +31,7 @@ HOST = "127.0.0.1"
 PORT = 3456
 POLICY_ID = "pol_mock_agent_demo_v1"
 SIGNING_KEY_ID = "cd_root_2026"
+DETERMINISTIC_PRIVATE_KEY_BYTES = bytes(range(1, 33))
 
 app = Flask(__name__)
 transactions: dict[str, dict[str, Any]] = {}
@@ -53,7 +54,7 @@ def static_signature(payload: bytes) -> str:
 
 
 if Ed25519PrivateKey is not None:
-    private_key = Ed25519PrivateKey.generate()
+    private_key = Ed25519PrivateKey.from_private_bytes(DETERMINISTIC_PRIVATE_KEY_BYTES)
     public_key = private_key.public_key()
     public_key_pem = public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
@@ -230,7 +231,7 @@ def main() -> None:
     print(f"Listening on http://localhost:{PORT}")
     print("This is a development mock - not connected to sandbox or live")
     if SIGNATURE_MODE == "cryptographic":
-        print("Signature mode: Ed25519 keypair generated for this session")
+        print("Signature mode: deterministic Ed25519 keypair for stable demo receipts")
     else:
         print("Signature mode: simulated (install cryptography for real Ed25519 signing)")
     app.run(host=HOST, port=PORT, debug=False)

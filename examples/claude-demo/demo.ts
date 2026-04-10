@@ -21,7 +21,7 @@
  *   5 — Independent verification (public, no auth)
  */
 
-import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
+import { CertifiedDataAgentCommerceClient } from "../../packages/typescript-sdk/src/index.js";
 
 const BASE_URL = (process.env["CDAC_BASE_URL"] ?? "https://certifieddata.io").replace(/\/+$/, "");
 
@@ -146,6 +146,10 @@ async function main(): Promise<void> {
     fail("verify_request", `HTTP ${verifyRes.status}: ${text}`);
   }
   const verify = await verifyRes.json() as Record<string, unknown>;
+
+  if (!("hashValid" in verify))      fail("hash_integrity", "hashValid missing from verification response");
+  if (!("signatureValid" in verify)) fail("ed25519_sig", "signatureValid missing from verification response");
+  if (!("valid" in verify))          fail("verify_overall", "valid missing from verification response");
 
   if (!verify["hashValid"])      fail("hash_integrity", "hashValid=false — receipt payload may have been tampered");
   if (!verify["signatureValid"]) fail("ed25519_sig",    "signatureValid=false — Ed25519 signature invalid");

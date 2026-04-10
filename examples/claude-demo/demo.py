@@ -152,6 +152,13 @@ def main() -> None:
 
     verify = resp.json()
 
+    if "hashValid" not in verify:
+        fail("hash_integrity", "hashValid missing from verification response")
+    if "signatureValid" not in verify:
+        fail("ed25519_sig", "signatureValid missing from verification response")
+    if "valid" not in verify:
+        fail("verify_overall", "valid missing from verification response")
+
     if not verify.get("hashValid"):
         fail("hash_integrity", "hashValid=false - receipt payload may have been tampered")
     if not verify.get("signatureValid"):
