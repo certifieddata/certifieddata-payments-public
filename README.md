@@ -126,8 +126,18 @@ pnpm --filter @certifieddata/agent-commerce-mock-server start
 ```
 
 ```bash
+# self-contained Flask mock used by the public demo video
+pip install flask
+python examples/claude-demo/mock_server.py
+# → http://localhost:3456
+```
+
+```bash
 CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
-  node examples/claude-demo/demo.mjs
+  pnpm exec tsx examples/claude-demo/demo.ts
+
+CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
+  python examples/claude-demo/demo.py
 ```
 
 ---

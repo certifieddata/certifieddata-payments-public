@@ -58,6 +58,7 @@ class TransactionsResource:
         *,
         artifact_id: Optional[str] = None,
         certificate_id: Optional[str] = None,
+        decision_record_id: Optional[str] = None,
         decision_id: Optional[str] = None,
         dataset_id: Optional[str] = None,
         model_id: Optional[str] = None,
@@ -73,7 +74,7 @@ class TransactionsResource:
             json={
                 "artifact_id": artifact_id,
                 "certificate_id": certificate_id,
-                "decision_id": decision_id,
+                "decision_record_id": decision_record_id or decision_id,
                 "dataset_id": dataset_id,
                 "model_id": model_id,
                 "output_id": output_id,

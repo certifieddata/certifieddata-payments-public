@@ -23,7 +23,7 @@
 
 import { CertifiedDataAgentCommerceClient } from "@certifieddata/payments";
 
-const BASE_URL = process.env["CDAC_BASE_URL"] ?? "https://certifieddata.io";
+const BASE_URL = (process.env["CDAC_BASE_URL"] ?? "https://certifieddata.io").replace(/\/+$/, "");
 
 const C = {
   reset:  "\x1b[0m",
@@ -47,8 +47,25 @@ function fail(label: string, detail: string): never {
   process.exit(1);
 }
 
+function getModeLabel(url: string): string {
+  const lowered = url.toLowerCase();
+  if (lowered.includes("localhost") || lowered.includes("127.0.0.1")) {
+    return "local mock";
+  }
+  if (lowered.includes("sandbox")) {
+    return "sandbox";
+  }
+  return "live";
+}
+
+function preview(value: unknown, length: number): string {
+  const text = String(value ?? "");
+  return text ? `${text.slice(0, length)}…` : "—";
+}
+
 async function main(): Promise<void> {
   console.log(`\n${C.bold}CertifiedData Agent Commerce — Demo${C.reset}`);
+  console.log(`${C.grey}Mode:   ${getModeLabel(BASE_URL)}${C.reset}`);
   console.log(`${C.grey}Target: ${BASE_URL}${C.reset}`);
   console.log(`${C.grey}SDK:    @certifieddata/payments${C.reset}`);
 
@@ -79,10 +96,9 @@ async function main(): Promise<void> {
   log("Phase 2", "Attach provenance — bind decision record to payment");
 
   await client.transactions.attachLinks(txId, {
-    decision_id: "dec_agent_demo_2026",
-    artifact_id: "art_gpu_compute_001",
+    decision_record_id: "dec_agent_demo_2026",
   });
-  ok("links_attached", "decision_id=dec_agent_demo_2026  artifact_id=art_gpu_compute_001");
+  ok("links_attached", "decision_record_id=dec_agent_demo_2026");
   console.log(`  ${C.grey}  This links the AI system's decision lineage to the financial action.${C.reset}`);
 
   // ── Phase 3 + 4: Capture ────────────────────────────────────────────────────
@@ -100,11 +116,23 @@ async function main(): Promise<void> {
   if (!receipt)             fail("receipt",    "receipt not inlined in capture response");
   const receiptId = (receipt["receipt_id"] ?? receipt["id"]) as string | undefined;
   if (!receiptId)           fail("receipt_id", "receipt_id missing from receipt payload");
+  const decisionRecordId =
+    typeof receipt["decision_record_id"] === "string" ? receipt["decision_record_id"] : undefined;
+  if (!decisionRecordId)    fail("decision_record_id", "decision_record_id missing from inline receipt");
 
   ok("settled",        `transaction_id=${txId}  status=${status}`);
   ok("receipt_inline", `receipt_id=${receiptId}`);
 
-  console.log(`\n${C.grey}Signed receipt (inline, no second fetch):${C.reset}`);
+  const sig = String(receipt["ed25519_sig"] ?? receipt["signature"] ?? "");
+  console.log(`\n${C.grey}┌─ Inline signed receipt ─────────────────────────────────────┐${C.reset}`);
+  console.log(`${C.grey}  Transaction ID  :${C.reset} ${txId}`);
+  console.log(`${C.grey}  Receipt ID      :${C.reset} ${receiptId}`);
+  console.log(`${C.grey}  Policy ID       :${C.reset} ${String(receipt["policy_id"] ?? "—")}`);
+  console.log(`${C.grey}  Decision Record :${C.reset} ${decisionRecordId}`);
+  console.log(`${C.grey}  SHA-256 Hash    :${C.reset} ${preview(receipt["sha256_hash"] ?? "—", 32)}`);
+  console.log(`${C.grey}  Ed25519 Sig     :${C.reset} ${preview(sig, 48)}`);
+  console.log(`${C.grey}└─────────────────────────────────────────────────────────────┘${C.reset}`);
+  console.log(`\n${C.grey}Full receipt JSON:${C.reset}`);
   console.log(C.grey + JSON.stringify(receipt, null, 2) + C.reset);
 
   // ── Phase 5: Independent verification — raw fetch, no SDK ──────────────────
@@ -123,16 +151,19 @@ async function main(): Promise<void> {
   if (!verify["signatureValid"]) fail("ed25519_sig",    "signatureValid=false — Ed25519 signature invalid");
   if (!verify["valid"])          fail("verify_overall", "valid=false — overall verification failed");
 
-  ok("hash_integrity", "hashValid=true    SHA-256 matches stored payload");
-  ok("ed25519_sig",    "signatureValid=true  Ed25519 verified against public key");
-  ok("verify_overall", "valid=true  receipt is tamper-evident and independently verifiable");
+  ok("hash_integrity", "hashValid=true");
+  ok("ed25519_sig",    "signatureValid=true");
+  ok("verify_overall", "valid=true");
+  ok("signing_key",    `signingKeyId=${String(verify["signingKeyId"] ?? "cd_root_2026")}`);
 
   // ── Summary ─────────────────────────────────────────────────────────────────
   console.log(`\n${"─".repeat(60)}`);
+  const lineageBound = receipt["decision_record_id"] ? "yes" : "no";
   console.log(`${C.bold}${C.green}All 5 phases passed${C.reset}`);
-  console.log(`\n  Receipt ID:   ${receiptId}`);
-  console.log(`  Verify URL:   ${verifyUrl}`);
-  console.log(`  Signed by:    ${verify["signingKeyId"] ?? "cd_root_2026"}  (Ed25519)`);
+  console.log(`\n  Receipt ID:     ${receiptId}`);
+  console.log(`  Verify URL:     ${verifyUrl}`);
+  console.log(`  Signed by:      ${verify["signingKeyId"] ?? "cd_root_2026"}  (Ed25519)`);
+  console.log(`  Lineage bound:  ${lineageBound}`);
   console.log(`\n  ${C.grey}The agent transacted. The receipt proves it — cryptographically.${C.reset}\n`);
 }
 

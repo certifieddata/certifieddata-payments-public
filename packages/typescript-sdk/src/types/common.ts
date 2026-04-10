@@ -34,6 +34,7 @@ export type ProvenanceMetadata = {
 export interface ProvenanceLinkSet {
   artifact_id?: string | null;
   certificate_id?: string | null;
+  decision_record_id?: string | null;
   decision_id?: string | null;
   dataset_id?: string | null;
   model_id?: string | null;
