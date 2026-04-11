@@ -27,10 +27,11 @@ class CertifiedDataAgentCommerceClient:
         # or pass explicitly:
         client = CertifiedDataAgentCommerceClient(
             api_key="cdp_test_...",
-            base_url="https://sandbox.certifieddata.io",
+            base_url="https://certifieddata.io",
         )
 
-    Use ``cdp_test_`` keys for sandbox, ``cdp_live_`` keys for production.
+    Use ``cdp_test_`` keys for test mode, ``cdp_live_`` keys for production.
+    Both key types route to the same base URL — the prefix controls the environment.
     """
 
     def __init__(

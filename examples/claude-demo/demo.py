@@ -9,10 +9,7 @@ Setup:
 
 Run:
     CDAC_API_KEY=cdp_test_xxx python examples/claude-demo/demo.py
-    # against sandbox:
-    CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \\
-        python examples/claude-demo/demo.py
-    # against local mock:
+    # against local mock (no real key needed):
     CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \\
         python examples/claude-demo/demo.py
 

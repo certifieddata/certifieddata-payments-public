@@ -18,7 +18,7 @@ export interface CertifiedDataAgentCommerceClientOptions {
   /**
    * API base URL. Reads `CDAC_BASE_URL` from the environment if omitted.
    * Defaults to `https://certifieddata.io`.
-   * Sandbox: `https://sandbox.certifieddata.io`
+   * Both test (`cdp_test_`) and live (`cdp_live_`) keys route through the same host.
    */
   baseUrl?: string;
   /** API version header value. Defaults to `2025-01-01`. */

@@ -43,15 +43,19 @@ print(receipt["ed25519_sig"])
 
 ## Configure
 
+Get your keys at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys).
+
 ```bash
 export CDAC_API_KEY=cdp_test_xxx
-export CDAC_BASE_URL=https://sandbox.certifieddata.io  # omit for live
+# CDAC_BASE_URL defaults to https://certifieddata.io — omit unless using a local mock
 ```
 
-| Environment | Key prefix   | Base URL                           |
-|-------------|--------------|------------------------------------|
-| Sandbox     | `cdp_test_`  | `https://sandbox.certifieddata.io` |
-| Live        | `cdp_live_`  | `https://certifieddata.io`         |
+| Environment | Key prefix   | Base URL                       |
+|-------------|--------------|--------------------------------|
+| Test        | `cdp_test_`  | `https://certifieddata.io`     |
+| Live        | `cdp_live_`  | `https://certifieddata.io`     |
+
+Both environments route through the same host. The key prefix controls which environment is active.
 
 ## Verify receipts publicly
 

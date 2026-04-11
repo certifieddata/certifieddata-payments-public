@@ -9,8 +9,8 @@
  *
  * Run:
  *   CDAC_API_KEY=cdp_test_xxx tsx examples/claude-demo/demo.ts
- *   # against sandbox:
- *   CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
+ *   # against local mock (no real key needed):
+ *   CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
  *     tsx examples/claude-demo/demo.ts
  *
  * Phases:

@@ -21,12 +21,14 @@ pip install certifieddata-agent-commerce
 
 ## Configure
 
+Get your keys at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys).
+
 ```bash
 export CDAC_API_KEY=cdp_test_xxx
-export CDAC_BASE_URL=https://sandbox.certifieddata.io
+# CDAC_BASE_URL defaults to https://certifieddata.io — omit unless running a local mock
 ```
 
-Sandbox keys start with `cdp_test_`. Live keys start with `cdp_live_`.
+Test keys start with `cdp_test_`. Live keys start with `cdp_live_`. Both work against the same host — the key prefix controls which environment the request is routed to.
 
 ## Run a payment
 
@@ -146,11 +148,11 @@ CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
 ```
 
 ```bash
-# sandbox demo
-CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
+# test against live API with a test key (get key from dashboard)
+CDAC_API_KEY=cdp_test_xxx \
   pnpm exec tsx examples/claude-demo/demo.ts
 
-CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
+CDAC_API_KEY=cdp_test_xxx \
   python examples/claude-demo/demo.py
 ```
 
@@ -177,16 +179,23 @@ CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
 
 ## Run the end-to-end demo
 
+Get a test key at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys), then:
+
 ```bash
 # Python
 pip install certifieddata-agent-commerce
-CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
-  python examples/claude-demo/demo.py
+CDAC_API_KEY=cdp_test_xxx python examples/claude-demo/demo.py
 
 # TypeScript
 pnpm install
-CDAC_API_KEY=cdp_test_xxx CDAC_BASE_URL=https://sandbox.certifieddata.io \
-  pnpm exec tsx examples/claude-demo/demo.ts
+CDAC_API_KEY=cdp_test_xxx pnpm exec tsx examples/claude-demo/demo.ts
+```
+
+Or run fully offline against the local mock (no key required):
+
+```bash
+pip install flask && python examples/claude-demo/mock_server.py
+CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 python examples/claude-demo/demo.py
 ```
 
 The demo runs all 5 phases, returns an inline signed receipt from capture, confirms `decision_record_id` is present in the signed payload, and verifies the receipt independently via the public verify route.
@@ -197,8 +206,10 @@ The demo runs all 5 phases, returns an inline signed receipt from capture, confi
 
 | Environment | Key prefix | Base URL |
 |-------------|------------|----------|
-| Sandbox | `cdp_test_` | `https://sandbox.certifieddata.io` |
+| Test | `cdp_test_` | `https://certifieddata.io` |
 | Live | `cdp_live_` | `https://certifieddata.io` |
+
+Both test and live keys route through `https://certifieddata.io`. The key prefix (`cdp_test_` vs `cdp_live_`) determines the environment. There is no separate sandbox hostname. Get keys at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys).
 
 ---
 
