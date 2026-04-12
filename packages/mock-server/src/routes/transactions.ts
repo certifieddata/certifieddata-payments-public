@@ -1,4 +1,5 @@
 import { type Router as ExpressRouter, Router } from "express";
+import { createHash } from "node:crypto";
 import { generateId } from "../lib/id-generator.js";
 import { saveResource, getResource, listResources, updateResource } from "../lib/store.js";
 import { emitEvent } from "../lib/event-bus.js";
@@ -82,10 +83,15 @@ router.post("/:id/capture", withIdempotency, (req, res) => {
   }
 
   const now = new Date().toISOString();
+  const receiptId = generateId("rcpt");
+  // Compute a real SHA-256 over a deterministic payload so the hash
+  // matches the ^sha256:[a-f0-9]{64}$ contract and passes schema validation.
+  const receiptCanonical = JSON.stringify({ id: receiptId, transaction_id: req.params.id, created_at: now });
+  const receiptHash = `sha256:${createHash("sha256").update(receiptCanonical).digest("hex")}`;
   const receipt = {
-    id: generateId("rcpt"),
+    id: receiptId,
     schema_version: "payment_receipt.v1",
-    hash: `sha256:mock_${Date.now().toString(16)}`,
+    hash: receiptHash,
     created_at: now,
   };
 

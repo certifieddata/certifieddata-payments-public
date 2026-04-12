@@ -2,30 +2,52 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://certifieddata.io/schemas/resources/receipt/v1",
   "title": "Receipt",
-  "description": "A payment receipt issued after a transaction is captured. Receipts are immutable after issuance. The schema_version field aligns with the private platform's payment_receipt.v1 schema. The hash field is the SHA-256 digest of the canonical receipt payload.",
+  "description": "A payment receipt issued after a transaction is captured. Receipts are immutable after issuance. The schema_version field aligns with the platform's payment_receipt.v1 schema. The hash field is the SHA-256 digest of the canonical receipt payload using stable JSON serialization (lexicographic key order, no whitespace, UTF-8). Additional governance and provenance fields are included in the full receipt payload.",
   "type": "object",
-  "required": ["id", "object", "schema_version", "transaction_id", "amount", "currency", "rail", "hash", "created_at"],
+  "required": ["receipt_id", "schema_version", "transaction_id", "amount", "currency", "rail", "status"],
   "properties": {
-    "id": {
+    "receipt_id": {
       "type": "string",
-      "description": "Unique receipt identifier. Always prefixed with rcpt_.",
-      "pattern": "^rcpt_",
+      "description": "Unique receipt identifier.",
       "examples": ["rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5"]
     },
     "object": {
       "type": "string",
       "const": "receipt",
-      "description": "Always 'receipt'."
+      "description": "Always 'receipt' when present."
     },
     "schema_version": {
       "type": "string",
       "const": "payment_receipt.v1",
       "description": "Schema version identifier. Always 'payment_receipt.v1' in V1."
     },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 UTC timestamp when the receipt was issued."
+    },
     "transaction_id": {
       "type": "string",
-      "description": "The transaction this receipt was issued for.",
-      "pattern": "^tx_"
+      "description": "The transaction this receipt was issued for."
+    },
+    "authorization_id": {
+      "type": "string",
+      "description": "Internal authorization ID that preceded the transaction."
+    },
+    "agent_id": {
+      "type": "string",
+      "description": "The agent that initiated this transaction."
+    },
+    "agent_name": {
+      "type": "string",
+      "description": "Display name of the agent at time of issuance."
+    },
+    "merchant_id": {
+      "type": ["string", "null"],
+      "description": "The merchant receiving the payment, if applicable."
+    },
+    "merchant_name": {
+      "type": ["string", "null"]
     },
     "amount": {
       "type": "integer",
@@ -34,46 +56,110 @@
     },
     "currency": {
       "type": "string",
-      "pattern": "^[A-Z]{3}$",
-      "description": "ISO 4217 currency code, uppercase."
+      "description": "ISO 4217 currency code, lowercase (e.g. 'usd')."
     },
     "rail": {
       "type": "string",
       "enum": ["stripe", "usdc_base", "usdc_ethereum", "eth_ethereum"],
       "description": "Payment rail used for this transaction."
     },
-    "hash": {
+    "purpose": {
+      "type": "string",
+      "description": "Human-readable purpose string declared at authorization time."
+    },
+    "purpose_tag": {
+      "type": ["string", "null"],
+      "description": "Machine-readable purpose tag for policy filtering."
+    },
+    "decision_record_id": {
+      "type": ["string", "null"],
+      "description": "Decision record bound to this payment via attach-links. Links the AI system's decision lineage to this financial action."
+    },
+    "policy_id": {
+      "type": ["string", "null"],
+      "description": "The payment policy that authorized this transaction."
+    },
+    "policy_hash": {
+      "type": ["string", "null"],
+      "description": "SHA-256 hash of the policy at evaluation time, for audit reproducibility."
+    },
+    "artifact_hash": {
+      "type": ["string", "null"],
+      "description": "SHA-256 hash of the AI artifact associated with this transaction."
+    },
+    "certificate_id": {
+      "type": ["string", "null"],
+      "description": "CertifiedData certificate ID linked to this payment."
+    },
+    "external_reference": {
+      "type": ["string", "null"],
+      "description": "External session or transaction reference (e.g. Stripe checkout session ID)."
+    },
+    "status": {
+      "type": "string",
+      "description": "Payment status at time of receipt issuance (submitted or succeeded)."
+    },
+    "sha256_hash": {
       "type": "string",
       "pattern": "^sha256:[a-f0-9]{64}$",
-      "description": "SHA-256 digest of the canonical payment receipt payload. Use this for independent verification."
+      "description": "SHA-256 digest of the canonical receipt payload. Included in the capture response for independent verification. Use this to verify receipt integrity without calling the verify endpoint."
     },
-    "signature_present": {
-      "type": "boolean",
-      "description": "True if the platform has signed this receipt. The signing key can be discovered at /.well-known/certifieddata.json."
-    },
-    "created_at": {
+    "ed25519_sig": {
       "type": "string",
-      "format": "date-time",
-      "description": "RFC 3339 UTC timestamp when the receipt was issued."
+      "description": "Base64-encoded Ed25519 signature over the canonical receipt payload. Included in the capture response. The signing key can be discovered at /.well-known/certifieddata.json."
+    },
+    "signing_key_id": {
+      "type": "string",
+      "description": "ID of the signing key used. Resolves to a public key in the platform key registry."
+    },
+    "signature_alg": {
+      "type": "string",
+      "const": "Ed25519",
+      "description": "Always 'Ed25519'."
     },
     "livemode": {
       "type": "boolean",
       "description": "True for live mode receipts, false for sandbox."
+    },
+    "onchain": {
+      "type": ["object", "null"],
+      "description": "Onchain settlement fields. Present only for crypto rails.",
+      "properties": {
+        "chain": { "type": "string" },
+        "settlement_asset": { "type": "string" },
+        "settlement_amount": { "type": "string" },
+        "tx_hash": { "type": "string" },
+        "block_number": { "type": ["string", "null"] },
+        "explorer_url": { "type": ["string", "null"] },
+        "confirmation_status": { "type": "string" }
+      }
     }
   },
-  "additionalProperties": false,
   "examples": [
     {
-      "id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
-      "object": "receipt",
+      "receipt_id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
       "schema_version": "payment_receipt.v1",
+      "timestamp": "2026-04-06T18:42:11Z",
       "transaction_id": "tx_01HZX8KHJNR4D42R6G4W4Q0Y0V",
+      "authorization_id": "auth_01HZX8H75Z6X8C5X7JQY6B4M2N",
+      "agent_id": "agt_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+      "agent_name": "Procurement Agent v2",
+      "merchant_id": null,
+      "merchant_name": null,
       "amount": 25000,
-      "currency": "USD",
+      "currency": "usd",
       "rail": "stripe",
-      "hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
-      "signature_present": true,
-      "created_at": "2026-04-06T18:42:11Z",
+      "purpose": "Certified dataset purchase for training run",
+      "purpose_tag": "dataset.purchase",
+      "decision_record_id": "dec_agent_demo_2026",
+      "policy_id": "pol_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+      "policy_hash": null,
+      "artifact_hash": null,
+      "certificate_id": null,
+      "external_reference": "cs_test_stripe_session_abc123",
+      "status": "submitted",
+      "sha256_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+      "ed25519_sig": "base64sighere...",
       "livemode": false
     }
   ]

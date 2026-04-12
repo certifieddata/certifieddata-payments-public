@@ -32,8 +32,8 @@
     },
     "status": {
       "type": "string",
-      "enum": ["created", "submitted", "captured", "succeeded", "failed", "canceled"],
-      "description": "Server-managed lifecycle status."
+      "enum": ["created", "submitted", "pending_settlement", "captured", "succeeded", "failed", "canceled"],
+      "description": "Server-managed lifecycle status. 'captured' is the terminal success state after capture(). 'submitted' means the capture was accepted and is settling. 'pending_settlement' is used for onchain rails awaiting block confirmation."
     },
     "description": { "type": ["string", "null"], "maxLength": 500 },
     "provenance": {
@@ -42,15 +42,20 @@
     },
     "receipt": {
       "type": ["object", "null"],
-      "description": "Embedded receipt sub-object. Present when status = succeeded.",
+      "description": "Embedded receipt sub-object. Present when capture is successful. The full receipt payload includes governance fields (decision_record_id, policy_id, agent_id, sha256_hash, ed25519_sig) in addition to the base fields.",
+      "required": ["schema_version"],
       "properties": {
-        "id": { "type": "string", "pattern": "^rcpt_" },
+        "receipt_id": { "type": "string", "description": "Receipt identifier." },
         "schema_version": { "type": "string", "const": "payment_receipt.v1" },
         "hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
-        "created_at": { "type": "string", "format": "date-time" }
-      },
-      "required": ["id", "schema_version", "hash", "created_at"],
-      "additionalProperties": false
+        "sha256_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "ed25519_sig": { "type": "string" },
+        "decision_record_id": { "type": ["string", "null"] },
+        "policy_id": { "type": ["string", "null"] },
+        "agent_id": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
     },
     "metadata": {
       "type": ["object", "null"],

@@ -189,10 +189,19 @@ export interface Transaction {
 export interface CreateTransactionParams {
   payment_intent_id?: string;
   payee_id?: string;
+  /**
+   * The agent initiating this transaction.
+   * Optional — the platform auto-resolves to your account's first active agent
+   * if omitted. Supply explicitly when managing multiple agents.
+   */
+  agent_id?: string;
   amount: number;
   currency: string;
   rail: PaymentRail;
+  purpose?: string;
+  purpose_tag?: string;
   description?: string;
+  idempotency_key?: string;
   metadata?: Record<string, string>;
 }
 

@@ -19,12 +19,10 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0
 
 servers:
-  - url: https://api.certifieddata.io
-    description: Production
-  - url: https://sandbox.certifieddata.io
-    description: Sandbox
+  - url: https://certifieddata.io
+    description: Production (live and sandbox keys both accepted)
   - url: http://localhost:3456
-    description: Mock server (local development)
+    description: Mock server (local development — see examples/claude-demo/mock_server.py)
 
 security:
   - bearerAuth: []

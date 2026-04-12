@@ -15,5 +15,10 @@
   "verification_expectations": {
     "valid": true,
     "timestamp_tolerance_seconds": 300
+  },
+  "test_replay_note": "This vector uses a fixed timestamp from April 2024. When replaying in automated tests, disable or set timestamp tolerance to Infinity — otherwise the 300-second window will always fail. Example: verifyWebhookSignature(secret, payload, header, { toleranceSeconds: Infinity }). Never disable tolerance in production code.",
+  "test_replay_example": {
+    "typescript": "verifyWebhookSignature(secret, rawBody, signatureHeader, { toleranceSeconds: Infinity })",
+    "python": "WebhookVerifier(secret).verify(raw_body, signature_header, tolerance_seconds=None)"
   }
 }

@@ -2,7 +2,7 @@
 
 export type PaymentRail = "stripe" | "usdc_base" | "usdc_ethereum" | "eth_ethereum";
 
-export type TransactionStatus = "created" | "submitted" | "captured" | "succeeded" | "failed" | "canceled";
+export type TransactionStatus = "created" | "submitted" | "pending_settlement" | "captured" | "succeeded" | "failed" | "canceled";
 
 export type PaymentIntentStatus = "created" | "confirmed" | "processing" | "succeeded" | "failed" | "canceled";
 

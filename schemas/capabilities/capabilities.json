@@ -58,6 +58,18 @@
     "receipt": { "mutable": false },
     "settlement": { "cancelable_before_submit": true }
   },
+  "sandbox_limits": {
+    "max_amount_cents": 100000,
+    "max_amount_display": "$1,000.00",
+    "note": "Sandbox transactions above this amount return HTTP 400 with code sandbox_amount_limit_exceeded."
+  },
+  "receipt_verification": {
+    "algorithm": "sha256-stable-json",
+    "canonicalization": "lexicographic key sort, no whitespace, undefined excluded, null preserved, UTF-8",
+    "signing_algorithm": "Ed25519",
+    "signature_encoding": "base64 (standard, not URL-safe)",
+    "docs": "/docs/verification-algorithm.md"
+  },
   "sdk_versions": { "typescript": "0.1.0", "python": "0.1.0" },
   "mock_server_supported_resources": [
     "payee", "payee_alias", "payout_destination", "payment_intent",

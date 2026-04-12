@@ -30,8 +30,13 @@ except ImportError:
 HOST = "127.0.0.1"
 PORT = 3456
 POLICY_ID = "pol_mock_agent_demo_v1"
-SIGNING_KEY_ID = "cd_root_2026"
-DETERMINISTIC_PRIVATE_KEY_BYTES = bytes(range(1, 33))
+# DEMO ONLY — do not use in production. This key ID is intentionally fictional
+# and will never match a real platform signing key.
+SIGNING_KEY_ID = "cd_demo_mock_only"
+# Ephemeral key: generated fresh at startup, never reused, never predictable.
+# Never use a deterministic or hardcoded key in a server — even a demo one.
+import os as _os
+_EPHEMERAL_KEY_BYTES = _os.urandom(32)
 
 app = Flask(__name__)
 transactions: dict[str, dict[str, Any]] = {}
@@ -54,17 +59,13 @@ def static_signature(payload: bytes) -> str:
 
 
 if Ed25519PrivateKey is not None:
-    private_key = Ed25519PrivateKey.from_private_bytes(DETERMINISTIC_PRIVATE_KEY_BYTES)
+    # Ephemeral keypair — freshly generated at each server startup.
+    private_key = Ed25519PrivateKey.from_private_bytes(_EPHEMERAL_KEY_BYTES)
     public_key = private_key.public_key()
-    public_key_pem = public_key.public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo,
-    ).decode("utf-8")
     SIGNATURE_MODE = "cryptographic"
 else:
     private_key = None
     public_key = None
-    public_key_pem = None
     SIGNATURE_MODE = "simulated"
 
 
@@ -76,8 +77,9 @@ def sign_payload(payload: bytes) -> str:
 
 
 def verify_signature(payload: bytes, signature_text: str) -> bool:
+    """Verify against the ephemeral public key from this session only."""
     if public_key is None or Ed25519PublicKey is None:
-        return True
+        return True  # simulated mode: trust all
     padding = "=" * (-len(signature_text) % 4)
     try:
         signature = base64.urlsafe_b64decode(signature_text + padding)
@@ -218,20 +220,21 @@ def verify_receipt(receipt_id: str) -> Any:
         "signatureValid": signature_valid,
         "signingKeyId": SIGNING_KEY_ID,
         "signatureAlg": "Ed25519",
+        # DEMO ONLY — this key is ephemeral and not a production key.
+        "mockNote": "This is a local development mock. Receipts are not verifiable against the real platform.",
     }
     if SIGNATURE_MODE != "cryptographic":
-        response["mockNote"] = "cryptography not installed; signature validation is simulated"
-    if public_key_pem:
-        response["publicKeyPem"] = public_key_pem
+        response["simulatedNote"] = "cryptography not installed; signature validation is simulated"
     return jsonify(response)
 
 
 def main() -> None:
-    print("CertifiedData Agent Commerce - Mock Server")
+    print("CertifiedData Agent Commerce — Mock Server  [DEMO ONLY]")
     print(f"Listening on http://localhost:{PORT}")
-    print("This is a development mock - not connected to sandbox or live")
+    print("This is a development mock — not connected to sandbox or live.")
+    print(f"Signing key ID: {SIGNING_KEY_ID}  (fictional — not a production key)")
     if SIGNATURE_MODE == "cryptographic":
-        print("Signature mode: deterministic Ed25519 keypair for stable demo receipts")
+        print("Signature mode: ephemeral Ed25519 keypair (generated at startup, not persisted)")
     else:
         print("Signature mode: simulated (install cryptography for real Ed25519 signing)")
     app.run(host=HOST, port=PORT, debug=False)
