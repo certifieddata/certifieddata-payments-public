@@ -145,6 +145,7 @@ CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
 
 CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
   python examples/claude-demo/demo.py
+# Windows: add PYTHONIOENCODING=utf-8 to avoid cp1252 encoding errors
 ```
 
 ```bash
