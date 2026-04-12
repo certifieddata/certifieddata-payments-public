@@ -2,7 +2,7 @@
   "profile_id": "certified-artifact-purchase",
   "title": "Certified Artifact Purchase",
   "version": "1.0.0",
-  "description": "End-to-end flow for purchasing a certified AI artifact with provenance linking. Attaches certificate_id, artifact_id, and decision_id to the transaction before capture.",
+  "description": "End-to-end flow for purchasing a certified AI artifact with provenance linking. Attaches certificate_id, artifact_id, and decision_record_id to the transaction before capture.",
   "required_endpoints": [
     "POST /v1/payees",
     "POST /v1/payment-intents",
@@ -19,7 +19,7 @@
     "transaction.captured"
   ],
   "required_provenance_links": ["certificate_id", "artifact_id"],
-  "recommended_provenance_links": ["decision_id", "receipt_hash"],
+  "recommended_provenance_links": ["decision_record_id", "receipt_hash"],
   "recommended_provenance_metadata": ["cdp:workflow_id", "cdp:source_system", "partner:invoice_ref"],
   "provenance_immutability_note": "Attach provenance links BEFORE capture. After capture, provenance is immutable (error: provenance.immutable_after_capture).",
   "example_files": ["./examples/certified-artifact-purchase/create-transaction-with-links.ts"],

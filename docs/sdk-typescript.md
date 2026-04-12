@@ -66,7 +66,7 @@ Provenance links are immutable after capture. Attach before confirming payment.
 await client.transactions.attachLinks(tx.id, {
   artifact_id: "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
   certificate_id: "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
-  decision_id: "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+  decision_record_id: "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
   provenance_metadata: {
     "cdp:workflow_id": "wf_123",
     "cdp:source_system": "certifieddata-platform",

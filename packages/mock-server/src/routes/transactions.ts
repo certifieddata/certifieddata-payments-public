@@ -83,15 +83,43 @@ router.post("/:id/capture", withIdempotency, (req, res) => {
   }
 
   const now = new Date().toISOString();
+  const txRecord = tx as Record<string, unknown>;
   const receiptId = generateId("rcpt");
-  // Compute a real SHA-256 over a deterministic payload so the hash
-  // matches the ^sha256:[a-f0-9]{64}$ contract and passes schema validation.
-  const receiptCanonical = JSON.stringify({ id: receiptId, transaction_id: req.params.id, created_at: now });
-  const receiptHash = `sha256:${createHash("sha256").update(receiptCanonical).digest("hex")}`;
-  const receipt = {
-    id: receiptId,
+
+  // Build receipt payload — fields used for canonicalization (sha256_hash and ed25519_sig are excluded).
+  // Uses json-stable-stringify semantics: lexicographic key sort, no whitespace, undefined excluded, null preserved.
+  const provenance = (txRecord.provenance as Record<string, unknown> | null) ?? {};
+  const receiptPayload: Record<string, unknown> = {
+    agent_id: "agt_mock",
+    amount: txRecord.amount,
+    currency: txRecord.currency,
+    decision_record_id: (provenance.decision_record_id as string | null) ?? null,
+    policy_id: null,
+    rail: txRecord.rail,
+    receipt_id: receiptId,
     schema_version: "payment_receipt.v1",
-    hash: receiptHash,
+    status: "submitted",
+    timestamp: now,
+    transaction_id: req.params.id,
+  };
+
+  // Canonical JSON: sort keys lexicographically, no whitespace, null preserved.
+  const sortedKeys = Object.keys(receiptPayload).sort();
+  const canonicalObj: Record<string, unknown> = {};
+  for (const k of sortedKeys) canonicalObj[k] = receiptPayload[k];
+  const canonicalJson = JSON.stringify(canonicalObj);
+  const sha256Hash = `sha256:${createHash("sha256").update(Buffer.from(canonicalJson, "utf-8")).digest("hex")}`;
+
+  // Mock signature — not cryptographically valid; clearly labelled as mock-only.
+  const mockSig = Buffer.from(`mock_sig_not_valid_${receiptId}`).toString("base64");
+
+  const receipt = {
+    ...receiptPayload,
+    sha256_hash: sha256Hash,
+    ed25519_sig: mockSig,
+    signing_key_id: "cd_demo_mock_only",
+    signature_alg: "Ed25519",
+    livemode: false,
     created_at: now,
   };
 

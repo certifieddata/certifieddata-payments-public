@@ -21,9 +21,13 @@
     }
   },
   "receipt": {
-    "id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
+    "receipt_id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
     "schema_version": "payment_receipt.v1",
-    "hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+    "sha256_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+    "decision_record_id": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+    "policy_id": null,
+    "agent_id": "agt_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+    "timestamp": "2026-04-06T18:42:11Z",
     "created_at": "2026-04-06T18:42:11Z"
   },
   "created_at": "2026-04-06T18:41:52Z",

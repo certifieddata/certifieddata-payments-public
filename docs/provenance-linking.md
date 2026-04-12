@@ -23,7 +23,7 @@ This makes it possible to verify:
 |---|---|---|
 | `artifact_id` | string | The artifact being purchased or funded |
 | `certificate_id` | string | Certificate or attestation in force at time of purchase |
-| `decision_id` | string | Decision record or approval that authorized the transaction |
+| `decision_record_id` | string | Decision record or approval that authorized the transaction |
 | `dataset_id` | string | Dataset linked to this commercial event |
 | `model_id` | string | Model artifact referenced |
 | `output_id` | string | Model output or inference result |
@@ -65,7 +65,7 @@ Full namespace registry: [`schemas/provenance/recommended-metadata-keys.json`](.
 {
   "artifact_id": "art_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
   "certificate_id": "cert_01HXZ803C0R6V4K4P9HWB6J5N6",
-  "decision_id": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
+  "decision_record_id": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9",
   "dataset_id": "ds_01HXZ811N6C84YFJ4S2P7A5R1K",
   "receipt_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
   "external_reference": "partner:invoice-44821",

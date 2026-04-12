@@ -144,6 +144,11 @@ and signature verification and returns a structured result:
 
 `valid` is `true` only if both `hashValid` and `signatureValid` are `true`.
 
+> **Note on casing:** The verify response uses **camelCase** field names (`hashValid`, `signatureValid`,
+> `signingKeyId`, `storedReceiptHash`, `recomputedReceiptHash`). The receipt object itself uses
+> **snake_case** (`sha256_hash`, `ed25519_sig`, `signing_key_id`). Do not mix the two when
+> implementing a verifier.
+
 ---
 
 ## Worked example

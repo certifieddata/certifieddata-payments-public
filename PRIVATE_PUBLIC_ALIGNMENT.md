@@ -73,7 +73,7 @@ Does not expose:
 
 ## Provenance alignment
 
-Public fields: artifact_id, certificate_id, decision_id, dataset_id, model_id, output_id, receipt_hash, external_reference, provenance_metadata
+Public fields: artifact_id, certificate_id, decision_record_id, dataset_id, model_id, output_id, receipt_hash, external_reference, provenance_metadata
 
 These map to real private platform trust/decision identifiers. The public contract remains a stable interface.
 

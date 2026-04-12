@@ -23,9 +23,14 @@ A receipt sub-object is embedded on the transaction when `status = succeeded`.
 ```json
 {
   "receipt": {
-    "id": "rcpt_...",
+    "receipt_id": "rcpt_...",
     "schema_version": "payment_receipt.v1",
-    "hash": "sha256:...",
+    "sha256_hash": "sha256:...",
+    "ed25519_sig": "base64...",
+    "decision_record_id": "dec_...",
+    "policy_id": "pol_...",
+    "agent_id": "agt_...",
+    "timestamp": "2026-04-06T18:42:11Z",
     "created_at": "2026-04-06T18:42:11Z"
   }
 }

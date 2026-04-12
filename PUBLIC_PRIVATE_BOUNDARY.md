@@ -105,7 +105,7 @@ Bad public leakage:
 
 ## Provenance boundary
 
-Public: artifact_id, certificate_id, decision_id, dataset_id, model_id, output_id, receipt_hash, external_reference, constrained provenance_metadata
+Public: artifact_id, certificate_id, decision_record_id, dataset_id, model_id, output_id, receipt_hash, external_reference, constrained provenance_metadata
 
 Not public: internal signing key details, raw private attestation internals, internal evidence storage mechanisms
 

@@ -15,7 +15,7 @@
       "example": "cert_01HXZ803C0R6V4K4P9HWB6J5N6"
     },
     {
-      "name": "decision_id",
+      "name": "decision_record_id",
       "description": "Identifier of the AI decision or inference run that triggered this payment.",
       "format": "string",
       "example": "dec_01HXZ80MCP6KNB8M3D0W1MSZV9"

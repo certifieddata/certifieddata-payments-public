@@ -24,7 +24,7 @@ const CAPABILITIES = {
     "refund.created",
   ],
   provenance_link_types: [
-    "artifact_id", "certificate_id", "decision_id", "dataset_id",
+    "artifact_id", "certificate_id", "decision_record_id", "dataset_id",
     "model_id", "output_id", "receipt_hash", "external_reference", "provenance_metadata",
   ],
   idempotency: { supported: true, header_name: "Idempotency-Key" },

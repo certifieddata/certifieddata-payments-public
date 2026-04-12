@@ -43,13 +43,12 @@
     "receipt": {
       "type": ["object", "null"],
       "description": "Embedded receipt sub-object. Present when capture is successful. The full receipt payload includes governance fields (decision_record_id, policy_id, agent_id, sha256_hash, ed25519_sig) in addition to the base fields.",
-      "required": ["schema_version"],
+      "required": ["receipt_id", "schema_version"],
       "properties": {
-        "receipt_id": { "type": "string", "description": "Receipt identifier." },
+        "receipt_id": { "type": "string", "description": "Receipt identifier. Matches the rcpt_ prefix convention.", "examples": ["rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5"] },
         "schema_version": { "type": "string", "const": "payment_receipt.v1" },
-        "hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
-        "sha256_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
-        "ed25519_sig": { "type": "string" },
+        "sha256_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$", "description": "SHA-256 digest of the canonical receipt payload." },
+        "ed25519_sig": { "type": "string", "description": "Base64-encoded Ed25519 signature over the canonical receipt payload." },
         "decision_record_id": { "type": ["string", "null"] },
         "policy_id": { "type": ["string", "null"] },
         "agent_id": { "type": "string" },
@@ -86,9 +85,13 @@
         "receipt_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0"
       },
       "receipt": {
-        "id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
+        "receipt_id": "rcpt_01HZX8M9QRH7Y8B4M2S2W6D1J5",
         "schema_version": "payment_receipt.v1",
-        "hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+        "sha256_hash": "sha256:3a6e0f8ed8c1f9d6f4d5b2a0cc6f12f876afc8b64c50d8b4c2c6aef6bd2b21f0",
+        "decision_record_id": "dec_agent_demo_2026",
+        "policy_id": "pol_01HZX8E77KN1KZ9M2G5D5Q4N4V",
+        "agent_id": "agt_01HXZ7Z8R2QQSN5B3T5VQ4D1WA",
+        "timestamp": "2026-04-06T18:42:11Z",
         "created_at": "2026-04-06T18:42:11Z"
       },
       "created_at": "2026-04-06T18:41:52Z",
