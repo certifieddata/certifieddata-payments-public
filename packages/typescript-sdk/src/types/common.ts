@@ -1,4 +1,4 @@
-// Aligns with apps/api/src/services/payments/types.ts in the private platform
+// Shared types for the CertifiedData Agent Commerce public SDK contract
 
 export type PaymentRail = "stripe" | "usdc_base" | "usdc_ethereum" | "eth_ethereum";
 
@@ -22,7 +22,7 @@ export type Environment = "sandbox" | "live";
 
 export type ActorType = "api_key" | "external_client" | "internal_service";
 
-/** Schema version for the payment receipt artifact. Aligns with private platform's payment_receipt.v1 */
+/** Schema version for the payment receipt artifact. */
 export const RECEIPT_SCHEMA_VERSION = "payment_receipt.v1" as const;
 export type ReceiptSchemaVersion = typeof RECEIPT_SCHEMA_VERSION;
 
