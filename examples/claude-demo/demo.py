@@ -8,10 +8,10 @@ Setup:
     pip install certifieddata-agent-commerce
 
 Run:
-    CDAC_API_KEY=cdp_test_xxx python examples/claude-demo/demo.py
-    # against local mock (no real key needed):
-    CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \\
-        python examples/claude-demo/demo.py
+    python examples/claude-demo/demo.py          # public demo key included — no signup needed
+    CDAC_API_KEY=cdp_test_xxx python examples/claude-demo/demo.py  # your own key
+    # against local mock:
+    CDAC_BASE_URL=http://localhost:3456 python examples/claude-demo/demo.py
 
 Phases:
     1 — Agent declares intent (create transaction)
@@ -25,6 +25,12 @@ import os
 import sys
 import json
 import requests
+
+# Public demo key — no signup required.
+# Override with your own key: export CDAC_API_KEY=cdp_test_yourkey
+_DEMO_KEY = "cdp_test_demo_certifieddata_io_2026"
+if not os.environ.get("CDAC_API_KEY"):
+    os.environ["CDAC_API_KEY"] = _DEMO_KEY
 
 try:
     from certifieddata_agent_commerce import CertifiedDataAgentCommerceClient, CDACError

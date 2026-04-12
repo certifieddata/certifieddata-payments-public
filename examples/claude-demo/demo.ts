@@ -8,10 +8,10 @@
  *   pnpm install
  *
  * Run:
- *   CDAC_API_KEY=cdp_test_xxx tsx examples/claude-demo/demo.ts
- *   # against local mock (no real key needed):
- *   CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
- *     tsx examples/claude-demo/demo.ts
+ *   tsx examples/claude-demo/demo.ts                        # public demo key — no signup needed
+ *   CDAC_API_KEY=cdp_test_xxx tsx examples/claude-demo/demo.ts   # your own key
+ *   # against local mock:
+ *   CDAC_BASE_URL=http://localhost:3456 tsx examples/claude-demo/demo.ts
  *
  * Phases:
  *   1 — Agent declares intent (create transaction)
@@ -22,6 +22,10 @@
  */
 
 import { CertifiedDataAgentCommerceClient } from "../../packages/typescript-sdk/src/index.js";
+
+// Public demo key — no signup required. Override with your own: CDAC_API_KEY=cdp_test_yourkey
+const DEMO_KEY = "cdp_test_demo_certifieddata_io_2026";
+if (!process.env["CDAC_API_KEY"]) process.env["CDAC_API_KEY"] = DEMO_KEY;
 
 const BASE_URL = (process.env["CDAC_BASE_URL"] ?? "https://certifieddata.io").replace(/\/+$/, "");
 

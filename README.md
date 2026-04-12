@@ -19,13 +19,28 @@ pip install certifieddata-agent-commerce
 
 > **Python naming note:** Install name is `certifieddata-agent-commerce` (hyphens). Import name is `certifieddata_agent_commerce` (underscores). This is standard Python convention — they refer to the same package.
 
-## Configure
+## Quick start — no signup required
 
-Get your keys at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys).
+A public demo key is included. Run the end-to-end demo instantly:
 
 ```bash
-export CDAC_API_KEY=cdp_test_xxx
-# CDAC_BASE_URL defaults to https://certifieddata.io — omit unless running a local mock
+pip install certifieddata-agent-commerce
+python examples/claude-demo/demo.py
+```
+
+You'll see a real signed receipt from the live API and a public verification URL — no account needed.
+
+```bash
+# TypeScript version
+pnpm install
+pnpm exec tsx examples/claude-demo/demo.ts
+```
+
+To use your own key (optional — get one at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys)):
+
+```bash
+export CDAC_API_KEY=cdp_test_yourkey
+python examples/claude-demo/demo.py
 ```
 
 Test keys start with `cdp_test_`. Live keys start with `cdp_live_`. Both work against the same host — the key prefix controls which environment the request is routed to.
@@ -149,12 +164,12 @@ CDAC_API_KEY=cdp_test_any CDAC_BASE_URL=http://localhost:3456 \
 ```
 
 ```bash
-# test against live API with a test key (get key from dashboard)
-CDAC_API_KEY=cdp_test_xxx \
-  pnpm exec tsx examples/claude-demo/demo.ts
+# test against live API — public demo key is built in, no env var needed
+pnpm exec tsx examples/claude-demo/demo.ts
+python examples/claude-demo/demo.py
 
-CDAC_API_KEY=cdp_test_xxx \
-  python examples/claude-demo/demo.py
+# override with your own key
+CDAC_API_KEY=cdp_test_yourkey python examples/claude-demo/demo.py
 ```
 
 ---
