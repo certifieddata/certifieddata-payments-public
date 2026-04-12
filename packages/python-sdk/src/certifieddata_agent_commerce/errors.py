@@ -56,7 +56,12 @@ class CDACRateLimitError(CDACError):
 
 def _raise_for_status(http_status: int, body: Any) -> None:
     """Raise an appropriate CDACError from an HTTP status and error body."""
-    error = body.get("error", {}) if isinstance(body, dict) else {}
+    raw_error = body.get("error", {}) if isinstance(body, dict) else {}
+    # Platform may return {"error": "string"} or {"error": {"code":...,"message":...}}
+    if isinstance(raw_error, dict):
+        error = raw_error
+    else:
+        error = {"code": "unknown", "message": str(raw_error) if raw_error else "An unexpected error occurred."}
     code = error.get("code", "unknown")
     message = error.get("message", "An unexpected error occurred.")
     retryable = error.get("retryable", False)

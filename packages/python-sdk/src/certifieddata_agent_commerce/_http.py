@@ -38,9 +38,11 @@ class HttpClient:
         if idempotency_key:
             headers["Idempotency-Key"] = idempotency_key
 
-        # Remove None values from query params
+        # Remove None values from query params and JSON body
         if params:
             params = {k: v for k, v in params.items() if v is not None}
+        if isinstance(json, dict):
+            json = {k: v for k, v in json.items() if v is not None}
 
         response = self._client.request(
             method,
