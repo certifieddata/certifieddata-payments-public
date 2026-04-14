@@ -20,7 +20,7 @@ class HttpClient:
                 "Authorization": f"Bearer {api_key}",
                 "CDAC-API-Version": api_version,
                 "Content-Type": "application/json",
-                "User-Agent": "certifieddata-agent-commerce-python/0.1.0",
+                "User-Agent": "certifieddata-agent-commerce-python/0.1.1",
             },
             timeout=timeout,
         )
