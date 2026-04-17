@@ -27,7 +27,17 @@
     "docs_quickstart": "./docs/quickstart.md",
     "examples_json": "./examples/json/",
     "test_vectors": "./test-vectors/",
-    "docs_manifest": "./docs/docs-index.json"
+    "docs_manifest": "./docs/docs-index.json",
+    "profiles": "./profiles/",
+    "demos": {
+      "basic": "./examples/claude-demo/demo.py",
+      "certified_artifact": "./examples/claude-demo/demo_certified.py",
+      "governance_denied": "./examples/claude-demo/demo_denied.py",
+      "idempotency_replay": "./examples/claude-demo/demo_idempotency.py",
+      "webhooks_listener": "./examples/webhooks-listener/",
+      "verify_only": "./examples/verify-only/",
+      "mcp_server": "./examples/mcp-server/"
+    }
   },
   "sdk_packages": {
     "typescript": {

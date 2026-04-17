@@ -25,6 +25,9 @@ classifiers = [
   "Topic :: Office/Business :: Financial",
 ]
 
+[project.scripts]
+cdac = "certifieddata_agent_commerce.cli:main"
+
 [project.urls]
 Homepage = "https://certifieddata.io/agent-commerce"
 Repository = "https://github.com/certifieddata/certifieddata-agent-commerce-public"

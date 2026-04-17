@@ -36,6 +36,38 @@ pnpm install
 pnpm exec tsx examples/claude-demo/demo.ts
 ```
 
+## Demo suite
+
+| Demo | Proves | Run |
+|------|--------|-----|
+| Basic 5-phase | Inline signed receipt + public verify | `python examples/claude-demo/demo.py` |
+| Certified artifact | Binds `certificate_id + artifact_id + decision_record_id` | `python examples/claude-demo/demo_certified.py` |
+| Governance / denied | Sandbox limit, attach-after-capture, cancel-after-capture all return typed errors | `python examples/claude-demo/demo_denied.py` |
+| Idempotency replay | Same `Idempotency-Key` returns the *same* signed receipt on retry | `python examples/claude-demo/demo_idempotency.py` |
+| USDC (Base) rail | Rail enum is not stripe-only | `python examples/claude-demo/demo_usdc.py` |
+| Refund e2e | Refund record links back to transaction | `python examples/claude-demo/demo_refund.py` |
+| Settlement e2e | Multi-transaction batch settlement | `python examples/claude-demo/demo_settlement.py` |
+| Webhooks listener | HMAC-verified live event reception | `python examples/webhooks-listener/listener.py` |
+| MCP server | Expose CDAC as MCP tools for Claude / any MCP client | `python examples/mcp-server/server.py` |
+| Verify-only | Public receipt verification, no SDK needed | `python examples/verify-only/verify.py <rcpt_id>` |
+| Browser demo | Paste a receipt ID, see it verify | open `docs/demo.html` |
+
+One-command local stack (mock + listener):
+
+```bash
+docker compose up           # or:  make mock  /  make listener  /  make demo-all
+```
+
+`cdac` CLI:
+
+```bash
+pip install certifieddata-agent-commerce
+cdac demo                   # basic
+cdac demo certified         # variant
+cdac verify <receipt_id>
+cdac capabilities
+```
+
 To use your own key (optional — get one at [certifieddata.io/dashboard/cdp/api-keys](https://certifieddata.io/dashboard/cdp/api-keys)):
 
 ```bash

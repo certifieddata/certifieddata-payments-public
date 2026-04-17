@@ -1,0 +1,43 @@
+# CertifiedData Agent Commerce — local developer stack.
+#
+# Boots the mock server + webhooks listener. Run any demo from the host
+# against http://localhost:3456 — no cloud dependency, no signup.
+#
+#   docker compose up --build
+#   CDAC_BASE_URL=http://localhost:3456 python examples/claude-demo/demo.py
+
+services:
+  mock:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - .:/app:ro
+    command: >
+      sh -c "
+        pip install --quiet flask cryptography requests &&
+        python examples/claude-demo/mock_server.py
+      "
+    ports:
+      - "3456:3456"
+    environment:
+      PYTHONUNBUFFERED: "1"
+
+  listener:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - .:/app:ro
+    depends_on:
+      - mock
+    command: >
+      sh -c "
+        pip install --quiet flask requests &&
+        sleep 2 &&
+        python examples/webhooks-listener/listener.py
+      "
+    ports:
+      - "4567:4567"
+    environment:
+      PYTHONUNBUFFERED: "1"
+      CDAC_BASE_URL: "http://mock:3456"
+      LISTENER_PORT: "4567"
