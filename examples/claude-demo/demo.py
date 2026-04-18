@@ -117,7 +117,7 @@ def main() -> None:
     try:
         capture = client.transactions.capture(tx_id)
     except CDACError as e:
-        fail("capture", f"API error {e.status_code}: {e}")
+        fail("capture", f"API error {e.http_status}: {e}")
 
     status  = capture.get("status")
     receipt = capture.get("receipt")

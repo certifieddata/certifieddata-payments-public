@@ -13,6 +13,9 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "bin": {
+    "cdac": "./dist/cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",

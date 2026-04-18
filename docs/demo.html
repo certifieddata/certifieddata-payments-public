@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CDAC — Receipt Verifier</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      max-width: 720px; margin: 3rem auto; padding: 0 1.25rem;
+    }
+    h1 { margin-bottom: .25rem; }
+    p.sub { color: #888; margin-top: 0; }
+    form { display: flex; gap: .5rem; margin: 1.5rem 0; }
+    input[type=text] { flex: 1; padding: .6rem .75rem; font: inherit;
+                       border: 1px solid #999; border-radius: 6px; }
+    button { padding: .6rem 1rem; font: inherit; cursor: pointer;
+             border: 1px solid #333; background: #222; color: #fff; border-radius: 6px; }
+    button:hover { background: #000; }
+    pre { background: #f4f4f4; color: #111; padding: 1rem; border-radius: 6px;
+          overflow-x: auto; }
+    .ok  { color: #1a7f37; font-weight: 600; }
+    .bad { color: #c23030; font-weight: 600; }
+    details { margin-top: 1rem; }
+    code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
+    @media (prefers-color-scheme: dark) {
+      pre, code { background: #1e1e1e; color: #eee; }
+      input[type=text] { background: #111; color: #eee; }
+    }
+  </style>
+</head>
+<body>
+  <h1>CertifiedData — Receipt Verifier</h1>
+  <p class="sub">
+    Public, independent, machine-checkable. Paste a <code>rcpt_…</code> ID to
+    verify its Ed25519 signature and SHA-256 hash off-platform.
+  </p>
+
+  <form id="f">
+    <input id="rid" type="text" placeholder="rcpt_abc123…" autocomplete="off" required />
+    <button type="submit">Verify</button>
+  </form>
+
+  <div id="status"></div>
+  <pre id="out" hidden></pre>
+
+  <details>
+    <summary>How it works</summary>
+    <p>
+      Clicking <strong>Verify</strong> issues a public GET to
+      <code>/api/payments/verify/&lt;receipt_id&gt;</code> on the configured
+      base URL. No API key. No login. The response includes
+      <code>valid</code>, <code>hashValid</code>, <code>signatureValid</code>,
+      <code>signingKeyId</code>, <code>signatureAlg</code>.
+    </p>
+    <p>
+      Change the base URL by appending <code>?base=http://localhost:3456</code>
+      to point at your local mock server.
+    </p>
+  </details>
+
+  <script>
+    const DEFAULT_BASE = "https://certifieddata.io";
+    const qs   = new URLSearchParams(location.search);
+    const base = (qs.get("base") || DEFAULT_BASE).replace(/\/+$/, "");
+
+    const form   = document.getElementById("f");
+    const input  = document.getElementById("rid");
+    const status = document.getElementById("status");
+    const out    = document.getElementById("out");
+
+    if (qs.get("rid")) input.value = qs.get("rid");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      status.textContent = "Verifying…";
+      out.hidden = true;
+      const id = input.value.trim();
+      try {
+        const resp = await fetch(`${base}/api/payments/verify/${encodeURIComponent(id)}`);
+        const body = await resp.json();
+        out.textContent = JSON.stringify(body, null, 2);
+        out.hidden = false;
+        if (body.valid) {
+          status.innerHTML =
+            `<span class="ok">✓ valid</span>  — signingKeyId ${body.signingKeyId || "?"}`;
+        } else {
+          status.innerHTML =
+            `<span class="bad">✗ invalid</span>  — hashValid=${body.hashValid} ` +
+            `signatureValid=${body.signatureValid}`;
+        }
+      } catch (err) {
+        status.innerHTML = `<span class="bad">error:</span> ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

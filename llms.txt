@@ -17,6 +17,41 @@ examples/claude-demo/demo.py
 > End-to-end demo (TypeScript)
 examples/claude-demo/demo.ts
 
+> Certified artifact purchase — binds certificate_id + artifact_id
+examples/claude-demo/demo_certified.py
+
+> Governance / denied-path demo — policy + state-machine rejections
+examples/claude-demo/demo_denied.py
+
+> Idempotency-replay demo — same key returns same signed receipt
+examples/claude-demo/demo_idempotency.py
+
+> Webhooks listener — verify HMAC + receive live events
+examples/webhooks-listener/listener.py
+
+> Verify-only — stand-alone receipt verifier (curl + Python)
+examples/verify-only/verify.py
+
+> MCP server — expose CDAC payments as an MCP tool
+examples/mcp-server/server.py
+
+## Integration profiles
+
+> Machine-readable integration profiles
+profiles/
+
+> Certified artifact purchase
+profiles/certified-artifact-purchase.profile.json
+
+> Payee onboarding
+profiles/payee-onboarding.profile.json
+
+> Refund
+profiles/refund.profile.json
+
+> Settlement
+profiles/settlement.profile.json
+
 ## Discovery
 
 > Machine discovery manifest — start here

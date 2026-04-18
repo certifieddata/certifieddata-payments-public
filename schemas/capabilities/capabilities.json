@@ -2,6 +2,13 @@
   "version": "1.0.0",
   "api_version": "2025-01-01",
   "environments": ["sandbox", "live"],
+  "environment_selection": {
+    "mechanism": "api_key_prefix",
+    "test_key_prefix": "cdp_test_",
+    "live_key_prefix": "cdp_live_",
+    "host": "https://certifieddata.io",
+    "note": "Both environments route through the same host. The key prefix (cdp_test_ vs cdp_live_) controls routing — there is no separate sandbox hostname."
+  },
   "resources": [
     "payee", "payee_alias", "payout_destination", "customer", "invoice",
     "payment_intent", "transaction", "settlement", "refund", "event", "webhook_endpoint"
@@ -61,7 +68,7 @@
   "sandbox_limits": {
     "max_amount_cents": 100000,
     "max_amount_display": "$1,000.00",
-    "note": "Sandbox transactions above this amount return HTTP 400 with code sandbox_amount_limit_exceeded."
+    "note": "Test-mode transactions (cdp_test_ keys) above this amount return HTTP 400 with code sandbox_amount_limit_exceeded. Live-mode transactions (cdp_live_) are not constrained by this limit."
   },
   "receipt_verification": {
     "algorithm": "sha256-stable-json",
