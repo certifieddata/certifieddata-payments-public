@@ -42,9 +42,62 @@ const CAPABILITIES = {
   },
 };
 
+// Tiny per-IP token bucket so accidental CI loops or open-internet exposure
+// cannot trivially exhaust the host. 60 requests / minute / IP.
+const RATE_LIMIT_MAX = 60;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const _bucket = new Map<string, { count: number; reset: number }>();
+
+function rateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const ip = req.ip || "unknown";
+  const now = Date.now();
+  const entry = _bucket.get(ip);
+  if (!entry || entry.reset < now) {
+    _bucket.set(ip, { count: 1, reset: now + RATE_LIMIT_WINDOW_MS });
+    return next();
+  }
+  entry.count += 1;
+  if (entry.count > RATE_LIMIT_MAX) {
+    res.setHeader("Retry-After", Math.ceil((entry.reset - now) / 1000).toString());
+    return res.status(429).json({
+      error: { code: "rate_limited", http_status: 429, message: "Mock server rate limit exceeded." },
+    });
+  }
+  next();
+}
+
+// Optional auth gate. The mock has historically been authless to make local
+// development frictionless, but operators occasionally ship it on an open port
+// during demos. Setting MOCK_REQUIRE_AUTH=true requires Bearer cdp_test_*.
+function optionalAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (process.env.MOCK_REQUIRE_AUTH !== "true") return next();
+  const auth = (req.headers.authorization || "").trim();
+  const [scheme, token] = auth.split(/\s+/);
+  if (scheme !== "Bearer" || !token || !token.startsWith("cdp_test_")) {
+    return res.status(401).json({
+      error: { code: "unauthorized", http_status: 401, message: "Bearer cdp_test_* token required." },
+    });
+  }
+  next();
+}
+
 export function createApp(): Express {
   const app = express();
-  app.use(express.json());
+
+  // If the operator forgot to set MOCK_REQUIRE_AUTH but is running in a
+  // production-shaped environment, refuse to start. This is the cheapest way
+  // to stop the "mock-as-prod-API" footgun.
+  if (process.env.NODE_ENV === "production" && process.env.MOCK_REQUIRE_AUTH !== "true") {
+    throw new Error(
+      "Refusing to start: NODE_ENV=production but MOCK_REQUIRE_AUTH is not 'true'. " +
+        "The mock server has no authentication by design. Set MOCK_REQUIRE_AUTH=true " +
+        "to enable a Bearer cdp_test_* gate, or unset NODE_ENV for local development.",
+    );
+  }
+
+  app.use(express.json({ limit: "1mb" }));
+  app.use(rateLimit);
+  app.use(optionalAuth);
 
   // Meta endpoints
   app.get("/v1/health", (_req, res) => {

@@ -10,10 +10,13 @@ export interface CDPClientConfig {
   baseUrl: string;
   apiVersion: string;
   idempotencyKey?: string;
+  /** Per-request timeout in ms. Default 30_000. Set to 0 to disable. */
+  timeoutMs?: number;
 }
 
 const DEFAULT_BASE_URL = "https://api.certifieddata.io";
 const DEFAULT_API_VERSION = "2025-01-01";
+const DEFAULT_TIMEOUT_MS = 30_000;
 
 export async function makeRequest<T>(
   config: CDPClientConfig,
@@ -23,6 +26,8 @@ export async function makeRequest<T>(
     body?: unknown;
     query?: Record<string, string | number | undefined>;
     idempotencyKey?: string | undefined;
+    /** Per-call timeout override. Falls back to config.timeoutMs, then default. */
+    timeoutMs?: number;
   }
 ): Promise<T> {
   const baseUrl = config.baseUrl ?? DEFAULT_BASE_URL;
@@ -51,11 +56,34 @@ export async function makeRequest<T>(
     headers["Idempotency-Key"] = options.idempotencyKey;
   }
 
-  const fetchInit: RequestInit = { method, headers };
+  const timeoutMs = options?.timeoutMs ?? config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const controller = new AbortController();
+  const timer = timeoutMs > 0 ? setTimeout(() => controller.abort(), timeoutMs) : null;
+
+  const fetchInit: RequestInit = {
+    method,
+    headers,
+    // Fail loud on cross-origin redirects rather than silently following them.
+    // Production responses should never 3xx for an SDK call; if they do, the
+    // caller deserves to know.
+    redirect: "error",
+    signal: controller.signal,
+  };
   if (options?.body !== undefined) {
     fetchInit.body = JSON.stringify(options.body);
   }
-  const response = await fetch(url, fetchInit);
+
+  let response: Response;
+  try {
+    response = await fetch(url, fetchInit);
+  } catch (err) {
+    if ((err as { name?: string }).name === "AbortError") {
+      throw new Error(`CDAC request timed out after ${timeoutMs}ms: ${method} ${path}`);
+    }
+    throw err;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 
   const data: unknown = await response.json();
 
